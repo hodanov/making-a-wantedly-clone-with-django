@@ -11,9 +11,32 @@
   </head>
   <body>
     <header>
+      <nav class="navbar navbar-expand-lg navbar-light">
+        <a class="navbar-brand" href="/">Navbar</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              {% if user.is_authenticated %}
+                <span>Hello, {{ user.username }}</span>
+                <a class="nav-link" href="{% url 'logout' %}">ログアウト</a>
+              {% else %}
+                <a id="login-btn" class="nav-link" href="#" data-toggle="modal" data-target="#login-form-modal">ログイン</a>
+              {% endif %}
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'about' %}">採用担当者の方</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
     </header>
+
     {% block content %}
     {% endblock %}
+
     <footer>
       <div class="container">
         <div class="row">
@@ -77,5 +100,37 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
     <script src="{% static 'wantedly_app/js/custom.js' %}"></script>
+
+    <!-- LoginFormModal -->
+    {% if not user.is_authenticated %}
+    <div class="modal fade" id="login-form-modal" tabindex="-1" role="dialog" aria-labelledby="login-form-modal-title" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-body">
+            <h3>ログイン</h3>
+            <a href="{% url 'social:begin' 'google-oauth2' %}" class="google-plus-login-btn btn btn-lg btn-block">Googleアカウント</a>
+            <a href="#" class="facebook-login-btn btn btn-block">Facebookアカウント</a>
+            <p class="or"><span>または</span></p>
+            <form method="post">
+              {% csrf_token %}
+              {{ form.as_p }}
+              <div class="form-group">
+                <input type="email" class="form-control" id="login-input-mail" aria-describedby="emailHelp" placeholder="メールアドレス">
+              </div>
+              <div class="form-group">
+                <input type="password" class="form-control" id="login-input-password" placeholder="パスワード">
+              </div>
+              <p class="text-center"><a href="#" class="text-info">パスワードをお忘れですか？</a></p>
+              <button type="submit" class="btn btn-info btn-block">ログイン</button>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <p>初めてのご利用ですか？</p>
+            <a class="btn btn-outline-info" href="{% url 'sign_up' %}">登録</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
   </body>
 </html>

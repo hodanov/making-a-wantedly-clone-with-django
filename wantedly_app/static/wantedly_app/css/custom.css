@@ -2,11 +2,20 @@ body {
   font-family: Lato, "Helvetica Neue", Helvetica, "ヒラギノ角ゴシック Pro", "Hiragino Kaku Gothic Pro", メイリオ, Meiryo, Osaka, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
 }
 
+/* -----Header----- */
+header {
+  position: absolute;
+  width: 100%;
+}
+.navbar-nav {
+  font-size: .8rem;
+}
+
 /* -----Home Style----- */
 .responsive-img-wrapper {
   position: relative;
   width: 100%;
-  min-height: 100%;
+  height: 100%;
   overflow: hidden;
 }
 .responsive-img-wrapper .responsive-img {
@@ -39,21 +48,12 @@ body {
   z-index: -1;
 }
 .hero {
-  height: 100vh;
-  width: 100vw;
+  min-height: 100vh;
+  min-width: 100vw;
   background-color: rgba(255, 255, 255, .8);
   display: flex;
   justify-content: center;
   align-items: center;
-}
-.hero-header {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-}
-.hero-header .navbar-nav {
-  font-size: .8rem;
 }
 .hero-body h1 {
   font-weight: bold;
@@ -83,7 +83,7 @@ body {
 }
 .second-feature {
   min-height: 100vh;
-  width: 100vw;
+  min-width: 100vw;
   padding: 1.5rem;
   color: #fff;
   display: flex;
@@ -149,16 +149,44 @@ footer h4, footer p {
   position: relative;
   z-index: 5;
 }
-.google-plus-btn {
+.google-plus-login-btn {
   background-color: #DB4437;
   color: #fff;
   transition: opacity .15s ease-in-out;
 }
-.google-plus-btn:hover {
+.google-plus-login-btn:hover {
+  color: #fff;
+  opacity: .8;
+}
+.facebook-login-btn {
+  background-color: #4267B2;
+  color: #fff;
+  transition: opacity .15s ease-in-out;
+}
+.facebook-login-btn:hover {
   color: #fff;
   opacity: .8;
 }
 .modal-backdrop {
   opacity: .9;
   background-color: #fff;
+}
+
+/* -----Maincontent Style----- */
+article {
+  padding: 3rem;
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.2);
+}
+article h3{
+  margin: 0 0 2rem;
+}
+#sidebar h3 {
+  font-size: 1.2rem;
+  color: #333;
+  margin: 2rem 0;
+}
+#sidebar p {
+  font-size: .8rem;
+  color: #777;
+  margin: 2rem 0;
 }

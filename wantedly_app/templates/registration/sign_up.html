@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="hero">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8">
+        <article>
+          <h3>30秒でアカウント登録（無料です）</h3>
+          <form>
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="form-group row">
+              <label for="inputName" class="col-sm-3 col-form-label">名前</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" id="inputName" placeholder="山田花子">
+              </div>
+            </div>
+            <fieldset class="form-group">
+              <div class="row">
+                <legend class="col-form-label col-sm-3">性別</legend>
+                <div class="col-sm-9">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios1" value="option1" checked>
+                    <label class="form-check-label" for="gridRadios1">
+                      女性
+                    </label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios2" value="option2">
+                    <label class="form-check-label" for="gridRadios2">
+                      男性
+                    </label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios3" value="option3">
+                    <label class="form-check-label" for="gridRadios3">
+                      秘密
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+            <div class="form-group row">
+              <div class="col-sm-3 col-form-label">生年月日</div>
+              <div class="col-sm-3">
+                <select class="custom-select" id="selectYear">
+                  <option selected></option>
+                  <option value="1">One</option>
+                  <option value="2">Two</option>
+                  <option value="3">Three</option>
+                </select>
+              </div>
+              <div class="col-sm-3">
+                <select class="custom-select" id="selectMonth">
+                  <option selected></option>
+                  <option value="1">One</option>
+                  <option value="2">Two</option>
+                  <option value="3">Three</option>
+                </select>
+              </div>
+              <div class="col-sm-3">
+                <select class="custom-select" id="selectDay">
+                  <option selected></option>
+                  <option value="1">One</option>
+                  <option value="2">Two</option>
+                  <option value="3">Three</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="inputEmail" class="col-sm-3 col-form-label">メールアドレス</label>
+              <div class="col-sm-9">
+                <input type="email" class="form-control" id="inputEmail" placeholder="Email">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="inputPassword" class="col-sm-3 col-form-label">パスワード</label>
+              <div class="col-sm-9">
+                <input type="password" class="form-control" id="inputPassword" placeholder="Password">
+              </div>
+            </div>
+            <hr>
+            <div class="form-group row">
+              <div class="col-sm">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="gridCheck1">
+                  <label class="form-check-label" for="gridCheck1">
+                    利用規約とプライバシーポリシーに同意します。
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-sm">
+                <button type="submit" class="btn btn-info btn-block">登録</button>
+              </div>
+            </div>
+          </form>
+        </article>
+      </div>
+      <div class="col-md-4">
+        <div id="sidebar">
+          <h3>たぶん安心してご利用いただけます</h3>
+          <p>プライバシーに最大限配慮してコーディングしていますが、まだまだ未熟者のため、予期せぬセキュリティーホールがあるかもしれません。</p>
+          <h3>プロフィール情報の表示範囲</h3>
+          <p>ご登録に際してお客様にご入力いただいたプロフィール情報の公開範囲は、公開設定より細かくコントロールできます。</p>
+          <p>安心してご利用いただけるよう改良を行いたい気持ちはあります。何かお気づきの点、ご質問等ございましたら以下のメールアドレスまでお問い合わせください╭( ･ㅂ･)و ̑̑ ｸﾞｯ !＂</p>
+          <p></p>
+          <p>よろしくお願いします！</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -109,11 +109,9 @@
           <div class="modal-body">
             <h3>ログイン</h3>
             <a href="{% url 'social:begin' 'google-oauth2' %}" class="google-plus-login-btn btn btn-lg btn-block">Googleアカウント</a>
-            <a href="#" class="facebook-login-btn btn btn-block">Facebookアカウント</a>
             <p class="or"><span>または</span></p>
             <form method="post">
               {% csrf_token %}
-              {{ form.as_p }}
               <div class="form-group">
                 <input type="email" class="form-control" id="login-input-mail" aria-describedby="emailHelp" placeholder="メールアドレス">
               </div>

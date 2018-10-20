@@ -15,43 +15,48 @@ class SignUpForm(UserCreationForm):
         fields = ('username', 'email', 'password')
 
 class ProfileForm(forms.ModelForm):
-        CHOICES = (
-            ('female', '女性',),
-            ('male', '男性',),
-            ('not_applicable', '秘密',)
+    CHOICES = (
+        ('female', '女性',),
+        ('male', '男性',),
+        ('not_applicable', '秘密',)
+    )
+    gender = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES, required=False)
+
+    def make_select_object(from_x, to_y, dates, increment=True):
+        if increment:
+            for i in range(from_x, to_y):
+                dates.append([i, i])
+        else:
+            for i in range(from_x, to_y, -1):
+                dates.append([i, i])
+        return dates
+
+    def make_select_field(select_object):
+        dates_field = forms.ChoiceField(
+            widget=forms.Select,
+            choices=select_object,
+            required=False
         )
-        gender = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES, required=False)
+        return dates_field
 
-        def make_select_object(from_x, to_y, dates, increment=True):
-            if increment:
-                for i in range(from_x, to_y):
-                    dates.append([i, i])
-            else:
-                for i in range(from_x, to_y, -1):
-                    dates.append([i, i])
-            return dates
+    years = [["",""]]
+    current_year = datetime.now().year
+    years = make_select_object(current_year, current_year-80, years, False)
+    birth_year = make_select_field(years)
 
-        def make_select_field(select_object):
-            dates_field = forms.ChoiceField(
-                widget=forms.Select,
-                choices=select_object,
-                required=False
-            )
-            return dates_field
+    months = [["",""]]
+    months = make_select_object(1, 13, months)
+    birth_month = make_select_field(months)
 
-        years = [["",""]]
-        current_year = datetime.now().year
-        years = make_select_object(current_year, current_year-80, years, False)
-        birth_year = make_select_field(years)
+    days = [["",""]]
+    days = make_select_object(1, 32, days)
+    birth_day = make_select_field(days)
 
-        months = [["",""]]
-        months = make_select_object(1, 13, months)
-        birth_month = make_select_field(months)
+    class Meta:
+        model = Profile
+        fields = ('gender', 'birth_year', 'birth_month', 'birth_day')
 
-        days = [["",""]]
-        days = make_select_object(1, 32, days)
-        birth_day = make_select_field(days)
-
-        class Meta:
-            model = Profile
-            fields = ('gender', 'birth_year', 'birth_month', 'birth_day')
+# class LoginForm(object):
+#     class Meta:
+#         model = User
+#         fields = ('username', 'password')

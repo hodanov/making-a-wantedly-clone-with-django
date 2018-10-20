@@ -21,9 +21,9 @@
             <li class="nav-item">
               {% if user.is_authenticated %}
               <span>Hello, {{ user.username }}</span>
-              <a class="nav-link" href="{% url 'logout' %}">ログアウト</a>
+              <a class="nav-link" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i>ログアウト</a>
               {% else %}
-              <a id="login-btn" class="nav-link" href="#" data-toggle="modal" data-target="#login-form-modal">ログイン</a>
+              <a id="login-btn" class="nav-link" href="#" data-toggle="modal" data-target="#login-form-modal"><i class="fas fa-sign-in-alt"></i>ログイン</a>
               {% endif %}
             </li>
             <li class="nav-item">
@@ -37,7 +37,7 @@
     {% if messages %}
     <div class="flash-msg-box alert alert-info alert-dismissible fade show">
       {% for message in messages %}
-      <p>{{message}}</p>
+      <span>{{message}}</span>
       {% endfor %}
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
@@ -106,12 +106,6 @@
       </div>
     </footer>
 
-    <script defer src="https://use.fontawesome.com/releases/v5.1.0/js/all.js"></script>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-    <script src="{% static 'wantedly_app/js/custom.js' %}"></script>
-
     <!-- LoginFormModal -->
     {% if not user.is_authenticated %}
     <div class="modal fade" id="login-form-modal" tabindex="-1" role="dialog" aria-labelledby="login-form-modal-title" aria-hidden="true">
@@ -140,6 +134,13 @@
         </div>
       </div>
     </div>
+
+    <script defer src="https://use.fontawesome.com/releases/v5.4.1/js/solid.js" integrity="sha384-agDKwSYPuGlC0wD14lKXXwb94jlUkbkoSugquwmKRKWv/nDXe1kApDS/gqUlRQmZ" crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.4.1/js/fontawesome.js" integrity="sha384-ISRc+776vRkDOTSbmnyoZFmwHy7hw2UR3KJpb4YtcfOyqUqhLGou8j5YmYnvQQJ4" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script src="{% static 'wantedly_app/js/custom.js' %}"></script>
     {% endif %}
   </body>
 </html>

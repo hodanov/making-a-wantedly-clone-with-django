@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'wantedly_app',
     'social_django',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
@@ -126,7 +127,8 @@ AUTHENTICATION_BACKENDS = (
  'social_core.backends.google.GoogleOAuth2',  # for Google authentication
  'social_core.backends.github.GithubOAuth2',  # for Github authentication
  'social_core.backends.facebook.FacebookOAuth2',  # for Facebook authentication
-
+ 'social_core.backends.twitter.TwitterOAuth',
+ 'social_core.backends.yahoo.YahooOpenId',
  'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -138,3 +140,5 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET
 
 SOCIAL_AUTH_POSTGRES_JSONFIELD = True
+
+AUTH_USER_MODEL = 'wantedly_app.User'

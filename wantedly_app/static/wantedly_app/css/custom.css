@@ -190,3 +190,10 @@ article h3{
   color: #777;
   margin: 2rem 0;
 }
+
+/* -----Alert----- */
+.flash-msg-box {
+  position: absolute;
+  top: 0;
+  left: 0;
+}

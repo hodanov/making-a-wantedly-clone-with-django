@@ -31,21 +31,4 @@ $(document).ready(function(){
     );
   }
 
-  // Add option-tag to select form.
-  var today = new Date();
-  var thisYear = today.getFullYear();
-  var limitYear = thisYear - 100;
-  var selectYear = $('#selectYear');
-  var selectMonth = $('#selectMonth');
-  var selectDay = $('#selectDay');
-  for (year = thisYear; year > limitYear; year--) {
-    selectYear.append('<option>' + year + '</option>');
-  }
-  for ( month = 1; month < 13; month++) {
-    selectMonth.append('<option>' + month + '</option>');
-  }
-  for ( date = 1; date < 32; date++) {
-    selectDay.append('<option>' + date + '</option>');
-  }
-
 })// document ready end

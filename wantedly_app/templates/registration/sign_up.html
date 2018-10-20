@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load widget_tweaks %}
+
 {% block content %}
 <div class="hero">
   <div class="container">
@@ -9,65 +11,56 @@
           <h3>30秒でアカウント登録（無料です）</h3>
           <form action="{% url 'sign_up' %}" method="post">
             {% csrf_token %}
+
             <div class="form-group row">
-              <label for="username" class="col-sm-3 col-form-label">名前</label>
+              <label for="{{ form.username.id_for_label }}" class="col-sm-3 col-form-label">ユーザー名</label>
               <div class="col-sm-9">
-                <input type="text" class="form-control" id="username" placeholder="山田花子" name="username">
+                {{ signup_form.username|add_class:'form-control' }}
+                {% for error in signup_form.username.errors %}
+                  <span class="text-warning">{{ error }}</span>
+                {% endfor %}
               </div>
             </div>
             <fieldset class="form-group">
               <div class="row">
                 <legend class="col-form-label col-sm-3">性別</legend>
                 <div class="col-sm-9">
+                  {% for radio in profile_form.gender %}
                   <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="gender" id="female" value="female" checked>
-                    <label class="form-check-label" for="female">
-                      女性
-                    </label>
+                      {{ radio }}
                   </div>
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="gender" id="male" value="male">
-                    <label class="form-check-label" for="male">
-                      男性
-                    </label>
-                  </div>
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="gender" id="not_applicable" value="not_applicable">
-                    <label class="form-check-label" for="not_applicable">
-                      秘密
-                    </label>
-                  </div>
+                  {% endfor %}
                 </div>
               </div>
             </fieldset>
             <div class="form-group row">
               <div class="col-sm-3 col-form-label">生年月日</div>
               <div class="col-sm-3">
-                <select class="custom-select" id="selectYear" name="year">
-                  <option selected></option>
-                </select>
+                {{ profile_form.birth_year|add_class:"custom-select" }}
               </div>
               <div class="col-sm-3">
-                <select class="custom-select" id="selectMonth" name="month">
-                  <option selected></option>
-                </select>
+                {{ profile_form.birth_month|add_class:"custom-select" }}
               </div>
               <div class="col-sm-3">
-                <select class="custom-select" id="selectDay" name="date">
-                  <option selected></option>
-                </select>
+                {{ profile_form.birth_day|add_class:"custom-select" }}
               </div>
             </div>
             <div class="form-group row">
-              <label for="email" class="col-sm-3 col-form-label">メールアドレス</label>
+              <label for="{{ form.email.id_for_label }}" class="col-sm-3 col-form-label">メールアドレス</label>
               <div class="col-sm-9">
-                <input type="email" class="form-control" id="email" placeholder="Email" name="email">
+                {{ signup_form.email|add_class:'form-control' }}
+                {% for error in signup_form.email.errors %}
+                  <span class="text-warning">{{ error }}</span>
+                {% endfor %}
               </div>
             </div>
             <div class="form-group row">
-              <label for="password" class="col-sm-3 col-form-label">パスワード</label>
+              <label for="{{ form.password.id_for_label }}" class="col-sm-3 col-form-label">パスワード</label>
               <div class="col-sm-9">
-                <input type="password" class="form-control" id="password" placeholder="Password" name="password">
+                {{ signup_form.password|add_class:'form-control' }}
+                {% for error in signup_form.password.errors %}
+                  <span class="text-warning">{{ error }}</span>
+                {% endfor %}
               </div>
             </div>
             <hr>

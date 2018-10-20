@@ -15,10 +15,15 @@
             <div class="form-group row">
               <label for="{{ form.username.id_for_label }}" class="col-sm-3 col-form-label">ユーザー名</label>
               <div class="col-sm-9">
-                {{ signup_form.username|add_class:'form-control' }}
-                {% for error in signup_form.username.errors %}
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text"><i class="fas fa-user"></i></div>
+                  </div>
+                  {{ signup_form.username|add_class:'form-control' }}
+                  {% for error in signup_form.username.errors %}
                   <span class="text-warning">{{ error }}</span>
-                {% endfor %}
+                  {% endfor %}
+                </div>
               </div>
             </div>
             <fieldset class="form-group">
@@ -36,31 +41,56 @@
             <div class="form-group row">
               <div class="col-sm-3 col-form-label">生年月日</div>
               <div class="col-sm-3">
-                {{ profile_form.birth_year|add_class:"custom-select" }}
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text">年</div>
+                  </div>
+                  {{ profile_form.birth_year|add_class:"custom-select" }}
+                </div>
               </div>
               <div class="col-sm-3">
-                {{ profile_form.birth_month|add_class:"custom-select" }}
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text">月</div>
+                  </div>
+                  {{ profile_form.birth_month|add_class:"custom-select" }}
+                </div>
               </div>
               <div class="col-sm-3">
-                {{ profile_form.birth_day|add_class:"custom-select" }}
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text">日</div>
+                  </div>
+                  {{ profile_form.birth_day|add_class:"custom-select" }}
+                </div>
               </div>
             </div>
             <div class="form-group row">
               <label for="{{ form.email.id_for_label }}" class="col-sm-3 col-form-label">メールアドレス</label>
               <div class="col-sm-9">
-                {{ signup_form.email|add_class:'form-control' }}
-                {% for error in signup_form.email.errors %}
-                  <span class="text-warning">{{ error }}</span>
-                {% endfor %}
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text"><i class="fas fa-envelope"></i></div>
+                  </div>
+                  {{ signup_form.email|add_class:'form-control' }}
+                  {% for error in signup_form.email.errors %}
+                    <span class="text-warning">{{ error }}</span>
+                  {% endfor %}
+                </div>
               </div>
             </div>
             <div class="form-group row">
               <label for="{{ form.password.id_for_label }}" class="col-sm-3 col-form-label">パスワード</label>
               <div class="col-sm-9">
-                {{ signup_form.password|add_class:'form-control' }}
-                {% for error in signup_form.password.errors %}
-                  <span class="text-warning">{{ error }}</span>
-                {% endfor %}
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text"><i class="fas fa-key"></i></div>
+                  </div>
+                  {{ signup_form.password|add_class:'form-control' }}
+                  {% for error in signup_form.password.errors %}
+                    <span class="text-warning">{{ error }}</span>
+                  {% endfor %}
+                </div>
               </div>
             </div>
             <hr>

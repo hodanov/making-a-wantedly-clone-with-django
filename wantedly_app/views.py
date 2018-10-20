@@ -24,14 +24,14 @@ def sign_up(request):
             email = signup_form.cleaned_data.get('email')
             password = signup_form.cleaned_data.get('password')
             gender = profile_form.cleaned_data.get('gender')
-            birth_year = int(profile_form.cleaned_data.get('birth_year'))
-            birth_month = int(profile_form.cleaned_data.get('birth_month'))
-            birth_day = int(profile_form.cleaned_data.get('birth_day'))
+            birth_year = profile_form.cleaned_data.get('birth_year')
+            birth_month = profile_form.cleaned_data.get('birth_month')
+            birth_day = profile_form.cleaned_data.get('birth_day')
 
             user = User.objects.create_user(username, email, password)
             user.profile.gender = gender
             if birth_day and birth_month and birth_year:
-                birth_date = date(birth_year, birth_month, birth_day).isoformat()
+                birth_date = date(int(birth_year), int(birth_month), int(birth_day)).isoformat()
                 user.profile.birth_date = birth_date
             user.save()
 
@@ -42,7 +42,6 @@ def sign_up(request):
     else:
         signup_form = SignUpForm()
         profile_form = ProfileForm()
-        #     messages.add_message(request, messages.ERROR, '同じメールアドレスがすでに登録されています。')
 
     return render(request, 'registration/sign_up.html', {
         'signup_form': signup_form,

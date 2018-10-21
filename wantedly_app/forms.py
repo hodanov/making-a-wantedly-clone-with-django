@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import get_user_model
 User = get_user_model()
 from .models import Profile
@@ -56,7 +56,6 @@ class ProfileForm(forms.ModelForm):
         model = Profile
         fields = ('gender', 'birth_year', 'birth_month', 'birth_day')
 
-# class LoginForm(object):
-#     class Meta:
-#         model = User
-#         fields = ('username', 'password')
+class LoginForm(AuthenticationForm):
+    username = forms.CharField(max_length=30, widget=forms.TextInput(attrs={'placeholder': 'ユーザー名'}))
+    password = forms.CharField(max_length=128, widget=forms.PasswordInput(attrs={'placeholder': 'パスワード'}))

@@ -194,6 +194,6 @@ article h3{
 /* -----Alert----- */
 .flash-msg-box {
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 4rem;
+  right: 3rem;
 }

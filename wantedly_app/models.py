@@ -67,7 +67,7 @@ class Profile(models.Model):
     birth_date = models.DateField(null=True, blank=True)
     location = models.CharField(max_length=30, blank=True)
     favorite_words = models.CharField(max_length=50, blank=True)
-    # avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
+    avatar = models.URLField(max_length=200, blank=True)
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):

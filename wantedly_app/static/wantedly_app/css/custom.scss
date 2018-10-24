@@ -14,7 +14,13 @@ header {
   font-size: 1rem;
 }
 
-/* -----Home Style----- */
+/* -----Avatar----- */
+.avatar {
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* -----Top Page Style----- */
 $responsive-img-height: 41.17%;
 
 .responsive-img-wrapper {
@@ -121,7 +127,7 @@ footer {
   }
 }
 
-/* -----Component Style----- */
+/* -----Bootstrap Component Style----- */
 #login-form-modal {
   .modal-content {
     border: none;

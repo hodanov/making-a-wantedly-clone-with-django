@@ -55,25 +55,32 @@
               <a class="nav-link" href="#"><i class="fas fa-bell"></i></a>
             </li>
             <li class="nav-item">
-              {% if user.profile.avatar %}
-                <div class="btn-group">
-                  <img src="{{ user.profile.avatar }}" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <div class="dropdown-menu dropdown-menu-right">
-                    <span class="nav-link">{{ user.username }}</span>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">応募した募集</a>
-                    <a class="dropdown-item" href="#">保存した募集</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">フォローしている会社</a>
-                    <a class="dropdown-item" href="#">知り合いを招待</a>
-                    <a class="dropdown-item" href="#">アカウント設定</a>
-                    <a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i>ログアウト</a>
-                  </div>
+              <div class="btn-group">
+                {% if user.profile.avatar %}
+                <img src="{{ user.profile.avatar }}" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {% else %}
+                <img src="" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {% endif %}
+                <div class="dropdown-menu dropdown-menu-right">
+                  <a class="dropdown-item" id="dropdown-menu-avatar" href="#">
+                    <div class="dropdown-menu-avatar-text">
+                      <span class="dropdown-menu-avatar-text-name">{{ user.username }}</span><br>
+                      <span class="dropdown-menu-avatar-text-edit">プロフィールを編集</span>
+                    </div>
+                    <div class="dropdown-menu-avatar-img">
+                      <img src="{{ user.profile.avatar }}" alt="avatar" width="50" height="50" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    </div>
+                  </a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="#"><i class="fas fa-comment"></i>応募した募集</a>
+                  <a class="dropdown-item" href="#"><i class="fas fa-bookmark"></i>保存した募集</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="#"><i class="fas fa-building"></i>フォローしている会社</a>
+                  <a class="dropdown-item" href="#"><i class="fas fa-user-plus"></i>知り合いを招待</a>
+                  <a class="dropdown-item" href="#"><i class="fas fa-cog"></i>アカウント設定</a>
+                  <a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i>ログアウト</a>
                 </div>
-
-              {% else %}
-
-              {% endif %}
+              </div>
             </li>
           </ul>
         </div>

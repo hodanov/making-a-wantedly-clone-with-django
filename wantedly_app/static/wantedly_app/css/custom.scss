@@ -9,9 +9,34 @@ header {
   &#header-home{
     position: inherit;
   }
+  input.form-control, button.btn {
+    font-size: .9rem;
+  }
 }
 .navbar-nav {
-  font-size: 1rem;
+  font-size: .9rem;
+  .dropdown-menu .dropdown-item {
+    font-size: .9rem;
+    padding: .5rem 1.5rem;
+    svg {
+      margin-right: 1rem;
+      color: #777;
+    }
+  }
+  #dropdown-menu-avatar {
+    display: flex;
+    justify-content: space-between;
+    .dropdown-menu-avatar-text-name {
+      font-size: 1.1rem;
+    }
+    .dropdown-menu-avatar-text-edit {
+      font-size: .8rem;
+      color: #777;
+    }
+    .dropdown-menu-avatar-img {
+      margin-left: 3rem;
+    }
+  }
 }
 
 /* -----Avatar----- */
@@ -25,8 +50,8 @@ $responsive-img-height: 41.17%;
 
 .responsive-img-wrapper {
   position: relative;
-  width: 100%;
-  height: 100%;
+  // width: 100%;
+  // height: 100%;
   overflow: hidden;
   &:before {
     content:"";
@@ -231,18 +256,6 @@ $slide-height: 41.17%;
 $duration-of-sliding-animation: .5s;
 $duration-of-controller-animation: .3s;
 
-#featured-slider {
-  margin: auto;
-  width: 60%;
-  // height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  @media screen and (max-width: 767px) {
-    width: 95%;
-  }
-}
-
 @mixin slide-controller-common-style {
   position: absolute;
   margin: auto;
@@ -326,10 +339,10 @@ $duration-of-controller-animation: .3s;
     position: relative;
     left: 0;
     display: flex;
-    -webkit-transition: right $duration-of-sliding-animation;
-    transition: right $duration-of-sliding-animation;
-    -webkit-transition: left $duration-of-sliding-animation;
-    transition: left $duration-of-sliding-animation;
+    // -webkit-transition: right $duration-of-sliding-animation;
+    // transition: right $duration-of-sliding-animation;
+    // -webkit-transition: left $duration-of-sliding-animation;
+    // transition: left $duration-of-sliding-animation;
     .slide {
       position: relative;
       width: 100%;
@@ -497,4 +510,46 @@ $duration-of-controller-animation: .3s;
     }
   }
   @include media-query-controll-btn;
+}
+
+// custom slider
+#featured-slider-container {
+  width: 100%;
+  overflow: hidden;
+  .transition {
+    -webkit-transition: right $duration-of-sliding-animation;
+    transition: right $duration-of-sliding-animation;
+    -webkit-transition: left $duration-of-sliding-animation;
+    transition: left $duration-of-sliding-animation;
+  }
+}
+#featured-slider {
+  margin: auto;
+  width: 45%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  // @media screen and (max-width: 767px) {
+  //   width: 95%;
+  // }
+  .slide-window .slide-wrapper {
+    background-color: #f3f3f3;
+    width: 10000px;
+    left: -45vw;
+    .slide {
+      margin: .4rem .2rem;
+      background-color: #fff;
+      width: calc(45vw - .4rem);
+      &:before {
+        content: none;
+      }
+      .slide-article {
+        padding: 1rem;
+        h2 {
+          font-size: 1.2rem;
+          font-weight: bold
+        }
+      }
+    }
+  }
 }

@@ -41,7 +41,7 @@ class ProfileForm(forms.ModelForm):
 
     years = [["",""]]
     current_year = datetime.now().year
-    years = make_select_object(current_year, current_year-80, years, False)
+    years = make_select_object(current_year, current_year-80, years, increment=False)
     birth_year = make_select_field(years)
 
     months = [["",""]]

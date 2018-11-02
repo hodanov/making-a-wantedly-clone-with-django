@@ -1,45 +1,106 @@
-{% extends 'base.html' %}
+{% extends 'base_home.html' %}
 
 {% block content %}
-<div class="background responsive-img-wrapper">
-  <div class="responsive-img" style="background-image: url('static/wantedly_app/img/hero1.jpg');">
-  </div>
-</div>
-<div class="hero">
-  <div class="background2 responsive-img-wrapper">
-    <div class="responsive-img" style="background-image: url('static/wantedly_app/img/hero2.jpg');">
-    </div>
-  </div>
-  <div class="hero-body">
-    <h1>「はたらく」を面白く</h1>
-    <p class="subtitle">ウォンテッドリーは、月間200万人が利用するビジネスSNSです</p>
-    <div class="login-btn">
-      <a href="{% url 'social:begin' 'google-oauth2' %}" class="google-plus-login-btn btn btn-block">Googleでログイン</a>
-      <a href="{% url 'sign_up' %}" class="btn btn-block btn-outline-info">Emailで登録</a>
-    </div>
-    <p class="more"><i class="fas fa-angle-down"></i>MORE ABOUT WANTEDLY</p>
-  </div>
-</div>
-<section class="second-feature">
-  <div class="container-fluid">
-    <h2>共感で人や企業とつながり、シゴトでココロおどろう。無料です。</h2>
-    <div class="row">
-      <div class="col-md">
-        <img src="static/wantedly_app/img/img_feature_visit_ja.png" alt="" width="300" height="170">
-        <h3>であう</h3>
-        <p>キラっと光るプロジェクトや<br>会社を見つけて、気軽に訪問しよう</p>
+
+<section id="featured-slider-container">
+  <div id="featured-slider">
+    <div class="slide-window">
+      <div class="slide-wrapper">
+        <div class="slide">
+          <a href="#" target="_blank">
+            <div class="responsive-img-wrapper">
+              <div class="responsive-img" style="background-image: url('static/wantedly_app/img/slide1.jpg')">
+              </div>
+            </div>
+          </a>
+          <div class="slide-article">
+            <a href="#" class="tag">Webエンジニア</a>
+            <h2 class="slide-article-title">テクノロジーを活用し、きめ細やかな教育を実現するフロントエンドエンジニアWANTED！</h2>
+            <div class="slide-article-information">
+              <img src="{{ user.profile.avatar }}" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <a href="#" class="avatar-company">HODAKA Web Engineering Laboratory</a>
+            </div>
+          </div>
+        </div>
+        <div class="slide">
+          <a href="#" target="_blank">
+            <div class="responsive-img-wrapper">
+              <div class="responsive-img" style="background-image: url('static/wantedly_app/img/slide2.jpg')">
+              </div>
+            </div>
+          </a>
+          <div class="slide-article">
+            <a href="#" class="tag">Webエンジニア</a>
+            <h2 class="slide-article-title">テクノロジーを活用し、きめ細やかな教育を実現するフロントエンドエンジニアWANTED！</h2>
+            <div class="slide-article-information">
+              <img src="{{ user.profile.avatar }}" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <a href="#" class="avatar-company">HODAKA Web Engineering Laboratory</a>
+            </div>
+          </div>
+        </div>
+        <div class="slide">
+          <a href="#" target="_blank">
+            <div class="responsive-img-wrapper">
+              <div class="responsive-img" style="background-image: url('static/wantedly_app/img/slide3.jpg')">
+              </div>
+            </div>
+          </a>
+          <div class="slide-article">
+            <a href="#" class="tag">Webエンジニア</a>
+            <h2 class="slide-article-title">テクノロジーを活用し、きめ細やかな教育を実現するフロントエンドエンジニアWANTED！</h2>
+            <div class="slide-article-information">
+              <img src="{{ user.profile.avatar }}" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <a href="#" class="avatar-company">HODAKA Web Engineering Laboratory</a>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="col-md">
-        <img src="static/wantedly_app/img/img_feature_profile.png" alt="" width="300" height="170">
-        <h3>つながる</h3>
-        <p>キャリアプロフィールを作成<br>人脈を構築し、広げよう</p>
-      </div>
-      <div class="col-md">
-        <img src="static/wantedly_app/img/img_feature_chat.png" alt="" width="300" height="170">
-        <h3>つくる</h3>
-        <p>ビジネス専用グループチャット<br>Wantedly Chat で生産性を倍に</p>
+      <div class="slide-controller">
+        <div class="slide-control-left prev">
+          <div class="slide-control-line"></div>
+          <div class="slide-control-line"></div>
+        </div>
+        <div class="slide-control-right next">
+          <div class="slide-control-line"></div>
+          <div class="slide-control-line"></div>
+        </div>
       </div>
     </div>
   </div>
 </section>
+
+<section class="container">
+  <div class="row">
+    <div class="col-md-8">
+      <div id="main-contents">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="responsive-img-wrapper">
+              <div class="responsive-img" style="background-image: url('static/wantedly_app/img/hero1.jpg');">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="responsive-img-wrapper">
+              <div class="responsive-img" style="background-image: url('static/wantedly_app/img/hero1.jpg');">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="responsive-img-wrapper">
+              <div class="responsive-img" style="background-image: url('static/wantedly_app/img/hero1.jpg');">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div id="sidebar">
+
+      </div>
+    </div>
+  </div>
+</section>
+
 {% endblock %}

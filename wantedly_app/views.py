@@ -3,30 +3,33 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login as auth_login, get_user_model
 User = get_user_model()
 from django.contrib import messages
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+# from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.core.exceptions import ObjectDoesNotExist
 from .forms import SignUpForm, ProfileForm, LoginForm
 from .models import Profile
 from datetime import date
 
 def home(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            if user.is_active:
-                auth_login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-                messages.add_message(request, messages.SUCCESS, 'ログインしました！')
-                return redirect('home')
+    if request.user.is_authenticated:
+        return render(request, 'wantedly_app/home.html')
+    else:
+        if request.method == 'POST':
+            username = request.POST['username']
+            password = request.POST['password']
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                if user.is_active:
+                    auth_login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+                    messages.add_message(request, messages.SUCCESS, 'ログインしました！')
+                    return redirect('home')
+                else:
+                    messages.add_message(request, messages.ERROR, 'ユーザーのアクティベーションがまだ完了していません。')
             else:
-                messages.add_message(request, messages.ERROR, 'ユーザーのアクティベーションがまだ完了していません。')
-        else:
-            messages.add_message(request, messages.ERROR, 'ログインに失敗しました。ユーザーが存在しないかパスワードが間違っています。')
+                messages.add_message(request, messages.ERROR, 'ログインに失敗しました。ユーザーが存在しないかパスワードが間違っています。')
 
-    login_form = LoginForm()
-    context = {'login_form': login_form}
-    return render(request, 'wantedly_app/home.html', context)
+        login_form = LoginForm()
+        context = {'login_form': login_form}
+        return render(request, 'wantedly_app/top.html', context)
 
 def about(request):
     return render(request, 'wantedly_app/about.html')
@@ -35,8 +38,6 @@ def sign_up(request):
     if request.method == 'POST':
         signup_form = SignUpForm(request.POST)
         profile_form = ProfileForm(request.POST)
-        print(signup_form)
-        print(profile_form)
         if signup_form.is_valid() and profile_form.is_valid():
             username = signup_form.cleaned_data.get('username')
             email = signup_form.cleaned_data.get('email')

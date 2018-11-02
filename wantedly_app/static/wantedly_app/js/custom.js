@@ -60,11 +60,8 @@ function featuredSlider() {
       moveSlide(direction = 'right')
     }, 10000)
 
-    $(window).bind("focus",function() {
-      rotationInterval = setInterval(function(){
-        moveSlide(direction = 'right')
-      }, 10000)
-    }).bind("blur", function() {
+    $(window).bind("focus", resetInterval()).bind("blur", function() {
+    // $(window).bind("focus").bind("blur", function() {
       clearInterval(rotationInterval)
     })
 

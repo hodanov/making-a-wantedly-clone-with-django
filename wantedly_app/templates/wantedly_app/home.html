@@ -7,48 +7,64 @@
     <div class="slide-window">
       <div class="slide-wrapper">
         <div class="slide">
-          <a href="#" target="_blank">
+          <a href="#">
             <div class="responsive-img-wrapper">
-              <div class="responsive-img" style="background-image: url('static/wantedly_app/img/slide1.jpg')">
+              <div class="responsive-img" style="background-image: url('static/wantedly_app/img/slide-test1.jpg')">
               </div>
             </div>
           </a>
           <div class="slide-article">
-            <a href="#" class="tag">Webエンジニア</a>
-            <h2 class="slide-article-title">テクノロジーを活用し、きめ細やかな教育を実現するフロントエンドエンジニアWANTED！</h2>
-            <div class="slide-article-information">
+            <span class="tag">エンジニア</span>
+            <h2 class="slide-article-title">私たちと一緒に働きませんか！機械学習で世界を豊かにしたいエンジニア募集！</h2>
+            <div class="slide-article-info">
               <img src="{{ user.profile.avatar }}" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <a href="#" class="avatar-company">HODAKA Web Engineering Laboratory</a>
             </div>
           </div>
         </div>
         <div class="slide">
-          <a href="#" target="_blank">
+          <a href="#">
             <div class="responsive-img-wrapper">
-              <div class="responsive-img" style="background-image: url('static/wantedly_app/img/slide2.jpg')">
+              <div class="responsive-img" style="background-image: url('static/wantedly_app/img/slide-test2.jpg')">
               </div>
             </div>
           </a>
           <div class="slide-article">
-            <a href="#" class="tag">Webエンジニア</a>
+            <span class="tag">Webエンジニア</span>
             <h2 class="slide-article-title">テクノロジーを活用し、きめ細やかな教育を実現するフロントエンドエンジニアWANTED！</h2>
-            <div class="slide-article-information">
+            <div class="slide-article-info">
               <img src="{{ user.profile.avatar }}" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <a href="#" class="avatar-company">HODAKA Web Engineering Laboratory</a>
             </div>
           </div>
         </div>
         <div class="slide">
-          <a href="#" target="_blank">
+          <a href="#">
             <div class="responsive-img-wrapper">
-              <div class="responsive-img" style="background-image: url('static/wantedly_app/img/slide3.jpg')">
+              <div class="responsive-img" style="background-image: url('static/wantedly_app/img/slide-test3.jpg')">
               </div>
             </div>
           </a>
           <div class="slide-article">
-            <a href="#" class="tag">Webエンジニア</a>
-            <h2 class="slide-article-title">テクノロジーを活用し、きめ細やかな教育を実現するフロントエンドエンジニアWANTED！</h2>
-            <div class="slide-article-information">
+            <span class="tag">マーケティング</span>
+            <h2 class="slide-article-title">ビッグデータを活用していい感じに事業を導くマーケターWanted!</h2>
+            <div class="slide-article-info">
+              <img src="{{ user.profile.avatar }}" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <a href="#" class="avatar-company">HODAKA Web Engineering Laboratory</a>
+            </div>
+          </div>
+        </div>
+        <div class="slide">
+          <a href="#">
+            <div class="responsive-img-wrapper">
+              <div class="responsive-img" style="background-image: url('static/wantedly_app/img/slide-test4.jpg')">
+              </div>
+            </div>
+          </a>
+          <div class="slide-article">
+            <span class="tag">エンジニア</span>
+            <h2 class="slide-article-title">どんな荒波もチームワークで乗り越えていけるエンジニアWanted!</h2>
+            <div class="slide-article-info">
               <img src="{{ user.profile.avatar }}" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <a href="#" class="avatar-company">HODAKA Web Engineering Laboratory</a>
             </div>
@@ -71,33 +87,182 @@
 
 <section class="container">
   <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-8 order-2">
       <div id="main-contents">
         <div class="row">
           <div class="col-md-12">
-            <div class="responsive-img-wrapper">
-              <div class="responsive-img" style="background-image: url('static/wantedly_app/img/hero1.jpg');">
+            <div class="projects-index-menu d-flex justify-content-between align-items-center">
+              <p class="projects-count">
+                <span class="current">10 / </span>
+                <span class="total">10000</span>
+              </p>
+              <ul class="nav justify-content-end">
+                <li class="nav-item">
+                  <a class="nav-link active" href="#">おすすめ</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#">新着</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#">人気</a>
+                </li>
+              </ul>
+            </div>
+            <div class="project">
+              <a href="#">
+                <div class="responsive-img-wrapper">
+                  <div class="responsive-img" style="background-image: url('static/wantedly_app/img/hero1.jpg');">
+                  </div>
+                </div>
+                <div class="project-details">
+                  <span href="#" class="tag">サーバーエンジニア</span>
+                  <h1>クリエイターの未来をつくるサーバーエンジニア募集！</h1>
+                  <p class="project-excerpt">ピースオブケイク社は小規模な組織なため、エンジニアの仕事は多岐に渡ります。エンジニアはコーディングするだけでなく、編集チームやマーケティングチームと直接コミュニケーションをとることも多いです。業務フローや役割分担が完全に固まる以前のフ...</p>
+                </div>
+              </a>
+              <div class="project-info d-flex justify-content-between align-items-center">
+                <div class="company-info">
+                  <img src="{{ user.profile.avatar }}" alt="avatar" width="50" height="50" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <a href="#" class="avatar-company">HODAKA Web Engineering Laboratory</a>
+                </div>
+                <div class="project-meta">
+                  <span class="published-date"><i class="fas fa-calendar-alt"></i>8ヵ月前</span>
+                  <span class="support-btn"><i class="fas fa-heart"></i></span>
+                  <span class="bookmark-btn"><i class="fas fa-bookmark"></i></span>
+                </div>
               </div>
             </div>
           </div>
           <div class="col-md-12">
-            <div class="responsive-img-wrapper">
-              <div class="responsive-img" style="background-image: url('static/wantedly_app/img/hero1.jpg');">
+            <div class="project">
+              <a href="#">
+                <div class="responsive-img-wrapper">
+                  <div class="responsive-img" style="background-image: url('static/wantedly_app/img/hero1.jpg');">
+                  </div>
+                </div>
+                <div class="project-details">
+                  <span href="#" class="tag">サーバーエンジニア</span>
+                  <h1>クリエイターの未来をつくるサーバーエンジニア募集！</h1>
+                  <p class="project-excerpt">ピースオブケイク社は小規模な組織なため、エンジニアの仕事は多岐に渡ります。エンジニアはコーディングするだけでなく、編集チームやマーケティングチームと直接コミュニケーションをとることも多いです。業務フローや役割分担が完全に固まる以前のフ...</p>
+                </div>
+              </a>
+              <div class="project-info d-flex justify-content-between align-items-center">
+                <div class="company-info">
+                  <img src="{{ user.profile.avatar }}" alt="avatar" width="50" height="50" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <a href="#" class="avatar-company">HODAKA Web Engineering Laboratory</a>
+                </div>
+                <div class="project-meta">
+                  <span class="published-date"><i class="fas fa-calendar-alt"></i>8ヵ月前</span>
+                  <span class="support-btn"><i class="fas fa-heart"></i></span>
+                  <span class="bookmark-btn"><i class="fas fa-bookmark"></i></span>
+                </div>
               </div>
             </div>
           </div>
           <div class="col-md-12">
-            <div class="responsive-img-wrapper">
-              <div class="responsive-img" style="background-image: url('static/wantedly_app/img/hero1.jpg');">
+            <div class="project">
+              <a href="#">
+                <div class="responsive-img-wrapper">
+                  <div class="responsive-img" style="background-image: url('static/wantedly_app/img/hero1.jpg');">
+                  </div>
+                </div>
+                <div class="project-details">
+                  <span href="#" class="tag">サーバーエンジニア</span>
+                  <h1>クリエイターの未来をつくるサーバーエンジニア募集！</h1>
+                  <p class="project-excerpt">ピースオブケイク社は小規模な組織なため、エンジニアの仕事は多岐に渡ります。エンジニアはコーディングするだけでなく、編集チームやマーケティングチームと直接コミュニケーションをとることも多いです。業務フローや役割分担が完全に固まる以前のフ...</p>
+                </div>
+              </a>
+              <div class="project-info d-flex justify-content-between align-items-center">
+                <div class="company-info">
+                  <img src="{{ user.profile.avatar }}" alt="avatar" width="50" height="50" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <a href="#" class="avatar-company">HODAKA Web Engineering Laboratory</a>
+                </div>
+                <div class="project-meta">
+                  <span class="published-date"><i class="fas fa-calendar-alt"></i>8ヵ月前</span>
+                  <span class="support-btn"><i class="fas fa-heart"></i></span>
+                  <span class="bookmark-btn"><i class="fas fa-bookmark"></i></span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-4">
-      <div id="sidebar">
+    <div class="col-md-4 order-1">
+      <div id="sidebar" class="sticky-top">
+        <h4>検索条件</h4>
+        <div class="filter-search">
+          <form action="{% url 'sign_up' %}" method="post">
+            {% csrf_token %}
 
+            <div class="form-group row">
+              <div class="col-sm-12">
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text">職種</div>
+                  </div>
+                  <select class="form-control custom-select" id="exampleFormControlSelect1">
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-sm-12">
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text">採用形態</div>
+                  </div>
+                  <select class="form-control custom-select" id="exampleFormControlSelect1">
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="optional-selector">
+              <ul class="optional-selector-items">
+                <li class="optional-selector-item">Ruby on Rails</li>
+                <li class="optional-selector-item">ネットワーク</li>
+                <li class="optional-selector-item">AWS</li>
+                <li class="optional-selector-item">Python</li>
+                <li class="optional-selector-item">Kotlin</li>
+              </ul>
+            </div>
+
+            <hr>
+
+            <div class="field">
+              <h5>分野</h5>
+              <ul class="optional-selector-items">
+                <li class="optional-selector-item">Web エンジニア</li>
+                <li class="optional-selector-item">モバイルエンジニア</li>
+                <li class="optional-selector-item">インフラエンジニア</li>
+              </ul>
+            </div>
+            <div class="regiton">
+              <h5>地域</h5>
+              <ul class="optional-selector-items">
+                <li class="optional-selector-item">東京</li>
+                <li class="optional-selector-item">関東</li>
+              </ul>
+              <a href="#" class="more-show">さらに表示</a>
+            </div>
+            <div class="characteristic">
+              <h5>特徴</h5>
+              <a href="#" class="more-show">さらに表示</a>
+            </div>
+
+          </form>
+        </div>
       </div>
     </div>
   </div>

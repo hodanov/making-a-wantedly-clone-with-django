@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'wantedly_app',
     'social_django',
     'widget_tweaks',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

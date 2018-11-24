@@ -8,6 +8,7 @@ $(document).ready(function() {
   Promise.all([])
   .then(fadeOutEffect)
   .then(featuredSlider)
+  .then(tooltip)
 })
 
 // ---Fade-out effect---
@@ -127,4 +128,8 @@ function featuredSlider() {
       }
     }
   }
+}
+
+function tooltip() {
+  $('[data-toggle="tooltip"]').tooltip()
 }

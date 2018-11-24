@@ -1,0 +1,141 @@
+{% extends 'base_home.html' %}
+
+{% block content %}
+
+<section id="profile-header">
+  <div class="responsive-img-wrapper" id="profile-cover-bg">
+    <div class="responsive-img" style="background-image: url('/static/wantedly_app/img/slide2.jpg')">
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md">
+        <div class="responsive-img-wrapper" id="profile-cover">
+          <div class="responsive-img" style="background-image: url('/static/wantedly_app/img/slide2.jpg')">
+          </div>
+        </div>
+        <div id="profile-heading">
+          <div id="profile-img" class="bg-white">
+            <img src="https://lh6.googleusercontent.com/-xP4ahhabdYY/AAAAAAAAAAI/AAAAAAAAAA8/oEjEqmG7-9Q/photo.jpg?sz=240" alt="avatar" width="120" height="120" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          </div>
+          <div id="profile-text">
+            <h1>桃太郎</h1>
+            <p>きびだんごはいらんかね</p>
+            <ul>
+              <li><i class="fas fa-briefcase"></i>エンジニア</li>
+              <li><i class="fas fa-building"></i>Avintonジャパン株式会社</li>
+              <li><i class="fas fa-map-marker-alt"></i>東京</li>
+              <li><i class="fas fa-clock"></i>2015/12/22に登録</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="container" id="profile-body">
+  <div class="row">
+    <div class="col-md-12" id="profile-menu" >
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="true">プロフィール</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="connections-tab" data-toggle="tab" href="#connections" role="tab" aria-controls="connections" aria-selected="false">つながり</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="referrals-tab" data-toggle="tab" href="#referrals" role="tab" aria-controls="referrals" aria-selected="false">紹介文</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="posts-tab" data-toggle="tab" href="#posts" role="tab" aria-controls="posts" aria-selected="false">投稿</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-8" id="main-contents">
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+          <section>
+            <h2>紹介文</h2>
+            <p>Web系のエンジニアとして活動しています。<br><br>- ポートフォリオサイト：https://hodalab.com/portfolio<br>- 技術ブログ：https://hodalog.com<br><br>高専で機械工学を学んだのち、工学系の大学へ進学、光触媒半導体の反応メカニズムに関する研究に従事。<br><br>卒業後は材料・機械系の技術者として北陸の電子部品メーカーに勤務、温度センサーの材料開発、量産化、製造と工程改善を経験。<br><br>スマートフォンを入手してから電子書籍やブログを読み漁るようになり、IT技術の生み出すサービスに感動。「今後は消費するだけでなくサービスを提供する側になりたい」と一念発起し、職業訓練校でIT技術の基礎を学んだ後、2016年7月、Avintonジャパンへ就職。<br><br>現在はWebサービスを支えるインフラの運用保守・SSL証明書設定やAWS関連のオペレーター業務、フロントサイドの改修、Python/Djangoベースの簡単なツールの開発・改修支援などを行なっています。<br><br>広く浅くではありますが、フロントサイドからバックエンドまで幅広くスキル習得に努めています。<br><br><br><br>＜勉強して身につけた技術＞<br>https://stackshare.io/hodanov/my-stack<br><br>＜実務で使用した経験のある技術＞<br>https://stackshare.io/hodanov/my-stack2<br><br>＜勉強中 or 気になっている技術＞<br>https://stackshare.io/hodanov/my-stack3</p>
+          </section>
+          <section>
+            <h2>この先やってみたいこと</h2>
+            <p>hogehoge</p>
+          </section>
+          <section>
+            <h2>職歴</h2>
+            <p>hogehoge</p>
+          </section>
+          <section>
+            <h2>ポートフォリオ・作品</h2>
+            <p>hogehoge</p>
+          </section>
+          <section>
+            <h2>関連リンク</h2>
+            <p>hogehoge</p>
+          </section>
+          <section>
+            <h2>学歴</h2>
+            <p>hogehoge</p>
+          </section>
+        </div>
+        <div class="tab-pane fade" id="connections" role="tabpanel" aria-labelledby="connections-tab">...</div>
+        <div class="tab-pane fade" id="referrals" role="tabpanel" aria-labelledby="referrals-tab">...</div>
+        <div class="tab-pane fade" id="posts" role="tabpanel" aria-labelledby="posts-tab">...</div>
+      </div>
+    </div>
+    <div class="col-md-4" id="sidebar">
+      <div class="user-profile-aside">
+        <h4>ソーシャル</h4>
+      </div>
+      <div class="user-profile-aside">
+        <div id="user-wantedly-score-wrapper">
+          <div id="user-wantedly-score-circle">
+            <h4>ウォンテッド・スコア</h4>
+            <p id="wantedly-score">50</p>
+          </div>
+          <span id="about-wantedly-score" data-toggle="tooltip" data-placement="top" title="公開プロフィールの充実度によって決まります。また、あなたのつながりの情報も加味されます。">ウォンテッド・スコアとは?</span>
+        </div>
+      </div>
+      <div class="user-profile-aside">
+        <h4>コンタクト情報</h4>
+      </div>
+      <div class="user-profile-aside">
+        <h4>関連して閲覧されているプロフィール</h4>
+        <ul id="related-profiles-lists">
+          <li>
+            <a href="#">
+              {% if user.profile.avatar %}
+              <img src="{{ user.profile.avatar }}" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {% else %}
+              <img src="" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {% endif %}
+              <div id="related-profiles-lists-info">
+                <h5>{{ user.username }}</h5>
+                <p>Webエンジニア, Avintonジャパン株式会社</p>
+              </div>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              {% if user.profile.avatar %}
+              <img src="{{ user.profile.avatar }}" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {% else %}
+              <img src="" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {% endif %}
+              <div id="related-profiles-lists-info">
+                <h5>{{ user.username }}</h5>
+                <p>Webエンジニア, Avintonジャパン株式会社</p>
+              </div>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

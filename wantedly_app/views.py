@@ -9,9 +9,6 @@ from .forms import SignUpForm, ProfileForm, LoginForm
 from .models import Profile
 from datetime import date
 
-from .serializers import UserSerializer
-from rest_framework import generics
-
 def home(request):
     if request.user.is_authenticated:
         return render(request, 'wantedly_app/home.html')
@@ -73,12 +70,18 @@ def sign_up(request):
     }
     return render(request, 'registration/sign_up.html', context)
 
+def profile(request, id):
+    if User.objects.filter(id=id).exists():
+        user = User.objects.get(id=id)
+    else:
+        user = 'None'
+    context = {
+        'user': user,
+    }
+    return render(request, 'wantedly_app/profile.html', context)
+
 def profile_edit(request):
     if request.user.is_authenticated:
-        return render(request, 'wantedly_app/profile.html')
+        return render(request, 'wantedly_app/profile_edit.html')
     else:
         return render(request, 'regeistration/request_login.html')
-
-class UserListCreate(generics.ListCreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer

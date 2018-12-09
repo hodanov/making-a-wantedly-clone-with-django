@@ -63,6 +63,7 @@ header {
   width: 100%;
   &#header-home{
     position: inherit;
+    box-shadow: 0 0 3px rgba(0,0,0,.2);
   }
   input.form-control, button.btn {
     font-size: .9rem;
@@ -312,6 +313,20 @@ footer {
   &:before {
     padding-top: 360px;
   }
+  #go-to-profile-edit-page {
+    position: relative;
+    top: 1rem;
+    left: 1rem;
+    color: #fff;
+    text-shadow: 0 1px 2px $font-color-lighter;
+  }
+}
+#profile-cover-offset {
+  height: 150px;
+  a {
+    margin: 1.75rem 0;
+    position: absolute;
+  }
 }
 #profile-heading {
   position: relative;
@@ -326,12 +341,19 @@ footer {
     border-bottom: 1px solid $border-color;
     h1 {
       font-size: 1.75rem;
+      font-weight: bold;
       color: #fff;
       margin-left: 1rem;
     }
     p {
       color: #fff;
       margin-left: 1rem;
+      svg {
+        width: .8rem;
+        position: relative;
+        top: -5px;
+        margin: 0;
+      }
     }
     ul {
       padding-left: .5rem;
@@ -349,6 +371,82 @@ footer {
     border-right: 1px solid $border-color;
     margin-top: 0;
     padding-top: 2rem;
+    section {
+      h2 {
+        margin-bottom: 2rem;
+      }
+      margin-bottom: 3rem;
+      p {
+        font-size: .9rem;
+      }
+    }
+    .profile-entries {
+      li {
+        position: relative;
+        margin-bottom: 2rem;
+        .profile-entry-title {
+          font-size: 1rem;
+          font-weight: bold;
+          color: $info-color;
+          position: relative;
+          &:before {
+            content: "";
+            display: block;
+            position: absolute;
+            margin: auto;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            border-top: 1px solid $border-color;
+            z-index: 1;
+          }
+          a, span {
+            position: relative;
+            z-index: 2;
+            background-color: #fff;
+            padding-right: 1rem;
+          }
+        }
+        .profile-entry-date,
+        .profile-entry-description {
+          font-size: .9rem;
+          color: $font-color-lighter;
+        }
+        .profile-entry-date {
+          position: absolute;
+          top: 0;
+          right: 0;
+          z-index: 2;
+          background-color: #fff;
+          padding-left: 1rem;
+        }
+      }
+    }
+    .profile-portfolio {
+      margin-bottom: 2rem;
+      .portfolio-photo:before {
+        padding-top: 61.8%;
+      }
+      .profile-portfolio-title {
+        font-size: 1rem;
+      }
+      .profile-portfolio-date,
+      .profile-portfolio-details {
+        font-size: .9rem;
+        color: $font-color-lighter;
+      }
+    }
+    .profile-related-link {
+      margin-bottom: 2rem;
+      .profile-related-link-title {
+        font-size: 1rem;
+        font-weight: bold;
+        color: $info-color;
+      }
+    }
   }
   #sidebar {
     margin-top: 0;
@@ -382,14 +480,14 @@ footer {
     @include info-text-style;
   }
 }
-#related-profiles-lists {
+#related-profiles-list {
   li {
     padding-left: 1rem;
     a {
       display: flex;
       border-top: 1px solid $border-color;
       padding: 1.5rem 0;
-      #related-profiles-lists-info {
+      .related-profiles-list-info {
         margin-left: .5rem;
         h5 {
           color: $font-color-heading;
@@ -402,4 +500,43 @@ footer {
       }
     }
   }
+}
+#user-profile-friends-list {
+  a {
+    display: flex;
+    margin: 1rem 0;
+    .user-profile-friends-info {
+      margin-left: .5rem;
+      h5 {
+        color: $info-color;
+        font-size: 1rem;
+        margin: 0;
+      }
+      p {
+        @include info-text-style;
+        margin: 0;
+      }
+    }
+  }
+  .card {
+    margin-bottom: 1rem;
+    flex-direction: row;
+    .user-profile-friends-info {
+      margin-left: .5rem;
+      padding: 1rem;
+      h5 {
+        color: $font-color-heading;
+        font-size: 1.4rem;
+      }
+    }
+  }
+}
+#see-all-link {
+  font-weight: lighter;
+  font-size: 1rem;
+  margin-left: 1rem;
+}
+.count {
+  margin-left: .5rem;
+  color: $info-color;
 }

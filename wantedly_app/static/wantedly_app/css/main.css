@@ -414,9 +414,10 @@
   margin-right: 0.5rem;
 }
 
-/* ----- List ----- */
-a:hover {
+/* ----- Link ----- */
+a, a:hover {
   text-decoration: none;
+  color: #17a2b8;
 }
 
 /* ----- List ----- */
@@ -437,6 +438,7 @@ header {
 }
 header#header-home {
   position: inherit;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
 }
 header input.form-control, header button.btn {
   font-size: 0.9rem;
@@ -723,6 +725,21 @@ footer h4, footer footer p {
 #profile-cover:before {
   padding-top: 360px;
 }
+#profile-cover #go-to-profile-edit-page {
+  position: relative;
+  top: 1rem;
+  left: 1rem;
+  color: #fff;
+  text-shadow: 0 1px 2px #9DA0A4;
+}
+
+#profile-cover-offset {
+  height: 150px;
+}
+#profile-cover-offset a {
+  margin: 1.75rem 0;
+  position: absolute;
+}
 
 #profile-heading {
   position: relative;
@@ -739,12 +756,19 @@ footer h4, footer footer p {
 }
 #profile-heading #profile-text h1 {
   font-size: 1.75rem;
+  font-weight: bold;
   color: #fff;
   margin-left: 1rem;
 }
 #profile-heading #profile-text p {
   color: #fff;
   margin-left: 1rem;
+}
+#profile-heading #profile-text p svg {
+  width: 0.8rem;
+  position: relative;
+  top: -5px;
+  margin: 0;
 }
 #profile-heading #profile-text ul {
   padding-left: 0.5rem;
@@ -761,6 +785,80 @@ footer h4, footer footer p {
   border-right: 1px solid rgba(0, 0, 0, 0.1);
   margin-top: 0;
   padding-top: 2rem;
+}
+#profile-body #main-contents section {
+  margin-bottom: 3rem;
+}
+#profile-body #main-contents section h2 {
+  margin-bottom: 2rem;
+}
+#profile-body #main-contents section p {
+  font-size: 0.9rem;
+}
+#profile-body #main-contents .profile-entries li {
+  position: relative;
+  margin-bottom: 2rem;
+}
+#profile-body #main-contents .profile-entries li .profile-entry-title {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #17a2b8;
+  position: relative;
+}
+#profile-body #main-contents .profile-entries li .profile-entry-title:before {
+  content: "";
+  display: block;
+  position: absolute;
+  margin: auto;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  z-index: 1;
+}
+#profile-body #main-contents .profile-entries li .profile-entry-title a, #profile-body #main-contents .profile-entries li .profile-entry-title span {
+  position: relative;
+  z-index: 2;
+  background-color: #fff;
+  padding-right: 1rem;
+}
+#profile-body #main-contents .profile-entries li .profile-entry-date,
+#profile-body #main-contents .profile-entries li .profile-entry-description {
+  font-size: 0.9rem;
+  color: #9DA0A4;
+}
+#profile-body #main-contents .profile-entries li .profile-entry-date {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 2;
+  background-color: #fff;
+  padding-left: 1rem;
+}
+#profile-body #main-contents .profile-portfolio {
+  margin-bottom: 2rem;
+}
+#profile-body #main-contents .profile-portfolio .portfolio-photo:before {
+  padding-top: 61.8%;
+}
+#profile-body #main-contents .profile-portfolio .profile-portfolio-title {
+  font-size: 1rem;
+}
+#profile-body #main-contents .profile-portfolio .profile-portfolio-date,
+#profile-body #main-contents .profile-portfolio .profile-portfolio-details {
+  font-size: 0.9rem;
+  color: #9DA0A4;
+}
+#profile-body #main-contents .profile-related-link {
+  margin-bottom: 2rem;
+}
+#profile-body #main-contents .profile-related-link .profile-related-link-title {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #17a2b8;
 }
 #profile-body #sidebar {
   margin-top: 0;
@@ -797,25 +895,66 @@ footer h4, footer footer p {
   font-size: 0.8rem;
 }
 
-#related-profiles-lists li {
+#related-profiles-list li {
   padding-left: 1rem;
 }
-#related-profiles-lists li a {
+#related-profiles-list li a {
   display: flex;
   border-top: 1px solid rgba(0, 0, 0, 0.1);
   padding: 1.5rem 0;
 }
-#related-profiles-lists li a #related-profiles-lists-info {
+#related-profiles-list li a .related-profiles-list-info {
   margin-left: 0.5rem;
 }
-#related-profiles-lists li a #related-profiles-lists-info h5 {
+#related-profiles-list li a .related-profiles-list-info h5 {
   color: #333;
   font-size: 1rem;
 }
-#related-profiles-lists li a #related-profiles-lists-info p {
+#related-profiles-list li a .related-profiles-list-info p {
   color: #9DA0A4;
   font-size: 0.8rem;
   margin: 0;
+}
+
+#user-profile-friends-list a {
+  display: flex;
+  margin: 1rem 0;
+}
+#user-profile-friends-list a .user-profile-friends-info {
+  margin-left: 0.5rem;
+}
+#user-profile-friends-list a .user-profile-friends-info h5 {
+  color: #17a2b8;
+  font-size: 1rem;
+  margin: 0;
+}
+#user-profile-friends-list a .user-profile-friends-info p {
+  color: #9DA0A4;
+  font-size: 0.8rem;
+  margin: 0;
+}
+#user-profile-friends-list .card {
+  margin-bottom: 1rem;
+  flex-direction: row;
+}
+#user-profile-friends-list .card .user-profile-friends-info {
+  margin-left: 0.5rem;
+  padding: 1rem;
+}
+#user-profile-friends-list .card .user-profile-friends-info h5 {
+  color: #333;
+  font-size: 1.4rem;
+}
+
+#see-all-link {
+  font-weight: lighter;
+  font-size: 1rem;
+  margin-left: 1rem;
+}
+
+.count {
+  margin-left: 0.5rem;
+  color: #17a2b8;
 }
 
 /*# sourceMappingURL=main.css.map */

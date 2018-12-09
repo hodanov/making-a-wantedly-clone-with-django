@@ -9,6 +9,7 @@ def get_avatar(backend, strategy, details, response,
         url = response.get('profile_image_url', '').replace('_normal','')
     if backend.name == 'google-oauth2':
         url = response['image'].get('url')
+        url = url.replace('?sz=50', '?sz=200')
     if url:
         user.profile.avatar = url
         user.save()

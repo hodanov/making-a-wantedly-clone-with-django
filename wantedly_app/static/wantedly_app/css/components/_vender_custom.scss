@@ -75,9 +75,10 @@
   margin-right: .5rem;
 }
 
-/* ----- List ----- */
-a:hover {
+/* ----- Link ----- */
+a, a:hover {
   text-decoration: none;
+  color: $info-color;
 }
 
 /* ----- List ----- */

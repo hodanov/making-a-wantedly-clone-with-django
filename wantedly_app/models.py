@@ -5,6 +5,10 @@ from django.dispatch import receiver
 import uuid
 # from django.core.mail import send_mail
 
+class Job(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    job = models.CharField(max_length=100, blank=True)
+
 class UserManager(BaseUserManager):
     def create_user(self, username, email, password=None):
         """
@@ -64,12 +68,15 @@ class User(AbstractBaseUser, PermissionsMixin):
     #     send_mail(subject, message, from_email, [self.email], **kwargs)
 
 class Profile(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     gender = models.CharField(max_length=20, blank=True)
     birth_date = models.DateField(null=True, blank=True)
     location = models.CharField(max_length=30, blank=True)
     favorite_words = models.CharField(max_length=50, blank=True)
     avatar = models.URLField(max_length=200, blank=True)
+    cover = models.URLField(max_length=200, blank=True)
+    job = models.ForeignKey(Job, on_delete=models.SET_NULL, null=True)
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
@@ -79,3 +86,89 @@ def create_user_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
+
+class Privacy(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    privacy = models.CharField(max_length=20, blank=False)
+
+class Introduction(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
+    privacy = models.ForeignKey(Privacy, on_delete=models.SET_NULL, null=True)
+    introduction = models.TextField(max_length=10000, blank=False)
+
+class Statement(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
+    privacy = models.ForeignKey(Privacy, on_delete=models.SET_NULL, null=True)
+    statement = models.TextField(max_length=10000, blank=False)
+
+class WorkHistory(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
+    privacy = models.ForeignKey(Privacy, on_delete=models.SET_NULL, null=True)
+
+class Experience(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    work_history = models.ForeignKey(WorkHistory, on_delete = models.CASCADE)
+    organization = models.CharField(max_length=100, blank=False)
+    job = models.CharField(max_length=100, blank=True)
+    experience = models.CharField(max_length=1000, blank=True)
+    from_date = models.DateField(null=True, blank=True)
+    to_date = models.DateField(null=True, blank=True)
+
+class Portfolio(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
+    privacy = models.ForeignKey(Privacy, on_delete=models.SET_NULL, null=True)
+
+class Work(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    portfolio = models.ForeignKey(Portfolio, on_delete = models.CASCADE)
+    title = models.CharField(max_length=100, blank=False)
+    made_at = models.DateField(null=True, blank=True)
+    detail = models.CharField(max_length=200, blank=True)
+    image = models.URLField(max_length=200, blank=True)
+    url = models.URLField(max_length=200, blank=True)
+
+class RelatedLink(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
+    privacy = models.ForeignKey(Privacy, on_delete=models.SET_NULL, null=True)
+
+class Url(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    related_link = models.ForeignKey(RelatedLink, on_delete = models.CASCADE)
+    url = models.URLField(max_length=200, blank=False)
+
+class EducationalBackground(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
+    privacy = models.ForeignKey(Privacy, on_delete=models.SET_NULL, null=True)
+
+class Education(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    educational_background = models.ForeignKey(EducationalBackground, on_delete = models.CASCADE)
+    school = models.CharField(max_length=100, blank=False)
+    major = models.CharField(max_length=100, blank=True)
+    graduated_at = models.DateField(null=True, blank=True)
+    detail = models.CharField(max_length=200, blank=True)
+
+class Organization(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    organization = models.CharField(max_length=100, blank=True)
+    members = models.ManyToManyField(
+        User,
+        through='Membership',
+        through_fields=('organization', 'user'),
+    )
+
+class Membership(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+class FriendRelationship(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    follower_user = models.ForeignKey(User, related_name='%(class)s_follower', on_delete=models.CASCADE)
+    followed_user = models.ForeignKey(User, related_name='%(class)s_followed', on_delete=models.CASCADE)

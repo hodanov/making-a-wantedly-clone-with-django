@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login as auth_login, get_user_model
 User = get_user_model()
@@ -6,7 +6,7 @@ from django.contrib import messages
 # from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.core.exceptions import ObjectDoesNotExist
 from .forms import SignUpForm, ProfileForm, LoginForm
-from .models import Profile
+from .models import *
 from datetime import date
 
 def home(request):
@@ -71,12 +71,75 @@ def sign_up(request):
     return render(request, 'registration/sign_up.html', context)
 
 def profile(request, id):
-    if User.objects.filter(id=id).exists():
-        user = User.objects.get(id=id)
-    else:
-        user = 'None'
+    u = get_object_or_404(User, pk=id)
+
+    try:
+        organizations = u.organization_set.all()
+    except Organization.DoesNotExist:
+        organizations = False
+
+    try:
+        work_history = u.profile.workhistory
+        try:
+            experiences = work_history.experience_set.all().order_by('-from_date')
+        except Experience.DoesNotExist:
+            experiences = False
+    except WorkHistory.DoesNotExist:
+        work_history = False
+        experiences = False
+
+    try:
+        portfolio = u.profile.portfolio
+        try:
+            works = portfolio.work_set.all().order_by('-made_at')
+        except Work.DoesNotExist:
+            works = False
+    except Portfolio.DoesNotExist:
+        portfolio = False
+        works = False
+
+    try:
+        related_link = u.profile.relatedlink
+        try:
+            urls = related_link.url_set.all()
+        except Url.DoesNotExist:
+            urls = False
+    except RelatedLink.DoesNotExist:
+        related_link = False
+        urls = False
+
+    try:
+        educational_bg = u.profile.educationalbackground
+        try:
+            educations = educational_bg.education_set.all().order_by('-graduated_at')
+        except Education.DoesNotExist:
+            educations = False
+    except EducationalBackground.DoesNotExist:
+        educational_bg = False
+        educations = False
+
+    try:
+        friend_relationships = u.friendrelationship_follower.all()
+        friends = []
+        for fr in friend_relationships:
+            f = User.objects.get(pk=fr.followed_user_id)
+            friends.append(f)
+            try:
+                f_organizations = f.organization_set.all()
+            except Organization.DoesNotExist:
+                f_organizations = False
+    except FriendRelationship.DoesNotExist:
+        friends = False
+
     context = {
-        'user': user,
+        'u': u,
+        'experiences': experiences,
+        'urls': urls,
+        'educations': educations,
+        'works': works,
+        'organizations': organizations,
+        'friends': friends,
+        'f_organizations': f_organizations,
     }
     return render(request, 'wantedly_app/profile.html', context)
 

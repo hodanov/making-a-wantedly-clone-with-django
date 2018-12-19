@@ -154,3 +154,6 @@ LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 
 AUTH_USER_MODEL = 'wantedly_app.User'
+
+DATE_FORMAT = 'Y-m-d'
+USE_L10N = False

@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import get_user_model
 User = get_user_model()
-from .models import Profile
+from .models import *
 from datetime import datetime
 
 class SignUpForm(UserCreationForm):
@@ -59,3 +59,34 @@ class ProfileForm(forms.ModelForm):
 class LoginForm(AuthenticationForm):
     username = forms.CharField(max_length=30, widget=forms.TextInput(attrs={'placeholder': 'ユーザー名'}))
     password = forms.CharField(max_length=128, widget=forms.PasswordInput(attrs={'placeholder': 'パスワード'}))
+
+########################################
+# Form to edit profile.
+########################################
+class IntroductionForm(forms.ModelForm):
+    introduction = forms.CharField(
+        widget=forms.Textarea,
+        required=False
+    )
+    class Meta:
+        model = Introduction
+        fields = ('introduction',)
+
+class StatementForm(forms.ModelForm):
+    statement = forms.CharField(
+        widget=forms.Textarea,
+        required=False
+    )
+    class Meta:
+        model = Statement
+        fields = ('statement',)
+
+class WorkHistoryForm(forms.ModelForm):
+    class Meta:
+        model = WorkHistory
+        fields = ('privacy',)
+
+class ExperienceForm(forms.ModelForm):
+    class Meta:
+        model = Experience
+        fields = ('organization', 'job', 'experience', 'from_date', 'to_date' )

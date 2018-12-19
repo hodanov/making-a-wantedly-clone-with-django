@@ -1,10 +1,16 @@
+/* ----- ----- ----- */
 /* ----- Variable ----- */
+/* ----- ----- ----- */
 $font-color-lighter: #9DA0A4;
 $font-color-heading: #333;
 $info-color: #17a2b8;
 $border-color: rgba(0,0,0,.1);
+$form-bg-color: #f5f5f5;
+$form-border-color: #ddd;
 
+/* ----- ----- ----- */
 /* ----- Mix-in ----- */
+/* ----- ----- ----- */
 @mixin article-info {
   img {
     border: 1px solid $border-color;
@@ -47,17 +53,23 @@ $border-color: rgba(0,0,0,.1);
   font-size: 0.8rem;
 }
 
+/* ----- ----- ----- */
 /* ----- Import ----- */
+/* ----- ----- ----- */
 @import "components/responsive_img";
 @import "components/slider";
 @import "components/vender_custom";
 
+/* ----- ----- ----- */
 /* ----- body ----- */
+/* ----- ----- ----- */
 body {
   font-family: Lato, "Helvetica Neue", Helvetica, "ヒラギノ角ゴシック Pro", "Hiragino Kaku Gothic Pro", メイリオ, Meiryo, Osaka, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
 }
 
+/* ----- ----- ----- */
 /* ----- Header ----- */
+/* ----- ----- ----- */
 header {
   position: absolute;
   width: 100%;
@@ -95,7 +107,9 @@ header {
   }
 }
 
+/* ----- ----- ----- */
 /* ----- Main Contents ----- */
+/* ----- ----- ----- */
 #main-contents, #sidebar {
   margin: 3rem 0;
 }
@@ -156,7 +170,9 @@ article {
   }
 }
 
+/* ----- ----- ----- */
 /* ----- Sidebar ----- */
+/* ----- ----- ----- */
 #sidebar{
   h3 {
     font-size: 1.2rem;
@@ -172,7 +188,7 @@ article {
   p {
     font-size: .8rem;
     color: #777;
-    margin: 2rem 0;
+    // margin: 2rem 0;
   }
   .filter-search {
     ul {
@@ -193,7 +209,9 @@ article {
   }
 }
 
+/* ----- ----- ----- */
 /* ----- Footer ----- */
+/* ----- ----- ----- */
 footer {
   background-color: #eee;
   padding: 3rem 0;
@@ -203,13 +221,17 @@ footer {
   }
 }
 
+/* ----- ----- ----- */
 /* ----- Avatar ----- */
+/* ----- ----- ----- */
 .avatar {
   border-radius: 50%;
   cursor: pointer;
 }
 
+/* ----- ----- ----- */
 /* ----- Top Page Style ----- */
+/* ----- ----- ----- */
 .background {
   position: fixed;
   z-index: -1;
@@ -289,7 +311,9 @@ footer {
   }
 }
 
+/* ----- ----- ----- */
 /* ----- Profile ----- */
+/* ----- ----- ----- */
 #profile-cover-bg {
   position: absolute;
   width: 100%;
@@ -357,7 +381,8 @@ footer {
     }
     ul {
       padding-left: .5rem;
-      margin: 1.2rem 0 .8rem;
+      margin: 0;
+      display: inline-block;
       li {
         @include info-text-style;
         display: inline-block;
@@ -452,6 +477,7 @@ footer {
     margin-top: 0;
   }
 }
+
 .user-profile-aside {
   border-bottom: 1px solid $border-color;
   margin-left: -15px;
@@ -480,27 +506,27 @@ footer {
     @include info-text-style;
   }
 }
-#related-profiles-list {
-  li {
-    padding-left: 1rem;
-    a {
-      display: flex;
-      border-top: 1px solid $border-color;
-      padding: 1.5rem 0;
-      .related-profiles-list-info {
-        margin-left: .5rem;
-        h5 {
-          color: $font-color-heading;
-          font-size: 1rem;
-        }
-        p {
-          @include info-text-style;
-          margin: 0;
-        }
-      }
+.related-profile-list {
+  display: flex;
+  border-top: 1px solid $border-color;
+  padding: 1.5rem 0;
+  .avatar {
+    margin-left: .5rem;
+  }
+  .related-profile-list-info {
+    margin-left: .5rem;
+    h5 {
+      color: $font-color-heading;
+      font-size: 1rem;
+    }
+    p {
+      @include info-text-style;
+      margin: 0;
     }
   }
 }
+
+// friends_list
 #user-profile-friends-list {
   a {
     display: flex;
@@ -539,4 +565,112 @@ footer {
 .count {
   margin-left: .5rem;
   color: $info-color;
+}
+
+// introductions_from_frends message balloon
+#referrals {
+  .message{
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    background: #eaf7fa;
+    font-size: 1rem;
+    position: relative;
+    -webkit-border-radius: .25rem;
+    -moz-border-radius: .25rem;
+    -ms-border-radius: .25rem;
+    -o-border-radius: .25rem;
+    border-radius: .25rem;
+    &:after {
+      content: "";
+      position: absolute;
+      bottom: -17px;
+      left: 7px;
+      border-width: 17px 10px 0;
+      border-style: solid;
+      border-color: #eaf7fa transparent;
+      display: block;
+      width: 0;
+    }
+  }
+  .related-profile-list {
+    border-top: 0;
+    padding: 0 0 1.5rem;
+    .avatar {
+      margin-left: 0;
+    }
+  }
+}
+
+/* ----- ----- ----- */
+/* ----- Profile Edit ----- */
+/* ----- ----- ----- */
+.profile-config {
+  display: inline-block;
+  margin: 0 0 0 .5rem;
+  button {
+    font-size: .8rem;
+    padding: .25rem .5rem;
+  }
+  .dropdown-item {
+    font-size: .8rem;
+  }
+}
+#profile-body{
+  #main-contents {
+    section {
+      position: relative;
+      .profile-config {
+        position: absolute;
+        top: 0;
+        right: 0;
+      }
+      .editable-data {
+        cursor: pointer;
+        .editable-mark {
+          display: none;
+          padding-left: .5rem;
+          font-size: .8rem;
+          font-weight: lighter;
+          color: $info-color;
+        }
+        &:hover .editable-mark {
+          display: inherit;
+        }
+      }
+      .form-for-editing,
+      .form-for-adding {
+        background-color: $form-bg-color;
+        border: 1px solid $form-border-color;
+        padding: 1rem;
+        -webkit-border-radius: .25rem;
+        -moz-border-radius: .25rem;
+        -ms-border-radius: .25rem;
+        -o-border-radius: .25rem;
+        border-radius: .25rem;
+        input, label, textarea  {
+          font-size: .9rem;
+        }
+        .char-counter {
+          font-size: .8rem;
+        }
+        .form-btn {
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          button {
+            margin-left: .25rem;
+            font-size: .8rem;
+          }
+        }
+        .upload-media-field {
+          border: 1px solid $info-color;
+          border-radius: .25rem;
+          text-align: center;
+          padding: 1.5rem;
+          color: $info-color;
+          font-size: .8rem;
+        }
+      }
+    }
+  }
 }

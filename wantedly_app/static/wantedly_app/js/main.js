@@ -1,17 +1,30 @@
-(function() {
-  $(document).on("turbolinks:load", function() {
-    return FontAwesome.dom.i2svg()
-  })
-}).call(this)
-
+// ------------------------
+// --- Initial settings　---
+// ------------------------
 $(document).ready(function() {
   Promise.all([])
+  .then(fontAwesomeFix)
   .then(fadeOutEffect)
   .then(featuredSlider)
   .then(tooltip)
+  .then(profileEdit)
+  .then(ajaxForPosting)
 })
 
-// ---Fade-out effect---
+// ------------------------
+// --- FontAwesome fix ---
+// ------------------------
+function fontAwesomeFix() {
+  (function() {
+    $(document).on("turbolinks:load", function() {
+      return FontAwesome.dom.i2svg()
+    })
+  }).call(this)
+}
+
+// ------------------------
+// ---　Fade-out effect　---
+// ------------------------
 function fadeOutEffect() {
   $(window).scroll(function() {
     var scrolled = $(window).scrollTop()
@@ -44,7 +57,9 @@ function fadeOutEffect() {
   }
 }
 
-// ---Slider---
+// ------------------------
+// ---　Slider　---
+// ------------------------
 function featuredSlider() {
   if ($('.slide-window')) {
     var slideWrapper = $('.slide-wrapper')
@@ -132,4 +147,91 @@ function featuredSlider() {
 
 function tooltip() {
   $('[data-toggle="tooltip"]').tooltip()
+}
+
+// ------------------------
+// --- Profile edit ---
+// ------------------------
+function profileEdit() {
+  var editableData = $('.editable-data')
+  var formForEditing = $('.form-for-editing')
+  var btnForEditing = $('.btn-for-editing')
+  var btnToCancelEditing = $('.btn-to-cancel-editing')
+  var formForAdding = $('.form-for-adding')
+  var btnForAdding = $('.btn-for-adding')
+  var btnToCancelAdding = $('.btn-to-cancel-adding')
+  for (var i = 0; i < editableData.length; i++) {
+    toggleDataToForm(i)
+    cancelEditing(i)
+  }
+  for (var j = 0; j < formForAdding.length; j++) {
+    toggleAddingForm(j)
+    cancelAdding(j)
+  }
+  charCounter()
+
+  function toggleDataToForm(i) {
+    $(btnForEditing[i]).on('click', function(){
+      if ($(this).hasClass('btn-for-adding') == false) {
+        // Process when pressing "Edit button".
+        $(editableData[i]).toggle()
+        $(formForEditing[i]).toggle()
+      }
+    })
+    // Process when pressing editable data.
+    $(editableData[i]).on('click', function(){
+      $(editableData[i]).toggle()
+      $(formForEditing[i]).toggle()
+    })
+  }
+
+  function cancelEditing(i) {
+    // Process when pressing "cancel button".
+    $(btnToCancelEditing[i]).on('click', function(){
+      $(editableData[i]).toggle()
+      $(formForEditing[i]).toggle()
+    })
+  }
+
+  function toggleAddingForm(j) {
+    $(btnForAdding[j]).on('click', function() {
+      // Process when pressing "Add button".
+      $(formForAdding[j]).toggle()
+    })
+  }
+
+  function cancelAdding(j) {
+    // Process when pressing "cancel button".
+    $(btnToCancelAdding[j]).on('click', function(){
+      $(formForAdding[j]).toggle()
+    })
+  }
+
+  function charCounter() {
+    // Display the remaining number of characters that can be entered.
+    var textarea = $('.form-for-editing textarea')
+    var counter = $('.char-counter span')
+    var maxLength = []
+    for (var i = 0; i < textarea.length; i++) {
+      maxLength[i] = $(counter[i]).text()
+      updateCount(i, maxLength[i])
+    }
+    function updateCount(i, maxLength) {
+      var cs = $(textarea[i]).val().length;
+      var count = maxLength - cs
+      $(counter[i]).text(count);
+      $(textarea[i]).on('input', function() {
+        cs = $(this).val().length;
+        count = maxLength - cs
+        $(counter[i]).text(count);
+      })
+    }
+  }
+}
+
+// ------------------------
+// --- Ajax for posting ---
+// ------------------------
+function ajaxForPosting() {
+
 }

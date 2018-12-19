@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login as auth_login, get_user_model
 User = get_user_model()
 from django.contrib import messages
 # from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.core.exceptions import ObjectDoesNotExist
-from .forms import SignUpForm, ProfileForm, LoginForm
+from .forms import *
 from .models import *
 from datetime import date
 
@@ -79,6 +79,16 @@ def profile(request, id):
         organizations = False
 
     try:
+        introduction = u.profile.introduction.introduction
+    except Introduction.DoesNotExist:
+        introduction = False
+
+    try:
+        statement = u.profile.statement.statement
+    except Statement.DoesNotExist:
+        statement = False
+
+    try:
         work_history = u.profile.workhistory
         try:
             experiences = work_history.experience_set.all().order_by('-from_date')
@@ -124,27 +134,184 @@ def profile(request, id):
         for fr in friend_relationships:
             f = User.objects.get(pk=fr.followed_user_id)
             friends.append(f)
-            try:
-                f_organizations = f.organization_set.all()
-            except Organization.DoesNotExist:
-                f_organizations = False
     except FriendRelationship.DoesNotExist:
         friends = False
 
+    try:
+        introductions_from_frends = u.introductionfromfriend_introduced_user.all()
+    except IntroductionFromFriend.DoesNotExist:
+        introductions_from_frends = False
+
     context = {
         'u': u,
-        'experiences': experiences,
-        'urls': urls,
-        'educations': educations,
-        'works': works,
         'organizations': organizations,
+        'introduction': introduction,
+        'statement': statement,
+        'work_history': work_history,
+        'experiences': experiences,
+        'related_link': related_link,
+        'urls': urls,
+        'educational_bg': educational_bg,
+        'educations': educations,
+        'portfolio': portfolio,
+        'works': works,
         'friends': friends,
-        'f_organizations': f_organizations,
+        'introductions_from_frends': introductions_from_frends,
     }
     return render(request, 'wantedly_app/profile.html', context)
 
 def profile_edit(request):
     if request.user.is_authenticated:
-        return render(request, 'wantedly_app/profile_edit.html')
+        user = request.user
+
+        if request.method == 'POST':
+            changing_privacy_level = request.POST.get('changing-privacy-level', False)
+            target_instance_name = request.POST.get('target-instance-name', False)
+            print(request.POST)
+
+            ########################################
+            # Judge instance to be edited.
+            ########################################
+            if target_instance_name == 'introduction':
+                instance = user.profile.introduction
+                form = IntroductionForm(request.POST or None, instance=instance)
+            elif target_instance_name == 'statement':
+                instance = user.profile.statement
+                form = StatementForm(request.POST or None, instance=instance)
+
+            ########################################
+            # Save the edited or added profile data.
+            ########################################
+            if changing_privacy_level:
+                privacy_id = request.POST.get('privacy-id', False)
+                instance.privacy = Privacy(pk=privacy_id)
+                instance.save()
+            else:
+                if form.is_valid():
+                    form.save()
+            return HttpResponseRedirect('/user/profile/edit/')
+
+        ########################################
+        # Get profile data from DB.
+        # Set form data.
+        ########################################
+        form = {}
+
+        try:
+            organizations = user.organization_set.all()
+        except Organization.DoesNotExist:
+            organizations = ""
+
+        try:
+            privacy = Privacy.objects.all()
+        except Privacy.DoesNotExist:
+            privacy = ""
+
+        try:
+            introduction = user.profile.introduction
+            form['introduction'] = IntroductionForm(initial={'introduction': introduction.introduction})
+        except Introduction.DoesNotExist:
+            introduction = ""
+            form['introduction'] = IntroductionForm()
+
+        try:
+            statement = user.profile.statement
+            form['statement'] = StatementForm(initial={'statement': statement.statement})
+        except Statement.DoesNotExist:
+            statement = ""
+            form['statement'] = StatementForm()
+
+        try:
+            work_history = user.profile.workhistory
+            form['workhistory'] = WorkHistoryForm()
+            try:
+                experiences = work_history.experience_set.all().order_by('-from_date')
+            except Experience.DoesNotExist:
+                experiences = ""
+        except WorkHistory.DoesNotExist:
+            work_history = ""
+            experiences = ""
+
+        try:
+            portfolio = user.profile.portfolio
+            try:
+                works = portfolio.work_set.all().order_by('-made_at')
+            except Work.DoesNotExist:
+                works = ""
+        except Portfolio.DoesNotExist:
+            portfolio = ""
+            works = ""
+
+        try:
+            related_link = user.profile.relatedlink
+            try:
+                urls = related_link.url_set.all()
+            except Url.DoesNotExist:
+                urls = ""
+        except RelatedLink.DoesNotExist:
+            related_link = ""
+            urls = ""
+
+        try:
+            educational_bg = user.profile.educationalbackground
+            try:
+                educations = educational_bg.education_set.all().order_by('-graduated_at')
+            except Education.DoesNotExist:
+                educations = ""
+        except EducationalBackground.DoesNotExist:
+            educational_bg = ""
+            educations = ""
+
+        ########################################
+        # Get max_length of text column in DB
+        # Used to calculate the number of characters that can be entered.
+        ########################################
+        max_length = {}
+
+        introduction_max_length = Introduction._meta.get_field('introduction').max_length
+        max_length['introduction'] = introduction_max_length
+
+        statement_max_length = Statement._meta.get_field('statement').max_length
+        max_length['statement'] = statement_max_length
+
+        experience_max_length = Experience._meta.get_field('experience').max_length
+        max_length['experience'] = experience_max_length
+
+        work_detail_max_length = Work._meta.get_field('detail').max_length
+        max_length['work_detail'] = work_detail_max_length
+
+        ########################################
+        # Set form data
+        ########################################
+        # form = {}
+        # form['introduction'] = IntroductionForm(initial={'introduction': introduction.introduction})
+        # form['statement'] = StatementForm(initial={'statement': statement.statement})
+        # form['workhistory'] = WorkHistoryForm()
+
+        # experience_form = ExperienceForm(
+        #     initial={
+        #         'organization':
+        #     })
+
+        ########################################
+        # Add profile and form as context.
+        ########################################
+        context = {
+            'organizations': organizations,
+            'privacy': privacy,
+            'introduction': introduction,
+            'statement': statement,
+            'work_history': work_history,
+            'experiences': experiences,
+            'related_link': related_link,
+            'urls': urls,
+            'educational_bg': educational_bg,
+            'educations': educations,
+            'portfolio': portfolio,
+            'works': works,
+            'max_length': max_length,
+            'form': form,
+        }
+        return render(request, 'wantedly_app/profile_edit.html', context)
     else:
         return render(request, 'regeistration/request_login.html')

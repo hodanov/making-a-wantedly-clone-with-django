@@ -117,25 +117,25 @@
     <div class="col-md-8" id="main-contents">
       <div class="tab-content" id="myTabContent">
         <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-          {% if u.profile.introduction %}
+          {% if introduction %}
           <section>
             <h2>紹介文</h2>
-            {{ u.profile.introduction.introduction|safe }}
+            {{ introduction|safe }}
           </section>
           {% else %}
           <p>There is no introduction...</p>
           {% endif %}
 
-          {% if u.profile.statement %}
+          {% if statement %}
           <section>
             <h2>この先やってみたいこと</h2>
-            <p>{{ u.profile.statement.statement|safe }}</p>
+            <p>{{ statement|safe }}</p>
           </section>
           {% else %}
           <p>There is no statement...</p>
           {% endif %}
 
-          {% if u.profile.work_history %}
+          {% if work_history %}
           <section>
             <h2>職歴</h2>
             <ul class="profile-entries">
@@ -155,7 +155,7 @@
           <p>There is no experience...</p>
           {% endif %}
 
-          {% if u.profile.portfolio %}
+          {% if portfolio %}
           <section>
             <h2>ポートフォリオ・作品</h2>
             <ul>
@@ -183,7 +183,7 @@
           <p>There is no portfolio...</p>
           {% endif %}
 
-          {% if u.profile.related_link %}
+          {% if related_link %}
           <section>
             <h2>関連リンク</h2>
             <ul>
@@ -198,7 +198,7 @@
           <p>There is no related_link...</p>
           {% endif %}
 
-          {% if u.profile.educational_bg %}
+          {% if educational_bg %}
           <section>
             <h2>学歴</h2>
             <ul class="profile-entries">
@@ -240,11 +240,9 @@
                     {% if f.profile.job %}
                     <p>{{ f.profile.job.job }}</p>
                     {% endif %}
-                    {% if f_organizations %}
-                    {% for f_o in f_organizations %}
+                    {% for f_o in f.organization_set.all %}
                     <p>{{ f_o.organization }}</p>
                     {% endfor %}
-                    {% endif %}
                   </div>
                 </a>
               </div>
@@ -271,11 +269,9 @@
                     {% if f.profile.job %}
                     <p>{{ f.profile.job.job }}</p>
                     {% endif %}
-                    {% if f_organizations %}
-                    {% for f_o in f_organizations %}
+                    {% for f_o in f.organization_set.all %}
                     <p>{{ f_o.organization }}</p>
                     {% endfor %}
-                    {% endif %}
                   </div>
                 </div>
               </a>
@@ -286,7 +282,35 @@
           <p>つながりはありません</p>
           {% endif %}
         </div>
-        <div class="tab-pane fade" id="referrals" role="tabpanel" aria-labelledby="referrals-tab">...</div>
+        <div class="tab-pane fade" id="referrals" role="tabpanel" aria-labelledby="referrals-tab">
+          {% if introductions_from_frends %}
+          <ul>
+            {% for iff in introductions_from_frends %}
+            <li>
+              <p class="message">{{ iff.introduction }}</p>
+              <div class="related-profile-list">
+                {% if iff.friend_user.profile.avatar %}
+                <img src="{{ iff.friend_user.profile.avatar }}" alt="avatar" width="40" height="40" class="avatar">
+                {% else %}
+                <img src="/static/wantedly_app/img/anonymous-avatar.jpg" alt="avatar" width="40" height="40" class="avatar dropdown-toggle">
+                {% endif %}
+                <div class="related-profile-list-info">
+                  <h5>{{ iff.friend_user.username }}</h5>
+                  <p>
+                    {{ iff.friend_user.profile.job.job }},
+                    {% for iffo in iff.friend_user.organization_set.all %}
+                    {{ iffo.organization }}
+                    {% endfor %}
+                  </p>
+                </div>
+              </div>
+            </li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p>紹介文はありません</p>
+          {% endif %}
+        </div>
         <div class="tab-pane fade" id="posts" role="tabpanel" aria-labelledby="posts-tab">...</div>
       </div>
     </div>
@@ -305,28 +329,28 @@
       </div>
       <div class="user-profile-aside">
         <h4>関連して閲覧されているプロフィール</h4>
-        <ul id="related-profiles-list">
+        <ul>
           <li>
-            <a href="#">
+            <a href="#" class="related-profile-list">
               {% if u.profile.avatar %}
               <img src="{{ u.profile.avatar }}" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               {% else %}
-              <img src="" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <img src="/static/wantedly_app/img/anonymous-avatar.jpg" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               {% endif %}
-              <div class="related-profiles-list-info">
+              <div class="related-profile-list-info">
                 <h5>{{ u.username }}</h5>
                 <p>Webエンジニア, Avintonジャパン株式会社</p>
               </div>
             </a>
           </li>
           <li>
-            <a href="#">
+            <a href="#" class="related-profile-list">
               {% if u.profile.avatar %}
               <img src="{{ u.profile.avatar }}" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               {% else %}
-              <img src="" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <img src="/static/wantedly_app/img/anonymous-avatar.jpg" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               {% endif %}
-              <div class="related-profiles-list-info">
+              <div class="related-profile-list-info">
                 <h5>{{ u.username }}</h5>
                 <p>Webエンジニア, Avintonジャパン株式会社</p>
               </div>

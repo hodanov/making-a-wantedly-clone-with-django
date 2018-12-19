@@ -1,7 +1,13 @@
 @charset "UTF-8";
+/* ----- ----- ----- */
 /* ----- Variable ----- */
+/* ----- ----- ----- */
+/* ----- ----- ----- */
 /* ----- Mix-in ----- */
+/* ----- ----- ----- */
+/* ----- ----- ----- */
 /* ----- Import ----- */
+/* ----- ----- ----- */
 .responsive-img-wrapper {
   position: relative;
   overflow: hidden;
@@ -426,12 +432,16 @@ ul {
   padding: 0;
 }
 
+/* ----- ----- ----- */
 /* ----- body ----- */
+/* ----- ----- ----- */
 body {
   font-family: Lato, "Helvetica Neue", Helvetica, "ヒラギノ角ゴシック Pro", "Hiragino Kaku Gothic Pro", メイリオ, Meiryo, Osaka, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
 }
 
+/* ----- ----- ----- */
 /* ----- Header ----- */
+/* ----- ----- ----- */
 header {
   position: absolute;
   width: 100%;
@@ -470,7 +480,9 @@ header input.form-control, header button.btn {
   margin-left: 3rem;
 }
 
+/* ----- ----- ----- */
 /* ----- Main Contents ----- */
+/* ----- ----- ----- */
 #main-contents, #sidebar {
   margin: 3rem 0;
 }
@@ -561,7 +573,9 @@ article h3 {
   margin: 0 0 2rem;
 }
 
+/* ----- ----- ----- */
 /* ----- Sidebar ----- */
+/* ----- ----- ----- */
 #sidebar h3 {
   font-size: 1.2rem;
   color: #333;
@@ -576,7 +590,6 @@ article h3 {
 #sidebar p {
   font-size: 0.8rem;
   color: #777;
-  margin: 2rem 0;
 }
 #sidebar .filter-search ul {
   font-size: 0.9rem;
@@ -594,7 +607,9 @@ article h3 {
   font-size: 0.9rem;
 }
 
+/* ----- ----- ----- */
 /* ----- Footer ----- */
+/* ----- ----- ----- */
 footer {
   background-color: #eee;
   padding: 3rem 0;
@@ -604,13 +619,17 @@ footer h4, footer footer p {
   color: #555;
 }
 
+/* ----- ----- ----- */
 /* ----- Avatar ----- */
+/* ----- ----- ----- */
 .avatar {
   border-radius: 50%;
   cursor: pointer;
 }
 
+/* ----- ----- ----- */
 /* ----- Top Page Style ----- */
+/* ----- ----- ----- */
 .background {
   position: fixed;
   z-index: -1;
@@ -696,7 +715,9 @@ footer h4, footer footer p {
   margin: 3rem 0;
 }
 
+/* ----- ----- ----- */
 /* ----- Profile ----- */
+/* ----- ----- ----- */
 #profile-cover-bg {
   position: absolute;
   width: 100%;
@@ -772,7 +793,8 @@ footer h4, footer footer p {
 }
 #profile-heading #profile-text ul {
   padding-left: 0.5rem;
-  margin: 1.2rem 0 0.8rem;
+  margin: 0;
+  display: inline-block;
 }
 #profile-heading #profile-text ul li {
   color: #9DA0A4;
@@ -895,22 +917,22 @@ footer h4, footer footer p {
   font-size: 0.8rem;
 }
 
-#related-profiles-list li {
-  padding-left: 1rem;
-}
-#related-profiles-list li a {
+.related-profile-list {
   display: flex;
   border-top: 1px solid rgba(0, 0, 0, 0.1);
   padding: 1.5rem 0;
 }
-#related-profiles-list li a .related-profiles-list-info {
+.related-profile-list .avatar {
   margin-left: 0.5rem;
 }
-#related-profiles-list li a .related-profiles-list-info h5 {
+.related-profile-list .related-profile-list-info {
+  margin-left: 0.5rem;
+}
+.related-profile-list .related-profile-list-info h5 {
   color: #333;
   font-size: 1rem;
 }
-#related-profiles-list li a .related-profiles-list-info p {
+.related-profile-list .related-profile-list-info p {
   color: #9DA0A4;
   font-size: 0.8rem;
   margin: 0;
@@ -955,6 +977,115 @@ footer h4, footer footer p {
 .count {
   margin-left: 0.5rem;
   color: #17a2b8;
+}
+
+#referrals .message {
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  background: #eaf7fa;
+  font-size: 1rem;
+  position: relative;
+  -webkit-border-radius: 0.25rem;
+  -moz-border-radius: 0.25rem;
+  -ms-border-radius: 0.25rem;
+  -o-border-radius: 0.25rem;
+  border-radius: 0.25rem;
+}
+#referrals .message:after {
+  content: "";
+  position: absolute;
+  bottom: -17px;
+  left: 7px;
+  border-width: 17px 10px 0;
+  border-style: solid;
+  border-color: #eaf7fa transparent;
+  display: block;
+  width: 0;
+}
+#referrals .related-profile-list {
+  border-top: 0;
+  padding: 0 0 1.5rem;
+}
+#referrals .related-profile-list .avatar {
+  margin-left: 0;
+}
+
+/* ----- ----- ----- */
+/* ----- Profile Edit ----- */
+/* ----- ----- ----- */
+.profile-config {
+  display: inline-block;
+  margin: 0 0 0 0.5rem;
+}
+.profile-config button {
+  font-size: 0.8rem;
+  padding: 0.25rem 0.5rem;
+}
+.profile-config .dropdown-item {
+  font-size: 0.8rem;
+}
+
+#profile-body #main-contents section {
+  position: relative;
+}
+#profile-body #main-contents section .profile-config {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+#profile-body #main-contents section .editable-data {
+  cursor: pointer;
+}
+#profile-body #main-contents section .editable-data .editable-mark {
+  display: none;
+  padding-left: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: lighter;
+  color: #17a2b8;
+}
+#profile-body #main-contents section .editable-data:hover .editable-mark {
+  display: inherit;
+}
+#profile-body #main-contents section .form-for-editing,
+#profile-body #main-contents section .form-for-adding {
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  padding: 1rem;
+  -webkit-border-radius: 0.25rem;
+  -moz-border-radius: 0.25rem;
+  -ms-border-radius: 0.25rem;
+  -o-border-radius: 0.25rem;
+  border-radius: 0.25rem;
+}
+#profile-body #main-contents section .form-for-editing input, #profile-body #main-contents section .form-for-editing label, #profile-body #main-contents section .form-for-editing textarea,
+#profile-body #main-contents section .form-for-adding input,
+#profile-body #main-contents section .form-for-adding label,
+#profile-body #main-contents section .form-for-adding textarea {
+  font-size: 0.9rem;
+}
+#profile-body #main-contents section .form-for-editing .char-counter,
+#profile-body #main-contents section .form-for-adding .char-counter {
+  font-size: 0.8rem;
+}
+#profile-body #main-contents section .form-for-editing .form-btn,
+#profile-body #main-contents section .form-for-adding .form-btn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+#profile-body #main-contents section .form-for-editing .form-btn button,
+#profile-body #main-contents section .form-for-adding .form-btn button {
+  margin-left: 0.25rem;
+  font-size: 0.8rem;
+}
+#profile-body #main-contents section .form-for-editing .upload-media-field,
+#profile-body #main-contents section .form-for-adding .upload-media-field {
+  border: 1px solid #17a2b8;
+  border-radius: 0.25rem;
+  text-align: center;
+  padding: 1.5rem;
+  color: #17a2b8;
+  font-size: 0.8rem;
 }
 
 /*# sourceMappingURL=main.css.map */

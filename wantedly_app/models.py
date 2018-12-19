@@ -7,7 +7,7 @@ import uuid
 
 class Job(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    job = models.CharField(max_length=100, blank=True)
+    job = models.CharField(max_length=64, blank=True)
 
 class UserManager(BaseUserManager):
     def create_user(self, username, email, password=None):
@@ -43,10 +43,10 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    username = models.CharField(max_length=30, unique=True)
+    username = models.CharField(max_length=32, unique=True)
     email = models.EmailField(unique=True)
-    first_name = models.CharField(max_length=30, blank=True)
-    last_name = models.CharField(max_length=30, blank=True)
+    first_name = models.CharField(max_length=32, blank=True)
+    last_name = models.CharField(max_length=32, blank=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     date_joined = models.DateTimeField(auto_now_add=True)
@@ -70,12 +70,12 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Profile(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    gender = models.CharField(max_length=20, blank=True)
+    gender = models.CharField(max_length=16, blank=True)
     birth_date = models.DateField(null=True, blank=True)
-    location = models.CharField(max_length=30, blank=True)
-    favorite_words = models.CharField(max_length=50, blank=True)
-    avatar = models.URLField(max_length=200, blank=True)
-    cover = models.URLField(max_length=200, blank=True)
+    location = models.CharField(max_length=64, blank=True)
+    favorite_words = models.CharField(max_length=64, blank=True)
+    avatar = models.URLField(max_length=256, blank=True)
+    cover = models.URLField(max_length=256, blank=True)
     job = models.ForeignKey(Job, on_delete=models.SET_NULL, null=True)
 
 @receiver(post_save, sender=User)
@@ -89,19 +89,20 @@ def save_user_profile(sender, instance, **kwargs):
 
 class Privacy(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    privacy = models.CharField(max_length=20, blank=False)
+    privacy_level = models.CharField(max_length=32, blank=False)
+    icon = models.CharField(max_length=128, blank=False, default='<i class="fas fa-users"></i>')
 
 class Introduction(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
     privacy = models.ForeignKey(Privacy, on_delete=models.SET_NULL, null=True)
-    introduction = models.TextField(max_length=10000, blank=False)
+    introduction = models.TextField(max_length=2048, blank=False)
 
 class Statement(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
     privacy = models.ForeignKey(Privacy, on_delete=models.SET_NULL, null=True)
-    statement = models.TextField(max_length=10000, blank=False)
+    statement = models.TextField(max_length=2048, blank=False)
 
 class WorkHistory(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -111,9 +112,9 @@ class WorkHistory(models.Model):
 class Experience(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     work_history = models.ForeignKey(WorkHistory, on_delete = models.CASCADE)
-    organization = models.CharField(max_length=100, blank=False)
-    job = models.CharField(max_length=100, blank=True)
-    experience = models.CharField(max_length=1000, blank=True)
+    organization = models.CharField(max_length=64, blank=False)
+    job = models.CharField(max_length=64, blank=True)
+    experience = models.CharField(max_length=256, blank=True)
     from_date = models.DateField(null=True, blank=True)
     to_date = models.DateField(null=True, blank=True)
 
@@ -125,11 +126,11 @@ class Portfolio(models.Model):
 class Work(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     portfolio = models.ForeignKey(Portfolio, on_delete = models.CASCADE)
-    title = models.CharField(max_length=100, blank=False)
+    title = models.CharField(max_length=64, blank=False)
     made_at = models.DateField(null=True, blank=True)
-    detail = models.CharField(max_length=200, blank=True)
-    image = models.URLField(max_length=200, blank=True)
-    url = models.URLField(max_length=200, blank=True)
+    detail = models.CharField(max_length=256, blank=True)
+    image = models.URLField(max_length=256, blank=True)
+    url = models.URLField(max_length=256, blank=True)
 
 class RelatedLink(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -139,7 +140,7 @@ class RelatedLink(models.Model):
 class Url(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     related_link = models.ForeignKey(RelatedLink, on_delete = models.CASCADE)
-    url = models.URLField(max_length=200, blank=False)
+    url = models.URLField(max_length=256, blank=False)
 
 class EducationalBackground(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -149,14 +150,14 @@ class EducationalBackground(models.Model):
 class Education(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     educational_background = models.ForeignKey(EducationalBackground, on_delete = models.CASCADE)
-    school = models.CharField(max_length=100, blank=False)
-    major = models.CharField(max_length=100, blank=True)
+    school = models.CharField(max_length=64, blank=False)
+    major = models.CharField(max_length=64, blank=True)
     graduated_at = models.DateField(null=True, blank=True)
-    detail = models.CharField(max_length=200, blank=True)
+    detail = models.CharField(max_length=256, blank=True)
 
 class Organization(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    organization = models.CharField(max_length=100, blank=True)
+    organization = models.CharField(max_length=64, blank=True)
     members = models.ManyToManyField(
         User,
         through='Membership',
@@ -172,3 +173,9 @@ class FriendRelationship(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     follower_user = models.ForeignKey(User, related_name='%(class)s_follower', on_delete=models.CASCADE)
     followed_user = models.ForeignKey(User, related_name='%(class)s_followed', on_delete=models.CASCADE)
+
+class IntroductionFromFriend(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    friend_user = models.ForeignKey(User, related_name='%(class)s_friend', on_delete=models.CASCADE)
+    introduced_user = models.ForeignKey(User, related_name='%(class)s_introduced_user', on_delete=models.CASCADE)
+    introduction = models.CharField(max_length=128, blank=False)

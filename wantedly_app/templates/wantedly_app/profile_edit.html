@@ -1,1 +1,710 @@
-hogehoge
+{% extends 'base_home.html' %}
+
+{% load widget_tweaks %}
+
+{% block content %}
+
+<section id="profile-header">
+  {% if user.profile.cover %}
+  <div class="responsive-img-wrapper" id="profile-cover-bg">
+    <div class="responsive-img" style="background-image: url('{{ user.profile.cover }}')">
+    </div>
+  </div>
+  {% endif %}
+  <div class="container">
+    <div class="row">
+      <div class="col-md">
+        {% if user.profile.cover %}
+        <div class="responsive-img-wrapper" id="profile-cover">
+          <div class="responsive-img" style="background-image: url('{{ user.profile.cover }}')">
+            <a href="/users/{{ user.id }}" id="go-to-profile-edit-page">自分のプロフィールを確認する<i class="fas fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        {% else %}
+        <div id="profile-cover-offset">
+          <a href="/users/{{ user.id }}" id="go-to-profile-edit-page">自分のプロフィールを編集する<i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+        {% endif %}
+        <div id="profile-heading" style="margin-bottom: 0;">
+          <div id="profile-img" class="bg-white">
+            {% if user.profile.avatar %}
+            <img src="{{ user.profile.avatar }}" alt="avatar" width="120" height="120" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {% else %}
+            <img src="/static/wantedly_app/img/anonymous-avatar.jpg" alt="avatar" width="120" height="120" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {% endif %}
+          </div>
+          <div id="profile-text">
+            {% if user.profile.cover %}
+            <h1>{{ user.username }}</h1>
+            <p>
+              {% if user.profile.favorite_words %}
+              <i class="fas fa-quote-left"></i>
+              {{ user.profile.favorite_words }}
+              <i class="fas fa-quote-right"></i>
+              {% else %}
+              &nbsp;
+              {% endif %}
+            </p>
+            {% else %}
+            <h1 style="color: #333;">{{ user.username }}</h1>
+            <p style="color: #333;">
+              {% if user.profile.favorite_words %}
+              <i class="fas fa-quote-left"></i>
+              {{ user.profile.favorite_words }}
+              <i class="fas fa-quote-right"></i>
+              {% else %}
+              &nbsp;
+              {% endif %}
+            </p>
+            {% endif %}
+            <ul>
+              {% if user.profile.job.job %}
+              <li>
+                <i class="fas fa-briefcase"></i>
+                {{ user.profile.job.job }}
+              </li>
+              {% endif %}
+              {% if organizations %}
+              <li>
+                <i class="fas fa-building"></i>
+                {% for o in organizations %}
+                {{ o.organization }}
+                {% endfor %}
+              </li>
+              {% endif %}
+              {% if user.profile.location %}
+              <li>
+                <i class="fas fa-map-marker-alt"></i>
+                {{ user.profile.location }}
+              </li>
+              {% endif %}
+            </ul>
+            <div class="profile-config">
+              <button type="button" class="btn btn-outline-info">
+                <i class="fas fa-pen"></i>編集する
+              </button>
+              <div class="btn-group">
+                <button type="button" class="btn btn-outline-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i class="fas fa-users"></i>
+                </button>
+                <div class="dropdown-menu dropdown-menu-right">
+                  <a class="dropdown-item" href="#"><i class="fas fa-users"></i>2次のつながりまで</a>
+                  <a class="dropdown-item" href="#"><i class="fas fa-user"></i>Wantedly登録ユーザ</a>
+                  <a class="dropdown-item" href="#"><i class="fas fa-globe-asia"></i>一般公開</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="container" id="profile-body">
+  <div class="row">
+    <div class="col-md-8" id="main-contents">
+      <section>
+        <h2>紹介文</h2>
+        <div class="profile-config">
+          <button type="button" class="btn btn-outline-info btn-for-editing">
+            <i class="fas fa-pen"></i>編集する
+          </button>
+          <div class="btn-group">
+            <button type="button" class="btn btn-outline-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {% if introduction.privacy %}
+              {{ introduction.privacy.icon|safe }}
+              {% else %}
+              <i class="fas fa-users"></i>
+              {% endif %}
+            </button>
+            <form action="{% url 'profile_edit' %}" method="post" id="{{ introduction.id }}-privacy">
+              {% csrf_token %}
+              <input type="hidden" name="target-instance-name" value="introduction">
+              <input type="hidden" name="changing-privacy-level" value="true">
+              <div class="dropdown-menu dropdown-menu-right">
+                {% for p in privacy %}
+                <button class="dropdown-item" type="submit" name="privacy-id" value="{{ p.id }}">{{ p.icon|safe }}{{ p.privacy_level }}</button>
+                {% endfor %}
+              </div>
+            </form>
+          </div>
+        </div>
+        {% if introduction.introduction %}
+        <div class="editable-data">
+          {{ introduction.introduction|linebreaks }}
+        </div>
+        {% else %}
+        <p class="editable-data">There is no introduction...</p>
+        {% endif %}
+        <div class="form-for-editing" style="display: none">
+          <form action="{% url 'profile_edit' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="target-instance-name" value="introduction">
+            <div class="form-group">
+              {% render_field form.introduction.introduction|add_class:'form-control' %}
+              {% for error in form.introduction.introduction.errors %}
+              <span class="text-warning">{{ error }}</span>
+              {% endfor %}
+              <div class="char-counter">
+                残り<span>{{ max_length.introduction }}</span>文字
+              </div>
+            </div>
+            <div class="form-btn">
+              <button type="button" class="btn btn-outline-info btn-to-cancel-editing">キャンセル</button>
+              <button type="submit" class="btn btn-info">更新</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      {% if statement.statement %}
+      <section>
+        <h2>この先やってみたいこと</h2>
+        <div class="profile-config">
+          <button type="button" class="btn btn-outline-info btn-for-editing">
+            <i class="fas fa-pen"></i>編集する
+          </button>
+          <div class="btn-group">
+            <button type="button" class="btn btn-outline-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {% if statement.privacy %}
+              {{ statement.privacy.icon|safe }}
+              {% else %}
+              <i class="fas fa-users"></i>
+              {% endif %}
+            </button>
+            <form action="{% url 'profile_edit' %}" method="post" id="{{ introduction.id }}-privacy">
+              {% csrf_token %}
+              <input type="hidden" name="target-instance-name" value="statement">
+              <input type="hidden" name="changing-privacy-level" value="true">
+              <div class="dropdown-menu dropdown-menu-right">
+                {% for p in privacy %}
+                <button class="dropdown-item" type="submit" name="privacy-id" value="{{ p.id }}">{{ p.icon|safe }}{{ p.privacy_level }}</button>
+                {% endfor %}
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="editable-data">
+          <p>{{ statement.statement|linebreaks }}</p>
+        </div>
+        <div class="form-for-editing" style="display: none">
+          <form action="{% url 'profile_edit' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="target-instance-name" value="statement">
+            <div class="form-group">
+              {% render_field form.statement.statement|add_class:'form-control' placeholder='オリジナルのWebサービスを作って一発当てたいです！' %}
+              {% for error in form.statement.statement.errors %}
+              <span class="text-warning">{{ error }}</span>
+              {% endfor %}
+              <div class="char-counter">
+                残り<span>{{ max_length.introduction }}</span>文字
+              </div>
+            </div>
+            <div class="form-btn">
+              <button type="button" class="btn btn-outline-info btn-to-cancel-editing">キャンセル</button>
+              <button type="submit" class="btn btn-info">更新</button>
+            </div>
+          </form>
+        </div>
+      </section>
+      {% else %}
+      <p>There is no statement...</p>
+      {% endif %}
+
+      {% if work_history %}
+      <section>
+        <h2>職歴</h2>
+        <div class="profile-config">
+          <button type="button" class="btn btn-outline-info btn-for-editing btn-for-adding">
+            <i class="fas fa-plus-circle"></i>追加する
+          </button>
+          <div class="btn-group">
+            <button type="button" class="btn btn-outline-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="fas fa-users"></i>
+            </button>
+            <div class="dropdown-menu dropdown-menu-right">
+              {% for p in privacy %}
+              <a class="dropdown-item" href="#">{{ p.icon|safe }}{{ p.privacy_level }}</a>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        <ul class="profile-entries">
+          <li>
+            <div class="form-for-adding" style="display: none">
+              <form action="{% url 'profile_edit' %}" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label for="organization">組織名</label>
+                      <input type="text" class="form-control" id="organization" placeholder="組織名">
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label for="job">役職</label>
+                      <input type="text" class="form-control" id="job" placeholder="役職">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <label for="enrollment-period" class="col-sm-12">在籍期間</label>
+                    <div class="form-group col-sm">
+                      <input type="date" name="experience-from-date" max="2099-12-31" min="1950-01-01" class="form-control" id="experience-from-date">
+                    </div>
+                    <div class="form-group col-sm-1 text-center">
+                      -
+                    </div>
+                    <div class="form-group col-sm">
+                      <input type="date" name="experience-to-date" max="2099-12-31" min="1950-01-01" class="form-control" id="experience-to-date">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group col-md-12">
+                      <label for="experience">事業内容など</label>
+                      <textarea class="form-control" id="experience" rows="5"></textarea>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-btn">
+                  <button type="button" class="btn btn-outline-info btn-to-cancel-adding">キャンセル</button>
+                  <button type="submit" class="btn btn-info">更新</button>
+                </div>
+              </form>
+            </div>
+          </li>
+          {% for experience in experiences %}
+          <li>
+            <div class="editable-data">
+              <h3 class="profile-entry-title">
+                <span>
+                  {{ experience.organization }}
+                  <span class="editable-mark"><i class="fas fa-pen"></i>編集する</span>
+                </span>
+              </h3>
+              <p class="profile-entry-date">{{ experience.from_date|date:'Y-m' }} - {{ experience.to_date|date:'Y-m' }}</p>
+              <p class="profile-entry-subtitle">{{ experience.job }}</p>
+              <p class="profile-entry-description">{{ experience.experience }}</p>
+            </div>
+            <div class="form-for-editing" style="display: none">
+              <form action="{% url 'profile_edit' %}" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label for="{{ experience.organization }}">組織名</label>
+                      <input type="text" class="form-control" id="{{ experience.organization }}" placeholder="組織名" value="{{ experience.organization }}">
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label for="{{ experience.job }}">役職</label>
+                      <input type="text" class="form-control" id="{{ experience.job }}" placeholder="役職" value="{{ experience.job }}">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <label for="enrollment-period" class="col-sm-12">在籍期間</label>
+                    <div class="form-group col-sm">
+                      <input type="date" name="{{ experience.from_date }}" max="2099-12-31" min="1950-01-01" class="form-control" id="{{ experience.from_date }}" value="{{ experience.from_date }}">
+                    </div>
+                    <div class="form-group col-sm-1 text-center">
+                      -
+                    </div>
+                    <div class="form-group col-sm">
+                      <input type="date" name="{{ experience.to_date }}" max="2099-12-31" min="1950-01-01" class="form-control" id="{{ experience.to_date }}" value="{{ experience.to_date }}">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group col-md-12">
+                      <label for="{{ experience.experience }}">事業内容など</label>
+                      <textarea class="form-control" id="{{ experience.experience }}" rows="5">{{ experience.experience }}</textarea>
+                      <div class="char-counter">
+                        残り<span>{{ max_length.experience }}</span>文字
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-btn">
+                  <button type="button" class="btn btn-outline-info btn-to-cancel-editing">キャンセル</button>
+                  <button type="submit" class="btn btn-info">更新</button>
+                </div>
+              </form>
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+      </section>
+      {% else %}
+      <p>There is no experience...</p>
+      {% endif %}
+
+      {% if portfolio %}
+      <section>
+        <h2>ポートフォリオ・作品</h2>
+        <div class="profile-config">
+          <button type="button" class="btn btn-outline-info btn-for-editing btn-for-adding">
+            <i class="fas fa-plus-circle"></i>追加する
+          </button>
+          <div class="btn-group">
+            <button type="button" class="btn btn-outline-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="fas fa-users"></i>
+            </button>
+            <div class="dropdown-menu dropdown-menu-right">
+              <a class="dropdown-item" href="#"><i class="fas fa-users"></i>2次のつながりまで</a>
+              <a class="dropdown-item" href="#"><i class="fas fa-user"></i>Wantedly登録ユーザ</a>
+              <a class="dropdown-item" href="#"><i class="fas fa-globe-asia"></i>一般公開</a>
+            </div>
+          </div>
+        </div>
+        <ul>
+          <li class="profile-portfolio">
+            <div class="form-for-adding" style="display: none">
+              <form action="{% url 'profile_edit' %}" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                  <div class="form-row">
+                    <div class="form-group col-md-12">
+                      <div class="upload-media-field">
+                        クリックまたはドラッグ&ドロップで画像をアップロード<br>
+                        JPEG / PNG / GIF形式に対応しています
+                      </div>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="form-row">
+                    <div class="form-group col-md-3">
+                      <!-- ここに画像的なやつ -->
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label for="work-title">作品名</label>
+                      <input type="text" class="form-control" id="work-title" placeholder="作品名">
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label for="work-related-url">関連URL</label>
+                      <input type="text" class="form-control" id="work-related-url" placeholder="関連URL">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group col-md-12">
+                      <label for="work-detail">詳細</label>
+                      <textarea class="form-control" id="work-detail" rows="5"></textarea>
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <label for="work-made-at" class="col-sm-12">作成日</label>
+                    <div class="form-group col-sm-6">
+                      <input type="date" name="work-made-at" max="2099-12-31" min="1950-01-01" class="form-control" id="work-made-at">
+                    </div>
+                  </div>
+                </div>
+                <div class="form-btn">
+                  <button type="button" class="btn btn-outline-info btn-to-cancel-adding">キャンセル</button>
+                  <button type="submit" class="btn btn-info">更新</button>
+                </div>
+              </form>
+            </div>
+          </li>
+          {% for work in works %}
+          <li class="profile-portfolio">
+            <div class="editable-data row">
+              <div class="col-md-6">
+                <div class="responsive-img-wrapper portfolio-photo">
+                  <div class="responsive-img" style="background-image: url('{{ work.image }}')">
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <h3 class="profile-portfolio-title">
+                  <span>
+                    {{ work.title }}
+                    <span class="editable-mark"><i class="fas fa-pen"></i>編集する</span>
+                  </span>
+                </h3>
+                <p class="profile-portfolio-date">{{ work.made_at }}</p>
+                <p class="profile-portfolio-link"><a href="#">{{ work.url }}</a></p>
+                <p class="profile-portfolio-details">{{ work.detail }}</p>
+              </div>
+            </div>
+            <div class="form-for-editing" style="display: none">
+              <form action="{% url 'profile_edit' %}" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                  <div class="form-row">
+                    <div class="form-group col-md-12">
+                      <div class="upload-media-field">
+                        クリックまたはドラッグ&ドロップで画像をアップロード<br>
+                        JPEG / PNG / GIF形式に対応しています
+                      </div>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="form-row">
+                    <div class="form-group col-md-3">
+                      <div class="responsive-img-wrapper portfolio-photo">
+                        <div class="responsive-img" style="background-image: url('{{ work.image }}')">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label for="{{ work.title }}">作品名</label>
+                      <input type="text" class="form-control" id="{{ work.title }}" placeholder="作品名" value="{{ work.title }}">
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label for="{{ work.url }}">関連URL</label>
+                      <input type="text" class="form-control" id="{{ work.url }}" placeholder="関連URL" value="{{ work.url }}">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group col-md-12">
+                      <label for="{{ work.detail }}">詳細</label>
+                      <textarea class="form-control" id="{{ work.detail }}" rows="5">{{ work.detail }}</textarea>
+                      <div class="char-counter">
+                        残り<span>{{ max_length.work_detail }}</span>文字
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <label for="{{ work.made_at }}" class="col-sm-12">作成日</label>
+                    <div class="form-group col-sm-6">
+                      <input type="date" name="work-made-at" max="2099-12-31" min="1950-01-01" class="form-control" value="{{ work.made_at }}" id="{{ work.made_at }}">
+                    </div>
+                  </div>
+                </div>
+                <div class="form-btn">
+                  <button type="button" class="btn btn-outline-info btn-to-cancel-editing">キャンセル</button>
+                  <button type="submit" class="btn btn-info">更新</button>
+                </div>
+              </form>
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+      </section>
+      {% else %}
+      <p>There is no portfolio...</p>
+      {% endif %}
+
+      {% if related_link %}
+      <section>
+        <h2>関連リンク</h2>
+        <div class="profile-config">
+          <button type="button" class="btn btn-outline-info btn-for-editing btn-for-adding">
+            <i class="fas fa-plus-circle"></i>追加する
+          </button>
+          <div class="btn-group">
+            <button type="button" class="btn btn-outline-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="fas fa-users"></i>
+            </button>
+            <div class="dropdown-menu dropdown-menu-right">
+              <a class="dropdown-item" href="#"><i class="fas fa-users"></i>2次のつながりまで</a>
+              <a class="dropdown-item" href="#"><i class="fas fa-user"></i>Wantedly登録ユーザ</a>
+              <a class="dropdown-item" href="#"><i class="fas fa-globe-asia"></i>一般公開</a>
+            </div>
+          </div>
+        </div>
+        <ul>
+          <li>
+            <div class="form-for-adding" style="display: none">
+              <form action="{% url 'profile_edit' %}" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                  <label for="url">URL</label>
+                  <input type="text" class="form-control" name="url">
+                </div>
+                <div class="form-btn">
+                  <button type="button" class="btn btn-outline-info btn-to-cancel-adding">キャンセル</button>
+                  <button type="submit" class="btn btn-info">更新</button>
+                </div>
+              </form>
+            </div>
+          </li>
+          {% for url in urls %}
+          <li class="profile-related-link">
+            <div class="editable-data">
+              <h3 class="profile-related-link-title">
+                <span>
+                {{ url.url }}
+                  <span class="editable-mark"><i class="fas fa-pen"></i>編集する</span>
+                </span>
+              </h3>
+            </div>
+            <div class="form-for-editing" style="display: none">
+              <form action="{% url 'profile_edit' %}" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                  <label for="{{ url.url }}">URL</label>
+                  <input type="text" class="form-control" name="{{ url.url }}" value="{{ url.url }}">
+                </div>
+                <div class="form-btn">
+                  <button type="button" class="btn btn-outline-info btn-to-cancel-editing">キャンセル</button>
+                  <button type="submit" class="btn btn-info">更新</button>
+                </div>
+              </form>
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+      </section>
+      {% else %}
+      <p>There is no related_link...</p>
+      {% endif %}
+
+      {% if educational_bg %}
+      <section>
+        <h2>学歴</h2>
+        <div class="profile-config">
+          <button type="button" class="btn btn-outline-info btn-for-editing btn-for-adding">
+            <i class="fas fa-plus-circle"></i>追加する
+          </button>
+          <div class="btn-group">
+            <button type="button" class="btn btn-outline-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="fas fa-users"></i>
+            </button>
+            <div class="dropdown-menu dropdown-menu-right">
+              <a class="dropdown-item" href="#"><i class="fas fa-users"></i>2次のつながりまで</a>
+              <a class="dropdown-item" href="#"><i class="fas fa-user"></i>Wantedly登録ユーザ</a>
+              <a class="dropdown-item" href="#"><i class="fas fa-globe-asia"></i>一般公開</a>
+            </div>
+          </div>
+        </div>
+        <ul class="profile-entries">
+          <li>
+            <div class="form-for-adding" style="display: none">
+              <form action="{% url 'profile_edit' %}" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                  <div class="form-row">
+                    <div class="form-group col-sm-6">
+                      <label for="school">学校名</label>
+                      <input type="text" class="form-control" name="school">
+                    </div>
+                    <div class="form-group col-sm-6">
+                      <label for="major">学部・学科・専攻</label>
+                      <input type="text" class="form-control" name="major">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <label for="graduated-at" class="col-sm-12">卒業（予定）</label>
+                    <div class="form-group col-sm-6">
+                      <input type="date" name="graduated_at" max="2099-12-31" min="1950-01-01" class="form-control" id="graduated_at">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group col-md-12">
+                      <label for="what-you-done">研究内容・学んだこと・課外活動・サークル</label>
+                      <textarea class="form-control" id="what-you-done" rows="5"></textarea>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-btn">
+                  <button type="button" class="btn btn-outline-info btn-to-cancel-adding">キャンセル</button>
+                  <button type="submit" class="btn btn-info">更新</button>
+                </div>
+              </form>
+            </div>
+          </li>
+          {% for education in educations %}
+          <li>
+            <div class="editable-data">
+              <h3 class="profile-entry-title">
+                <span>
+                  {{ education.school }}
+                  <span class="editable-mark"><i class="fas fa-pen"></i>編集する</span>
+                </span>
+              </h3>
+              <p class="profile-entry-date">{{ education.graduated_at|date:'Y-m' }}</p>
+              <p class="profile-entry-subtitle">{{ education.major }}</p>
+              <p class="profile-entry-description">{{ education.detail }}</p>
+            </div>
+            <div class="form-for-editing" style="display: none">
+              <form action="{% url 'profile_edit' %}" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                  <div class="form-row">
+                    <div class="form-group col-sm-6">
+                      <label for="school">学校名</label>
+                      <input type="text" class="form-control" name="school" value="{{ education.school }}">
+                    </div>
+                    <div class="form-group col-sm-6">
+                      <label for="major">学部・学科・専攻</label>
+                      <input type="text" class="form-control" name="major" value="{{ education.major }}">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <label for="{{ education.graduated_at }}" class="col-sm-12">卒業（予定）</label>
+                    <div class="form-group col-sm-6">
+                      <input type="date" name="{{ education.graduated_at }}" max="2099-12-31" min="1950-01-01" class="form-control" value="{{ education.graduated_at }}" id="{{ education.graduated_at }}">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group col-md-12">
+                      <label for="what-you-done">研究内容・学んだこと・課外活動・サークル</label>
+                      <textarea class="form-control" id="what-you-done" rows="5">{{ education.detail }}</textarea>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-btn">
+                  <button type="button" class="btn btn-outline-info btn-to-cancel-editing">キャンセル</button>
+                  <button type="submit" class="btn btn-info">更新</button>
+                </div>
+              </form>
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+      </section>
+      {% else %}
+      <p>There is no educational_background...</p>
+      {% endif %}
+    </div>
+
+    <div class="col-md-4" id="sidebar">
+      <div class="user-profile-aside">
+        <h4>ソーシャル</h4>
+      </div>
+      <div class="user-profile-aside">
+        <div id="user-wantedly-score-wrapper">
+          <div id="user-wantedly-score-circle">
+            <h4>ウォンテッド・スコア</h4>
+            <p id="wantedly-score">50</p>
+          </div>
+          <span id="about-wantedly-score" data-toggle="tooltip" data-placement="top" title="公開プロフィールの充実度によって決まります。また、あなたのつながりの情報も加味されます。">ウォンテッド・スコアとは?</span>
+        </div>
+      </div>
+      <div class="user-profile-aside">
+        <h4>関連して閲覧されているプロフィール</h4>
+        <ul>
+          <li>
+            <a href="#" class="related-profile-list">
+              {% if user.profile.avatar %}
+              <img src="{{ user.profile.avatar }}" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {% else %}
+              <img src="/static/wantedly_app/img/anonymous-avatar.jpg" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {% endif %}
+              <div class="related-profile-list-info">
+                <h5>{{ user.username }}</h5>
+                <p>Webエンジニア, Avintonジャパン株式会社</p>
+              </div>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="related-profile-list">
+              {% if user.profile.avatar %}
+              <img src="{{ user.profile.avatar }}" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {% else %}
+              <img src="/static/wantedly_app/img/anonymous-avatar.jpg" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {% endif %}
+              <div class="related-profile-list-info">
+                <h5>{{ user.username }}</h5>
+                <p>Webエンジニア, Avintonジャパン株式会社</p>
+              </div>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

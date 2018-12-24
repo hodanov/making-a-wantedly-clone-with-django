@@ -11,4 +11,5 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('users/<uuid:id>/', views.profile, name='profile'),
     path('user/profile/edit/', views.profile_edit, name='profile_edit'),
+    path('user/profile/edit/post/', views.profile_edit_post, name='profile_edit_post'),
 ]

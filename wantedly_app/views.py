@@ -8,6 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from .forms import *
 from .models import *
 from datetime import date
+import json
 
 def home(request):
     if request.user.is_authenticated:
@@ -164,38 +165,12 @@ def profile_edit(request):
     if request.user.is_authenticated:
         user = request.user
 
-        if request.method == 'POST':
-            changing_privacy_level = request.POST.get('changing-privacy-level', False)
-            target_instance_name = request.POST.get('target-instance-name', False)
-            print(request.POST)
-
-            ########################################
-            # Judge instance to be edited.
-            ########################################
-            if target_instance_name == 'introduction':
-                instance = user.profile.introduction
-                form = IntroductionForm(request.POST or None, instance=instance)
-            elif target_instance_name == 'statement':
-                instance = user.profile.statement
-                form = StatementForm(request.POST or None, instance=instance)
-
-            ########################################
-            # Save the edited or added profile data.
-            ########################################
-            if changing_privacy_level:
-                privacy_id = request.POST.get('privacy-id', False)
-                instance.privacy = Privacy(pk=privacy_id)
-                instance.save()
-            else:
-                if form.is_valid():
-                    form.save()
-            return HttpResponseRedirect('/user/profile/edit/')
-
         ########################################
         # Get profile data from DB.
         # Set form data.
         ########################################
         form = {}
+        form['profile'] = ProfileEditForm()
 
         try:
             organizations = user.organization_set.all()
@@ -223,7 +198,6 @@ def profile_edit(request):
 
         try:
             work_history = user.profile.workhistory
-            form['workhistory'] = WorkHistoryForm()
             try:
                 experiences = work_history.experience_set.all().order_by('-from_date')
             except Experience.DoesNotExist:
@@ -231,6 +205,7 @@ def profile_edit(request):
         except WorkHistory.DoesNotExist:
             work_history = ""
             experiences = ""
+        form['experience'] = ExperienceForm()
 
         try:
             portfolio = user.profile.portfolio
@@ -241,6 +216,8 @@ def profile_edit(request):
         except Portfolio.DoesNotExist:
             portfolio = ""
             works = ""
+        form['work'] = WorkForm()
+        form['image'] = ImageForm()
 
         try:
             related_link = user.profile.relatedlink
@@ -251,6 +228,7 @@ def profile_edit(request):
         except RelatedLink.DoesNotExist:
             related_link = ""
             urls = ""
+        form['url'] = UrlForm()
 
         try:
             educational_bg = user.profile.educationalbackground
@@ -261,6 +239,7 @@ def profile_edit(request):
         except EducationalBackground.DoesNotExist:
             educational_bg = ""
             educations = ""
+        form['education'] = EducationForm()
 
         ########################################
         # Get max_length of text column in DB
@@ -279,19 +258,6 @@ def profile_edit(request):
 
         work_detail_max_length = Work._meta.get_field('detail').max_length
         max_length['work_detail'] = work_detail_max_length
-
-        ########################################
-        # Set form data
-        ########################################
-        # form = {}
-        # form['introduction'] = IntroductionForm(initial={'introduction': introduction.introduction})
-        # form['statement'] = StatementForm(initial={'statement': statement.statement})
-        # form['workhistory'] = WorkHistoryForm()
-
-        # experience_form = ExperienceForm(
-        #     initial={
-        #         'organization':
-        #     })
 
         ########################################
         # Add profile and form as context.
@@ -315,3 +281,119 @@ def profile_edit(request):
         return render(request, 'wantedly_app/profile_edit.html', context)
     else:
         return render(request, 'regeistration/request_login.html')
+
+def profile_edit_post(request):
+    if request.user.is_authenticated:
+        user = request.user
+        if request.method == 'POST':
+            changing_privacy_level = request.POST.get('changing-privacy-level', False)
+            target_instance_name = request.POST.get('target-instance-name', False)
+            id = request.POST.get('uuid', False)
+            print(request.POST)
+            print(request.FILES)
+
+            ########################################
+            # Judge instance to be edited.
+            ########################################
+            if target_instance_name == 'profile':
+                instance = user.profile
+                form = ProfileEditForm(request.POST or None, instance=instance)
+            elif target_instance_name == 'introduction':
+                instance = user.profile.introduction
+                form = IntroductionForm(request.POST or None, instance=instance)
+            elif target_instance_name == 'statement':
+                instance = user.profile.statement
+                form = StatementForm(request.POST or None, instance=instance)
+            elif target_instance_name == 'work-history':
+                if changing_privacy_level:
+                    instance = user.profile.workhistory
+                elif id:
+                    instance = get_object_or_404(Experience, pk=id)
+                    form = ExperienceForm(request.POST or None, instance=instance)
+            elif target_instance_name == 'portfolio':
+                if changing_privacy_level:
+                    instance = user.profile.portfolio
+                elif id:
+                    instance = get_object_or_404(Work, pk=id)
+                    # instance_child =
+                    form = WorkForm(request.POST or None, instance=instance)
+            elif target_instance_name == 'related-link':
+                if changing_privacy_level:
+                    instance = user.profile.relatedlink
+                elif id:
+                    instance = get_object_or_404(Url, pk=id)
+                    form = UrlForm(request.POST or None, instance=instance)
+            elif target_instance_name == 'educational-bg':
+                if changing_privacy_level:
+                    instance = user.profile.educationalbackground
+                elif id:
+                    instance = get_object_or_404(Education, pk=id)
+                    form = EducationForm(request.POST or None, instance=instance)
+
+            ########################################
+            # Save the edited or added profile data.
+            ########################################
+            if changing_privacy_level:
+                privacy_id = request.POST.get('privacy-id', False)
+                instance.privacy = Privacy(pk=privacy_id)
+                instance.save()
+            elif form.is_valid():
+                form.save()
+
+            ########################################
+            # Get the saved data.
+            ########################################
+            response_data = {}
+            response_data['result'] = '設定が更新されました！'
+            response_data['target_instance_name'] = target_instance_name
+            response_data['changing_privacy_level'] = changing_privacy_level
+            if changing_privacy_level:
+                p_instance = Privacy.objects.get(pk=instance.privacy.id)
+                response_data['privacy_level'] = p_instance.privacy_level
+                response_data['icon'] = p_instance.icon
+            elif target_instance_name == 'profile':
+                # response_data['gender'] = instance.gender
+                # response_data['birth_date'] = str(instance.birth_date)
+                response_data['location'] = instance.location
+                response_data['favorite_words'] = instance.favorite_words
+                # response_data['avatar'] = instance.avatar
+                # response_data['cover'] = instance.cover
+                response_data['job'] = instance.job.job
+            elif target_instance_name == 'introduction':
+                response_data['introduction'] = instance.introduction
+            elif target_instance_name == 'statement':
+                response_data['statement'] = instance.statement
+            elif target_instance_name == 'work-history':
+                response_data['organization'] = instance.organization
+                response_data['job'] = instance.job
+                response_data['from_date'] = str(instance.from_date)
+                response_data['to_date'] = str(instance.to_date)
+                response_data['experience'] = instance.experience
+                response_data['uuid'] = str(instance.id)
+            elif target_instance_name == 'portfolio':
+                response_data['title'] = instance.title
+                response_data['url'] = instance.url
+                response_data['made_at'] = str(instance.made_at)
+                response_data['detail'] = instance.detail
+                response_data['uuid'] = str(instance.id)
+                # response_data['image'] = instance.image
+                response_data['url'] = instance.url
+            elif target_instance_name == 'related-link':
+                response_data['url'] = instance.url
+                response_data['uuid'] = str(instance.id)
+            elif target_instance_name == 'educational-bg':
+                response_data['school'] = instance.school
+                response_data['major'] = instance.major
+                response_data['graduated_at'] = str(instance.graduated_at)
+                response_data['detail'] = instance.detail
+                response_data['uuid'] = str(instance.id)
+
+            return HttpResponse(
+                json.dumps(response_data),
+                content_type="application/json"
+            )
+        else:
+            return HttpResponse(
+                json.dumps({"nothing to see": "this isn't happening"}),
+                content_type="application/json"
+            )

@@ -63,6 +63,11 @@ class LoginForm(AuthenticationForm):
 ########################################
 # Form to edit profile.
 ########################################
+class ProfileEditForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ('gender', 'birth_date', 'location', 'favorite_words', 'avatar', 'cover', 'job')
+
 class IntroductionForm(forms.ModelForm):
     introduction = forms.CharField(
         widget=forms.Textarea,
@@ -81,12 +86,27 @@ class StatementForm(forms.ModelForm):
         model = Statement
         fields = ('statement',)
 
-class WorkHistoryForm(forms.ModelForm):
-    class Meta:
-        model = WorkHistory
-        fields = ('privacy',)
-
 class ExperienceForm(forms.ModelForm):
     class Meta:
         model = Experience
         fields = ('organization', 'job', 'experience', 'from_date', 'to_date' )
+
+class WorkForm(forms.ModelForm):
+    class Meta:
+        model = Work
+        fields = ('title', 'made_at', 'detail', 'url' )
+
+class ImageForm(forms.ModelForm):
+    class Meta:
+        model = Image
+        fields = ('image',)
+
+class UrlForm(forms.ModelForm):
+    class Meta:
+        model = Url
+        fields = ('url',)
+
+class EducationForm(forms.ModelForm):
+    class Meta:
+        model = Education
+        fields = ('school', 'major', 'graduated_at', 'detail' )

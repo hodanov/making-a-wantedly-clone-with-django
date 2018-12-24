@@ -863,14 +863,14 @@ footer h4, footer footer p {
 #profile-body #main-contents .profile-portfolio {
   margin-bottom: 2rem;
 }
-#profile-body #main-contents .profile-portfolio .portfolio-photo:before {
+#profile-body #main-contents .profile-portfolio .portfolio-image:before {
   padding-top: 61.8%;
 }
 #profile-body #main-contents .profile-portfolio .profile-portfolio-title {
   font-size: 1rem;
 }
 #profile-body #main-contents .profile-portfolio .profile-portfolio-date,
-#profile-body #main-contents .profile-portfolio .profile-portfolio-details {
+#profile-body #main-contents .profile-portfolio .profile-portfolio-detail {
   font-size: 0.9rem;
   color: #9DA0A4;
 }
@@ -1078,14 +1078,19 @@ footer h4, footer footer p {
   margin-left: 0.25rem;
   font-size: 0.8rem;
 }
-#profile-body #main-contents section .form-for-editing .upload-media-field,
-#profile-body #main-contents section .form-for-adding .upload-media-field {
+#profile-body #main-contents section .form-for-editing .upload-portfolio-image-btn,
+#profile-body #main-contents section .form-for-adding .upload-portfolio-image-btn {
   border: 1px solid #17a2b8;
   border-radius: 0.25rem;
   text-align: center;
   padding: 1.5rem;
   color: #17a2b8;
   font-size: 0.8rem;
+  cursor: pointer;
+}
+#profile-body #main-contents section .form-for-editing .custom-file-input,
+#profile-body #main-contents section .form-for-adding .custom-file-input {
+  display: none;
 }
 
 /*# sourceMappingURL=main.css.map */

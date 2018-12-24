@@ -13,16 +13,16 @@
   {% endif %}
   <div class="container">
     <div class="row">
-      <div class="col-md">
+      <div class="col-md" id="profile-editable-data">
         {% if user.profile.cover %}
-        <div class="responsive-img-wrapper" id="profile-cover">
+        <div class="responsive-img-wrapper" id="profile-cover profile-cover-edit">
           <div class="responsive-img" style="background-image: url('{{ user.profile.cover }}')">
             <a href="/users/{{ user.id }}" id="go-to-profile-edit-page">自分のプロフィールを確認する<i class="fas fa-arrow-circle-right"></i></a>
           </div>
         </div>
         {% else %}
         <div id="profile-cover-offset">
-          <a href="/users/{{ user.id }}" id="go-to-profile-edit-page">自分のプロフィールを編集する<i class="fas fa-arrow-circle-right"></i></a>
+          <a href="/users/{{ user.id }}" id="go-to-profile-edit-page">自分のプロフィールを確認する<i class="fas fa-arrow-circle-right"></i></a>
         </div>
         {% endif %}
         <div id="profile-heading" style="margin-bottom: 0;">
@@ -36,7 +36,7 @@
           <div id="profile-text">
             {% if user.profile.cover %}
             <h1>{{ user.username }}</h1>
-            <p>
+            <p id="favorite-words">
               {% if user.profile.favorite_words %}
               <i class="fas fa-quote-left"></i>
               {{ user.profile.favorite_words }}
@@ -47,7 +47,7 @@
             </p>
             {% else %}
             <h1 style="color: #333;">{{ user.username }}</h1>
-            <p style="color: #333;">
+            <p style="color: #333;" id="favorite-words">
               {% if user.profile.favorite_words %}
               <i class="fas fa-quote-left"></i>
               {{ user.profile.favorite_words }}
@@ -58,40 +58,100 @@
             </p>
             {% endif %}
             <ul>
-              {% if user.profile.job.job %}
-              <li>
+              <li id="job">
+                {% if user.profile.job.job %}
                 <i class="fas fa-briefcase"></i>
                 {{ user.profile.job.job }}
+                {% endif %}
               </li>
-              {% endif %}
-              {% if organizations %}
-              <li>
+              <li id="organization">
+                {% if organizations %}
                 <i class="fas fa-building"></i>
                 {% for o in organizations %}
                 {{ o.organization }}
                 {% endfor %}
+                {% endif %}
               </li>
-              {% endif %}
-              {% if user.profile.location %}
-              <li>
+              <li id="location">
+                {% if user.profile.location %}
                 <i class="fas fa-map-marker-alt"></i>
                 {{ user.profile.location }}
+                {% endif %}
               </li>
-              {% endif %}
             </ul>
             <div class="profile-config">
-              <button type="button" class="btn btn-outline-info">
+              <button type="button" class="btn btn-outline-info" data-toggle="modal" data-target="#profile-edit-modal">
                 <i class="fas fa-pen"></i>編集する
               </button>
-              <div class="btn-group">
-                <button type="button" class="btn btn-outline-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <i class="fas fa-users"></i>
-                </button>
-                <div class="dropdown-menu dropdown-menu-right">
-                  <a class="dropdown-item" href="#"><i class="fas fa-users"></i>2次のつながりまで</a>
-                  <a class="dropdown-item" href="#"><i class="fas fa-user"></i>Wantedly登録ユーザ</a>
-                  <a class="dropdown-item" href="#"><i class="fas fa-globe-asia"></i>一般公開</a>
+              <div class="modal fade" id="profile-edit-modal" tabindex="-1" role="dialog" aria-labelledby="profile-edit-modal-label" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="profile-edit-modal-label">プロフィール編集</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Cancel">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <form class="post-form-to-edit-profile" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="target-instance-name" value="profile">
+                        <div class="form-group">
+                          <div class="form-row">
+                            <div class="form-group col-md">
+                              <label for="location">現在地</label>
+                              {% render_field form.profile.location class="form-control" value=user.profile.location %}
+                              {% for error in form.profile.location.errors %}
+                              <span class="text-warning">{{ error }}</span>
+                              {% endfor %}
+                            </div>
+                          </div>
+                          <div class="form-row">
+                            <div class="form-group col-md">
+                              <label for="favorite-words">好きな言葉、キャッチコピー</label>
+                              {% render_field form.profile.favorite_words class="form-control" value=user.profile.favorite_words %}
+                              {% for error in form.profile.favorite_words.errors %}
+                              <span class="text-warning">{{ error }}</span>
+                              {% endfor %}
+                            </div>
+                          </div>
+                          <div class="form-row">
+                            <div class="form-group col-md">
+                              <label for="job">職業</label>
+                              {% render_field form.profile.job class="form-control" value=user.profile.job.job %}
+                              {% for error in form.profile.job.errors %}
+                              <span class="text-warning">{{ error }}</span>
+                              {% endfor %}
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-btn">
+                          <button type="button" class="btn btn-outline-info" data-dismiss="modal">キャンセル</button>
+                          <button type="submit" class="btn btn-info">更新</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
                 </div>
+              </div>
+              <div class="btn-group">
+                <button type="button" class="btn btn-outline-info dropdown-toggle" id="profile-privacy-level" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  {% if user.profile.privacy %}
+                  {{ user.profile.privacy.icon|safe }}
+                  {% else %}
+                  <i class="fas fa-users"></i>
+                  {% endif %}
+                </button>
+                <form class="post-form-to-edit-privacy-level" method="post">
+                  {% csrf_token %}
+                  <input type="hidden" name="target-instance-name" value="profile">
+                  <input type="hidden" name="changing-privacy-level" value="true">
+                  <div class="dropdown-menu dropdown-menu-right">
+                    {% for p in privacy %}
+                    <button class="dropdown-item post-button-to-edit-privacy-level" type="button" name="privacy-id" value="{{ p.id }}">{{ p.icon|safe }}{{ p.privacy_level }}</button>
+                    {% endfor %}
+                  </div>
+                </form>
               </div>
             </div>
           </div>
@@ -111,38 +171,38 @@
             <i class="fas fa-pen"></i>編集する
           </button>
           <div class="btn-group">
-            <button type="button" class="btn btn-outline-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button type="button" class="btn btn-outline-info dropdown-toggle" id="introduction-privacy-level" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               {% if introduction.privacy %}
               {{ introduction.privacy.icon|safe }}
               {% else %}
               <i class="fas fa-users"></i>
               {% endif %}
             </button>
-            <form action="{% url 'profile_edit' %}" method="post" id="{{ introduction.id }}-privacy">
+            <form class="post-form-to-edit-privacy-level" method="post">
               {% csrf_token %}
               <input type="hidden" name="target-instance-name" value="introduction">
               <input type="hidden" name="changing-privacy-level" value="true">
               <div class="dropdown-menu dropdown-menu-right">
                 {% for p in privacy %}
-                <button class="dropdown-item" type="submit" name="privacy-id" value="{{ p.id }}">{{ p.icon|safe }}{{ p.privacy_level }}</button>
+                <button class="dropdown-item post-button-to-edit-privacy-level" type="button" name="privacy-id" value="{{ p.id }}">{{ p.icon|safe }}{{ p.privacy_level }}</button>
                 {% endfor %}
               </div>
             </form>
           </div>
         </div>
         {% if introduction.introduction %}
-        <div class="editable-data">
+        <div class="editable-data" id="introduction-editable-data">
           {{ introduction.introduction|linebreaks }}
         </div>
         {% else %}
         <p class="editable-data">There is no introduction...</p>
         {% endif %}
         <div class="form-for-editing" style="display: none">
-          <form action="{% url 'profile_edit' %}" method="post">
+          <form class="post-form-to-edit-profile" method="post">
             {% csrf_token %}
             <input type="hidden" name="target-instance-name" value="introduction">
             <div class="form-group">
-              {% render_field form.introduction.introduction|add_class:'form-control' %}
+              {% render_field form.introduction.introduction class="form-control" %}
               {% for error in form.introduction.introduction.errors %}
               <span class="text-warning">{{ error }}</span>
               {% endfor %}
@@ -152,7 +212,7 @@
             </div>
             <div class="form-btn">
               <button type="button" class="btn btn-outline-info btn-to-cancel-editing">キャンセル</button>
-              <button type="submit" class="btn btn-info">更新</button>
+              <button type="submit" class="post-button-for-profile-edit btn btn-info">更新</button>
             </div>
           </form>
         </div>
@@ -166,34 +226,34 @@
             <i class="fas fa-pen"></i>編集する
           </button>
           <div class="btn-group">
-            <button type="button" class="btn btn-outline-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button type="button" class="btn btn-outline-info dropdown-toggle" id="statement-privacy-level" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               {% if statement.privacy %}
               {{ statement.privacy.icon|safe }}
               {% else %}
               <i class="fas fa-users"></i>
               {% endif %}
             </button>
-            <form action="{% url 'profile_edit' %}" method="post" id="{{ introduction.id }}-privacy">
+            <form>
               {% csrf_token %}
               <input type="hidden" name="target-instance-name" value="statement">
               <input type="hidden" name="changing-privacy-level" value="true">
               <div class="dropdown-menu dropdown-menu-right">
                 {% for p in privacy %}
-                <button class="dropdown-item" type="submit" name="privacy-id" value="{{ p.id }}">{{ p.icon|safe }}{{ p.privacy_level }}</button>
+                <button class="dropdown-item post-button-to-edit-privacy-level" type="button" name="privacy-id" value="{{ p.id }}">{{ p.icon|safe }}{{ p.privacy_level }}</button>
                 {% endfor %}
               </div>
             </form>
           </div>
         </div>
-        <div class="editable-data">
-          <p>{{ statement.statement|linebreaks }}</p>
+        <div class="editable-data" id="statement-editable-data">
+          {{ statement.statement|linebreaks }}
         </div>
         <div class="form-for-editing" style="display: none">
-          <form action="{% url 'profile_edit' %}" method="post">
+          <form class="post-form-to-edit-profile" method="post">
             {% csrf_token %}
             <input type="hidden" name="target-instance-name" value="statement">
             <div class="form-group">
-              {% render_field form.statement.statement|add_class:'form-control' placeholder='オリジナルのWebサービスを作って一発当てたいです！' %}
+              {% render_field form.statement.statement class="form-control" placeholder='オリジナルのWebサービスを作って一発当てたいです！' %}
               {% for error in form.statement.statement.errors %}
               <span class="text-warning">{{ error }}</span>
               {% endfor %}
@@ -203,7 +263,7 @@
             </div>
             <div class="form-btn">
               <button type="button" class="btn btn-outline-info btn-to-cancel-editing">キャンセル</button>
-              <button type="submit" class="btn btn-info">更新</button>
+              <button type="submit" class="post-button-for-profile-edit btn btn-info">更新</button>
             </div>
           </form>
         </div>
@@ -220,20 +280,29 @@
             <i class="fas fa-plus-circle"></i>追加する
           </button>
           <div class="btn-group">
-            <button type="button" class="btn btn-outline-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button type="button" class="btn btn-outline-info dropdown-toggle" id="work-history-privacy-level" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {% if work_history.privacy %}
+              {{ work_history.privacy.icon|safe }}
+              {% else %}
               <i class="fas fa-users"></i>
+              {% endif %}
             </button>
-            <div class="dropdown-menu dropdown-menu-right">
-              {% for p in privacy %}
-              <a class="dropdown-item" href="#">{{ p.icon|safe }}{{ p.privacy_level }}</a>
-              {% endfor %}
-            </div>
+            <form>
+              {% csrf_token %}
+              <input type="hidden" name="target-instance-name" value="work-history">
+              <input type="hidden" name="changing-privacy-level" value="true">
+              <div class="dropdown-menu dropdown-menu-right">
+                {% for p in privacy %}
+                <button class="dropdown-item post-button-to-edit-privacy-level" type="button" name="privacy-id" value="{{ p.id }}">{{ p.icon|safe }}{{ p.privacy_level }}</button>
+                {% endfor %}
+              </div>
+            </form>
           </div>
         </div>
         <ul class="profile-entries">
           <li>
             <div class="form-for-adding" style="display: none">
-              <form action="{% url 'profile_edit' %}" method="post">
+              <form>
                 {% csrf_token %}
                 <div class="form-group">
                   <div class="form-row">
@@ -249,13 +318,13 @@
                   <div class="form-row">
                     <label for="enrollment-period" class="col-sm-12">在籍期間</label>
                     <div class="form-group col-sm">
-                      <input type="date" name="experience-from-date" max="2099-12-31" min="1950-01-01" class="form-control" id="experience-from-date">
+                      <input type="date" name="experience-from-date" max="2099-12-31" min="1950-01-01" class="form-control">
                     </div>
                     <div class="form-group col-sm-1 text-center">
                       -
                     </div>
                     <div class="form-group col-sm">
-                      <input type="date" name="experience-to-date" max="2099-12-31" min="1950-01-01" class="form-control" id="experience-to-date">
+                      <input type="date" name="experience-to-date" max="2099-12-31" min="1950-01-01" class="form-control">
                     </div>
                   </div>
                   <div class="form-row">
@@ -267,54 +336,71 @@
                 </div>
                 <div class="form-btn">
                   <button type="button" class="btn btn-outline-info btn-to-cancel-adding">キャンセル</button>
-                  <button type="submit" class="btn btn-info">更新</button>
+                  <button type="submit" class="post-button-for-profile-edit btn btn-info">更新</button>
                 </div>
               </form>
             </div>
           </li>
           {% for experience in experiences %}
           <li>
-            <div class="editable-data">
-              <h3 class="profile-entry-title">
+            <div class="editable-data" id="{{ experience.id }}">
+              <h3 class="profile-entry-title experience-organization">
                 <span>
                   {{ experience.organization }}
                   <span class="editable-mark"><i class="fas fa-pen"></i>編集する</span>
                 </span>
               </h3>
-              <p class="profile-entry-date">{{ experience.from_date|date:'Y-m' }} - {{ experience.to_date|date:'Y-m' }}</p>
-              <p class="profile-entry-subtitle">{{ experience.job }}</p>
-              <p class="profile-entry-description">{{ experience.experience }}</p>
+              <p class="profile-entry-date experience-date">{{ experience.from_date|date:'Y-m' }} - {{ experience.to_date|date:'Y-m' }}</p>
+              <p class="profile-entry-subtitle experience-job">{{ experience.job }}</p>
+              <p class="profile-entry-description experience-description">{{ experience.experience }}</p>
             </div>
             <div class="form-for-editing" style="display: none">
-              <form action="{% url 'profile_edit' %}" method="post">
+              <form class="post-form-to-edit-profile" method="post">
                 {% csrf_token %}
+                <input type="hidden" name="target-instance-name" value="work-history">
+                <input type="hidden" name="uuid" value="{{ experience.id }}">
                 <div class="form-group">
                   <div class="form-row">
                     <div class="form-group col-md-6">
                       <label for="{{ experience.organization }}">組織名</label>
-                      <input type="text" class="form-control" id="{{ experience.organization }}" placeholder="組織名" value="{{ experience.organization }}">
+                      {% render_field form.experience.organization class="form-control" value=experience.organization placeholder="組織名" %}
+                      {% for error in form.experience.organization.errors %}
+                      <span class="text-warning">{{ error }}</span>
+                      {% endfor %}
                     </div>
                     <div class="form-group col-md-6">
                       <label for="{{ experience.job }}">役職</label>
-                      <input type="text" class="form-control" id="{{ experience.job }}" placeholder="役職" value="{{ experience.job }}">
+                      {% render_field form.experience.job class="form-control" value=experience.job placeholder="役職" %}
+                      {% for error in form.experience.job.errors %}
+                      <span class="text-warning">{{ error }}</span>
+                      {% endfor %}
                     </div>
                   </div>
                   <div class="form-row">
                     <label for="enrollment-period" class="col-sm-12">在籍期間</label>
                     <div class="form-group col-sm">
-                      <input type="date" name="{{ experience.from_date }}" max="2099-12-31" min="1950-01-01" class="form-control" id="{{ experience.from_date }}" value="{{ experience.from_date }}">
+                      {% render_field form.experience.from_date class="form-control" type="date" value=experience.from_date max="2099-12-31" min="1950-01-01" %}
+                      {% for error in form.experience.from_date.errors %}
+                      <span class="text-warning">{{ error }}</span>
+                      {% endfor %}
                     </div>
                     <div class="form-group col-sm-1 text-center">
                       -
                     </div>
                     <div class="form-group col-sm">
-                      <input type="date" name="{{ experience.to_date }}" max="2099-12-31" min="1950-01-01" class="form-control" id="{{ experience.to_date }}" value="{{ experience.to_date }}">
+                      {% render_field form.experience.to_date class="form-control" type="date" value=experience.to_date max="2099-12-31" min="1950-01-01" %}
+                      {% for error in form.experience.to_date.errors %}
+                      <span class="text-warning">{{ error }}</span>
+                      {% endfor %}
                     </div>
                   </div>
                   <div class="form-row">
                     <div class="form-group col-md-12">
                       <label for="{{ experience.experience }}">事業内容など</label>
-                      <textarea class="form-control" id="{{ experience.experience }}" rows="5">{{ experience.experience }}</textarea>
+                      {% render_field form.experience.experience class="form-control" rows="5" %}
+                      {% for error in form.experience.experience.errors %}
+                      <span class="text-warning">{{ error }}</span>
+                      {% endfor %}
                       <div class="char-counter">
                         残り<span>{{ max_length.experience }}</span>文字
                       </div>
@@ -323,7 +409,7 @@
                 </div>
                 <div class="form-btn">
                   <button type="button" class="btn btn-outline-info btn-to-cancel-editing">キャンセル</button>
-                  <button type="submit" class="btn btn-info">更新</button>
+                  <button type="submit" class="post-button-for-profile-edit btn btn-info">更新</button>
                 </div>
               </form>
             </div>
@@ -343,20 +429,29 @@
             <i class="fas fa-plus-circle"></i>追加する
           </button>
           <div class="btn-group">
-            <button type="button" class="btn btn-outline-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button type="button" class="btn btn-outline-info dropdown-toggle" id="portfolio-privacy-level" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {% if portfolio.privacy %}
+              {{ portfolio.privacy.icon|safe }}
+              {% else %}
               <i class="fas fa-users"></i>
+              {% endif %}
             </button>
-            <div class="dropdown-menu dropdown-menu-right">
-              <a class="dropdown-item" href="#"><i class="fas fa-users"></i>2次のつながりまで</a>
-              <a class="dropdown-item" href="#"><i class="fas fa-user"></i>Wantedly登録ユーザ</a>
-              <a class="dropdown-item" href="#"><i class="fas fa-globe-asia"></i>一般公開</a>
-            </div>
+            <form>
+              {% csrf_token %}
+              <input type="hidden" name="target-instance-name" value="portfolio">
+              <input type="hidden" name="changing-privacy-level" value="true">
+              <div class="dropdown-menu dropdown-menu-right">
+                {% for p in privacy %}
+                <button class="dropdown-item post-button-to-edit-privacy-level" type="button" name="privacy-id" value="{{ p.id }}">{{ p.icon|safe }}{{ p.privacy_level }}</button>
+                {% endfor %}
+              </div>
+            </form>
           </div>
         </div>
         <ul>
           <li class="profile-portfolio">
             <div class="form-for-adding" style="display: none">
-              <form action="{% url 'profile_edit' %}" method="post">
+              <form>
                 {% csrf_token %}
                 <div class="form-group">
                   <div class="form-row">
@@ -398,18 +493,20 @@
                 </div>
                 <div class="form-btn">
                   <button type="button" class="btn btn-outline-info btn-to-cancel-adding">キャンセル</button>
-                  <button type="submit" class="btn btn-info">更新</button>
+                  <button type="submit" class="post-button-for-profile-edit btn btn-info">更新</button>
                 </div>
               </form>
             </div>
           </li>
           {% for work in works %}
           <li class="profile-portfolio">
-            <div class="editable-data row">
+            <div class="row editable-data" id="{{ work.id }}">
               <div class="col-md-6">
-                <div class="responsive-img-wrapper portfolio-photo">
-                  <div class="responsive-img" style="background-image: url('{{ work.image }}')">
+                <div class="responsive-img-wrapper portfolio-image">
+                  {% with images=work.image_set.all|dictsort:"uploaded_at" %}
+                  <div class="responsive-img" style="background-image: url('{{ images.0.image }}')">
                   </div>
+                  {% endwith %}
                 </div>
               </div>
               <div class="col-md-6">
@@ -419,46 +516,66 @@
                     <span class="editable-mark"><i class="fas fa-pen"></i>編集する</span>
                   </span>
                 </h3>
-                <p class="profile-portfolio-date">{{ work.made_at }}</p>
-                <p class="profile-portfolio-link"><a href="#">{{ work.url }}</a></p>
-                <p class="profile-portfolio-details">{{ work.detail }}</p>
+                <p class="profile-portfolio-date">{{ work.made_at|date:'Y-m' }}</p>
+                <p class="profile-portfolio-link">{{ work.url }}</p>
+                <p class="profile-portfolio-detail">{{ work.detail }}</p>
               </div>
             </div>
             <div class="form-for-editing" style="display: none">
-              <form action="{% url 'profile_edit' %}" method="post">
+              <form class="post-form-to-edit-profile" id="hogehoge" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
+                <input type="hidden" name="target-instance-name" value="portfolio">
+                <input type="hidden" name="uuid" value="{{ work.id }}">
                 <div class="form-group">
                   <div class="form-row">
-                    <div class="form-group col-md-12">
-                      <div class="upload-media-field">
+                    <div class="col-md-12">
+                      <div class="upload-portfolio-image-btn">
                         クリックまたはドラッグ&ドロップで画像をアップロード<br>
                         JPEG / PNG / GIF形式に対応しています
                       </div>
+                      {% render_field form.image.image class="custom-file-input upload-portfolio-image" %}
+                      {% for error in form.image.image.errors %}
+                      <span class="text-warning">{{ error }}</span>
+                      {% endfor %}
                     </div>
                   </div>
                   <hr>
-                  <div class="form-row">
+                  <div class="form-row portfolio-image-group">
+                    {% for work_image in work.image_set.all|dictsort:"uploaded_at" %}
                     <div class="form-group col-md-3">
-                      <div class="responsive-img-wrapper portfolio-photo">
-                        <div class="responsive-img" style="background-image: url('{{ work.image }}')">
+                      <div class="responsive-img-wrapper portfolio-image">
+                        <div class="responsive-img" style="background-image: url('{{ work_image.image }}')">
                         </div>
                       </div>
                     </div>
+                    {% endfor %}
                   </div>
                   <div class="form-row">
                     <div class="form-group col-md-6">
                       <label for="{{ work.title }}">作品名</label>
-                      <input type="text" class="form-control" id="{{ work.title }}" placeholder="作品名" value="{{ work.title }}">
+                      <!-- <input type="text" class="form-control" id="{{ work.title }}" placeholder="作品名" value="{{ work.title }}"> -->
+                      {% render_field form.work.title class="form-control" value=work.title %}
+                      {% for error in form.work.title.errors %}
+                      <span class="text-warning">{{ error }}</span>
+                      {% endfor %}
                     </div>
                     <div class="form-group col-md-6">
                       <label for="{{ work.url }}">関連URL</label>
-                      <input type="text" class="form-control" id="{{ work.url }}" placeholder="関連URL" value="{{ work.url }}">
+                      <!-- <input type="text" class="form-control" id="{{ work.url }}" placeholder="関連URL" value="{{ work.url }}"> -->
+                      {% render_field form.work.url class="form-control" value=work.url %}
+                      {% for error in form.work.url.errors %}
+                      <span class="text-warning">{{ error }}</span>
+                      {% endfor %}
                     </div>
                   </div>
                   <div class="form-row">
                     <div class="form-group col-md-12">
                       <label for="{{ work.detail }}">詳細</label>
-                      <textarea class="form-control" id="{{ work.detail }}" rows="5">{{ work.detail }}</textarea>
+                      <!-- <textarea class="form-control" id="{{ work.detail }}" rows="5">{{ work.detail }}</textarea> -->
+                      {% render_field form.work.detail class="form-control" value=work.detail rows="5" %}
+                      {% for error in form.work.detail.errors %}
+                      <span class="text-warning">{{ error }}</span>
+                      {% endfor %}
                       <div class="char-counter">
                         残り<span>{{ max_length.work_detail }}</span>文字
                       </div>
@@ -467,13 +584,17 @@
                   <div class="form-row">
                     <label for="{{ work.made_at }}" class="col-sm-12">作成日</label>
                     <div class="form-group col-sm-6">
-                      <input type="date" name="work-made-at" max="2099-12-31" min="1950-01-01" class="form-control" value="{{ work.made_at }}" id="{{ work.made_at }}">
+                      <!-- <input type="date" name="work-made-at" max="2099-12-31" min="1950-01-01" class="form-control" value="{% if work.made_at %}{{ work.made_at }}{% endif %}"> -->
+                      {% render_field form.work.made_at type="date" max="2099-12-31" min="1950-01-01" class="form-control" value=work.made_at %}
+                      {% for error in form.work.made_at.errors %}
+                      <span class="text-warning">{{ error }}</span>
+                      {% endfor %}
                     </div>
                   </div>
                 </div>
                 <div class="form-btn">
                   <button type="button" class="btn btn-outline-info btn-to-cancel-editing">キャンセル</button>
-                  <button type="submit" class="btn btn-info">更新</button>
+                  <button type="submit" class="post-button-for-profile-edit btn btn-info">更新</button>
                 </div>
               </form>
             </div>
@@ -493,20 +614,29 @@
             <i class="fas fa-plus-circle"></i>追加する
           </button>
           <div class="btn-group">
-            <button type="button" class="btn btn-outline-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button type="button" class="btn btn-outline-info dropdown-toggle" id="related-link-privacy-level" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {% if related_link.privacy %}
+              {{ related_link.privacy.icon|safe }}
+              {% else %}
               <i class="fas fa-users"></i>
+              {% endif %}
             </button>
-            <div class="dropdown-menu dropdown-menu-right">
-              <a class="dropdown-item" href="#"><i class="fas fa-users"></i>2次のつながりまで</a>
-              <a class="dropdown-item" href="#"><i class="fas fa-user"></i>Wantedly登録ユーザ</a>
-              <a class="dropdown-item" href="#"><i class="fas fa-globe-asia"></i>一般公開</a>
-            </div>
+            <form>
+              {% csrf_token %}
+              <input type="hidden" name="target-instance-name" value="related-link">
+              <input type="hidden" name="changing-privacy-level" value="true">
+              <div class="dropdown-menu dropdown-menu-right">
+                {% for p in privacy %}
+                <button class="dropdown-item post-button-to-edit-privacy-level" type="button" name="privacy-id" value="{{ p.id }}">{{ p.icon|safe }}{{ p.privacy_level }}</button>
+                {% endfor %}
+              </div>
+            </form>
           </div>
         </div>
         <ul>
           <li>
             <div class="form-for-adding" style="display: none">
-              <form action="{% url 'profile_edit' %}" method="post">
+              <form>
                 {% csrf_token %}
                 <div class="form-group">
                   <label for="url">URL</label>
@@ -514,14 +644,14 @@
                 </div>
                 <div class="form-btn">
                   <button type="button" class="btn btn-outline-info btn-to-cancel-adding">キャンセル</button>
-                  <button type="submit" class="btn btn-info">更新</button>
+                  <button type="submit" class="post-button-for-profile-edit btn btn-info">更新</button>
                 </div>
               </form>
             </div>
           </li>
           {% for url in urls %}
           <li class="profile-related-link">
-            <div class="editable-data">
+            <div class="editable-data" id="{{ url.id }}">
               <h3 class="profile-related-link-title">
                 <span>
                 {{ url.url }}
@@ -530,15 +660,20 @@
               </h3>
             </div>
             <div class="form-for-editing" style="display: none">
-              <form action="{% url 'profile_edit' %}" method="post">
+              <form class="post-form-to-edit-profile" method="post">
                 {% csrf_token %}
+                <input type="hidden" name="target-instance-name" value="related-link">
+                <input type="hidden" name="uuid" value="{{ url.id }}">
                 <div class="form-group">
                   <label for="{{ url.url }}">URL</label>
-                  <input type="text" class="form-control" name="{{ url.url }}" value="{{ url.url }}">
+                  {% render_field form.url.url class="form-control" value=url.url %}
+                  {% for error in form.url.url.errors %}
+                  <span class="text-warning">{{ error }}</span>
+                  {% endfor %}
                 </div>
                 <div class="form-btn">
                   <button type="button" class="btn btn-outline-info btn-to-cancel-editing">キャンセル</button>
-                  <button type="submit" class="btn btn-info">更新</button>
+                  <button type="submit" class="post-button-for-profile-edit btn btn-info">更新</button>
                 </div>
               </form>
             </div>
@@ -558,20 +693,29 @@
             <i class="fas fa-plus-circle"></i>追加する
           </button>
           <div class="btn-group">
-            <button type="button" class="btn btn-outline-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button type="button" class="btn btn-outline-info dropdown-toggle" id="educational-bg-privacy-level" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {% if educational_bg.privacy %}
+              {{ educational_bg.privacy.icon|safe }}
+              {% else %}
               <i class="fas fa-users"></i>
+              {% endif %}
             </button>
-            <div class="dropdown-menu dropdown-menu-right">
-              <a class="dropdown-item" href="#"><i class="fas fa-users"></i>2次のつながりまで</a>
-              <a class="dropdown-item" href="#"><i class="fas fa-user"></i>Wantedly登録ユーザ</a>
-              <a class="dropdown-item" href="#"><i class="fas fa-globe-asia"></i>一般公開</a>
-            </div>
+            <form>
+              {% csrf_token %}
+              <input type="hidden" name="target-instance-name" value="educational-bg">
+              <input type="hidden" name="changing-privacy-level" value="true">
+              <div class="dropdown-menu dropdown-menu-right">
+                {% for p in privacy %}
+                <button class="dropdown-item post-button-to-edit-privacy-level" type="button" name="privacy-id" value="{{ p.id }}">{{ p.icon|safe }}{{ p.privacy_level }}</button>
+                {% endfor %}
+              </div>
+            </form>
           </div>
         </div>
         <ul class="profile-entries">
           <li>
             <div class="form-for-adding" style="display: none">
-              <form action="{% url 'profile_edit' %}" method="post">
+              <form>
                 {% csrf_token %}
                 <div class="form-group">
                   <div class="form-row">
@@ -587,7 +731,7 @@
                   <div class="form-row">
                     <label for="graduated-at" class="col-sm-12">卒業（予定）</label>
                     <div class="form-group col-sm-6">
-                      <input type="date" name="graduated_at" max="2099-12-31" min="1950-01-01" class="form-control" id="graduated_at">
+                      <input type="date" name="education-graduated-at" max="2099-12-31" min="1950-01-01" class="form-control">
                     </div>
                   </div>
                   <div class="form-row">
@@ -599,54 +743,71 @@
                 </div>
                 <div class="form-btn">
                   <button type="button" class="btn btn-outline-info btn-to-cancel-adding">キャンセル</button>
-                  <button type="submit" class="btn btn-info">更新</button>
+                  <button type="submit" class="post-button-for-profile-edit btn btn-info">更新</button>
                 </div>
               </form>
             </div>
           </li>
           {% for education in educations %}
           <li>
-            <div class="editable-data">
-              <h3 class="profile-entry-title">
+            <div class="editable-data" id="{{ education.id }}">
+              <h3 class="profile-entry-title education-school">
                 <span>
                   {{ education.school }}
                   <span class="editable-mark"><i class="fas fa-pen"></i>編集する</span>
                 </span>
               </h3>
-              <p class="profile-entry-date">{{ education.graduated_at|date:'Y-m' }}</p>
-              <p class="profile-entry-subtitle">{{ education.major }}</p>
-              <p class="profile-entry-description">{{ education.detail }}</p>
+              <p class="profile-entry-date education-graduated-at">{{ education.graduated_at|date:'Y-m' }}</p>
+              <p class="profile-entry-subtitle education-major">{{ education.major }}</p>
+              <p class="profile-entry-description education-detail">{{ education.detail }}</p>
             </div>
             <div class="form-for-editing" style="display: none">
-              <form action="{% url 'profile_edit' %}" method="post">
+              <form class="post-form-to-edit-profile" method="post">
                 {% csrf_token %}
+                <input type="hidden" name="target-instance-name" value="educational-bg">
+                <input type="hidden" name="uuid" value="{{ education.id }}">
                 <div class="form-group">
                   <div class="form-row">
                     <div class="form-group col-sm-6">
                       <label for="school">学校名</label>
-                      <input type="text" class="form-control" name="school" value="{{ education.school }}">
+                      {% render_field form.education.school class="form-control" value=education.school %}
+                      {% for error in form.education.school.errors %}
+                      <span class="text-warning">{{ error }}</span>
+                      {% endfor %}
                     </div>
                     <div class="form-group col-sm-6">
                       <label for="major">学部・学科・専攻</label>
-                      <input type="text" class="form-control" name="major" value="{{ education.major }}">
+                      {% render_field form.education.major class="form-control" value=education.major %}
+                      {% for error in form.education.major.errors %}
+                      <span class="text-warning">{{ error }}</span>
+                      {% endfor %}
                     </div>
                   </div>
                   <div class="form-row">
                     <label for="{{ education.graduated_at }}" class="col-sm-12">卒業（予定）</label>
                     <div class="form-group col-sm-6">
-                      <input type="date" name="{{ education.graduated_at }}" max="2099-12-31" min="1950-01-01" class="form-control" value="{{ education.graduated_at }}" id="{{ education.graduated_at }}">
+                      {% render_field form.education.graduated_at type="date" class="form-control" value=education.graduated_at %}
+                      {% for error in form.education.graduated_at.errors %}
+                      <span class="text-warning">{{ error }}</span>
+                      {% endfor %}
                     </div>
                   </div>
                   <div class="form-row">
                     <div class="form-group col-md-12">
                       <label for="what-you-done">研究内容・学んだこと・課外活動・サークル</label>
-                      <textarea class="form-control" id="what-you-done" rows="5">{{ education.detail }}</textarea>
+                      {% render_field form.education.detail class="form-control" value=education.detail rows="5" %}
+                      {% for error in form.education.detail.errors %}
+                      <span class="text-warning">{{ error }}</span>
+                      {% endfor %}
+                      <div class="char-counter">
+                        残り<span>{{ max_length.work_detail }}</span>文字
+                      </div>
                     </div>
                   </div>
                 </div>
                 <div class="form-btn">
                   <button type="button" class="btn btn-outline-info btn-to-cancel-editing">キャンセル</button>
-                  <button type="submit" class="btn btn-info">更新</button>
+                  <button type="submit" class="post-button-for-profile-edit btn btn-info">更新</button>
                 </div>
               </form>
             </div>

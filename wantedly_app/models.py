@@ -9,6 +9,11 @@ class Job(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     job = models.CharField(max_length=64, blank=True)
 
+class Privacy(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    privacy_level = models.CharField(max_length=32, blank=False)
+    icon = models.CharField(max_length=128, blank=False, default='<i class="fas fa-users"></i>')
+
 class UserManager(BaseUserManager):
     def create_user(self, username, email, password=None):
         """
@@ -74,9 +79,12 @@ class Profile(models.Model):
     birth_date = models.DateField(null=True, blank=True)
     location = models.CharField(max_length=64, blank=True)
     favorite_words = models.CharField(max_length=64, blank=True)
-    avatar = models.URLField(max_length=256, blank=True)
-    cover = models.URLField(max_length=256, blank=True)
+    # avatar = models.URLField(max_length=256, blank=True)
+    # cover = models.URLField(max_length=256, blank=True)
+    avatar = models.ImageField('upload/%Y-%m-%d/', null=True, blank=True)
+    cover = models.ImageField('upload/%Y-%m-%d/', null=True, blank=True)
     job = models.ForeignKey(Job, on_delete=models.SET_NULL, null=True)
+    privacy = models.ForeignKey(Privacy, on_delete=models.SET_NULL, null=True)
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
@@ -86,11 +94,6 @@ def create_user_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
-
-class Privacy(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    privacy_level = models.CharField(max_length=32, blank=False)
-    icon = models.CharField(max_length=128, blank=False, default='<i class="fas fa-users"></i>')
 
 class Introduction(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -114,7 +117,7 @@ class Experience(models.Model):
     work_history = models.ForeignKey(WorkHistory, on_delete = models.CASCADE)
     organization = models.CharField(max_length=64, blank=False)
     job = models.CharField(max_length=64, blank=True)
-    experience = models.CharField(max_length=256, blank=True)
+    experience = models.TextField(max_length=256, blank=True)
     from_date = models.DateField(null=True, blank=True)
     to_date = models.DateField(null=True, blank=True)
 
@@ -123,13 +126,14 @@ class Portfolio(models.Model):
     profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
     privacy = models.ForeignKey(Privacy, on_delete=models.SET_NULL, null=True)
 
+# def user_directory_path(instance, ):
+#     pass
 class Work(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     portfolio = models.ForeignKey(Portfolio, on_delete = models.CASCADE)
     title = models.CharField(max_length=64, blank=False)
     made_at = models.DateField(null=True, blank=True)
-    detail = models.CharField(max_length=256, blank=True)
-    image = models.URLField(max_length=256, blank=True)
+    detail = models.TextField(max_length=256, blank=True)
     url = models.URLField(max_length=256, blank=True)
 
 class RelatedLink(models.Model):
@@ -153,7 +157,7 @@ class Education(models.Model):
     school = models.CharField(max_length=64, blank=False)
     major = models.CharField(max_length=64, blank=True)
     graduated_at = models.DateField(null=True, blank=True)
-    detail = models.CharField(max_length=256, blank=True)
+    detail = models.TextField(max_length=256, blank=True)
 
 class Organization(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -178,4 +182,10 @@ class IntroductionFromFriend(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     friend_user = models.ForeignKey(User, related_name='%(class)s_friend', on_delete=models.CASCADE)
     introduced_user = models.ForeignKey(User, related_name='%(class)s_introduced_user', on_delete=models.CASCADE)
-    introduction = models.CharField(max_length=128, blank=False)
+    introduction = models.TextField(max_length=128, blank=False)
+
+class Image(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    work = models.ForeignKey(Work, on_delete = models.CASCADE, blank=True)
+    image = models.ImageField('upload/%Y-%m-%d/', null=True, blank=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True)

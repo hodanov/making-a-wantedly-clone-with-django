@@ -452,14 +452,14 @@ footer {
     }
     .profile-portfolio {
       margin-bottom: 2rem;
-      .portfolio-photo:before {
+      .portfolio-image:before {
         padding-top: 61.8%;
       }
       .profile-portfolio-title {
         font-size: 1rem;
       }
       .profile-portfolio-date,
-      .profile-portfolio-details {
+      .profile-portfolio-detail {
         font-size: .9rem;
         color: $font-color-lighter;
       }
@@ -662,13 +662,17 @@ footer {
             font-size: .8rem;
           }
         }
-        .upload-media-field {
+        .upload-portfolio-image-btn {
           border: 1px solid $info-color;
           border-radius: .25rem;
           text-align: center;
           padding: 1.5rem;
           color: $info-color;
           font-size: .8rem;
+          cursor: pointer;
+        }
+        .custom-file-input {
+          display: none;
         }
       }
     }

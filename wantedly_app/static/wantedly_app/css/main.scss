@@ -343,6 +343,7 @@ footer {
     left: 1rem;
     color: #fff;
     text-shadow: 0 1px 2px $font-color-lighter;
+    z-index: 10;
   }
 }
 #profile-cover-offset {
@@ -357,7 +358,7 @@ footer {
   display: flex;
   margin-top: -4.5rem;
   margin-bottom: 2rem;
-  #profile-img {
+  #profile-avatar {
     border: 1px solid $border-color;
   }
   #profile-text {
@@ -452,8 +453,25 @@ footer {
     }
     .profile-portfolio {
       margin-bottom: 2rem;
-      .portfolio-image:before {
-        padding-top: 61.8%;
+      .portfolio-image {
+        &:before {
+          padding-top: 61.8%;
+        }
+        .responsive-img {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          &:hover svg{
+            opacity: 1;
+          }
+        }
+        svg {
+          height: 50%;
+          width: 50%;
+          color: #fff;
+          margin: 0;
+          opacity: 0;
+        }
       }
       .profile-portfolio-title {
         font-size: 1rem;
@@ -604,6 +622,31 @@ footer {
 /* ----- ----- ----- */
 /* ----- Profile Edit ----- */
 /* ----- ----- ----- */
+#profile-cover-edit,
+#profile-avatar-edit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background-color: rgba(0,0,0,.5);
+  color: #fff;
+  opacity: 0;
+  -webkit-transition: opacity .3s;
+  transition: opacity .3s;
+  &:hover {
+    opacity: 1;
+  }
+  // #form-to-edit-cover,
+  // #form-to-edit-avatar {
+  //   display: none;
+  // }
+}
+#profile-avatar-edit {
+  position: absolute;
+  top: 0;
+  width: 120px;
+  height: 120px;
+}
 .profile-config {
   display: inline-block;
   margin: 0 0 0 .5rem;
@@ -619,6 +662,24 @@ footer {
   #main-contents {
     section {
       position: relative;
+      .no-image {
+        position: absolute;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        background-color: #aaa;
+        color: #fff;
+        p {
+          font-size: 1.5rem;
+          margin: 0;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          -ms-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+        }
+      }
       .profile-config {
         position: absolute;
         top: 0;

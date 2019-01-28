@@ -20,16 +20,10 @@
         <div class="collapse navbar-collapse">
           <ul class="navbar-nav">
             <li class="nav-item">
-              <a class="nav-link" href="#">募集をみる</a>
+              <a class="nav-link" href="/">募集をみる</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">フィードをみる</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/users/{{ user.id }}">プロフィール</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">ツール</a>
+              <a class="nav-link" href="/user/profile/edit">プロフィール</a>
             </li>
           </ul>
           <form class="form-inline">
@@ -55,11 +49,11 @@
               <a class="nav-link" href="#"><i class="fas fa-bell"></i></a>
             </li>
             <li class="nav-item">
-              <div class="btn-group">
-                {% if user.profile.avatar %}
-                <img src="{{ user.profile.avatar }}" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <div class="btn-group" id="menubar-avatar">
+                {% if avatar %}
+                <img src="{{ avatar }}" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 {% else %}
-                <img src="/static/wantedly_app/img/anonymous-avatar.jpg" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <img src="/media/default_avatar.jpg" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 {% endif %}
                 <div class="dropdown-menu dropdown-menu-right">
                   <a class="dropdown-item" id="dropdown-menu-avatar" href="#">
@@ -68,10 +62,10 @@
                       <span class="dropdown-menu-avatar-text-edit">プロフィールを編集</span>
                     </div>
                     <div class="dropdown-menu-avatar-img">
-                      {% if user.profile.avatar %}
-                      <img src="{{ user.profile.avatar }}" alt="avatar" width="50" height="50" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      {% if avatar %}
+                      <img src="{{ avatar }}" alt="avatar" width="50" height="50" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       {% else %}
-                      <img src="/static/wantedly_app/img/anonymous-avatar.jpg" alt="avatar" width="50" height="50" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <img src="/media/default_avatar.jpg" alt="avatar" width="50" height="50" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       {% endif %}
                     </div>
                   </a>

@@ -13,3 +13,8 @@ urlpatterns = [
     path('user/profile/edit/', views.profile_edit, name='profile_edit'),
     path('user/profile/edit/post/', views.profile_edit_post, name='profile_edit_post'),
 ]
+
+# To serve files uploaded by a user during development
+from django.conf import settings
+from django.conf.urls.static import static
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

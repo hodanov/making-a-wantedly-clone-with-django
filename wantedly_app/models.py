@@ -8,6 +8,8 @@ import uuid
 class Job(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     job = models.CharField(max_length=64, blank=True)
+    def __str__(self):
+        return self.job
 
 class Privacy(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -72,6 +74,19 @@ class User(AbstractBaseUser, PermissionsMixin):
     #     '''
     #     send_mail(subject, message, from_email, [self.email], **kwargs)
 
+
+########################################
+# Save location. Set validation.
+########################################
+def user_avatar_directory_path(instance, filename):
+    return 'user-{0}/avatar/{1}'.format(instance.user.id, filename)
+
+def user_cover_directory_path(instance, filename):
+    return 'user-{0}/cover/{1}'.format(instance.user.id, filename)
+
+def user_portfolio_directory_path(instance, filename):
+    return 'user-{0}/portfolio/{1}'.format(instance.work.portfolio.profile.user.id, filename)
+
 class Profile(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -79,10 +94,8 @@ class Profile(models.Model):
     birth_date = models.DateField(null=True, blank=True)
     location = models.CharField(max_length=64, blank=True)
     favorite_words = models.CharField(max_length=64, blank=True)
-    # avatar = models.URLField(max_length=256, blank=True)
-    # cover = models.URLField(max_length=256, blank=True)
-    avatar = models.ImageField('upload/%Y-%m-%d/', null=True, blank=True)
-    cover = models.ImageField('upload/%Y-%m-%d/', null=True, blank=True)
+    avatar = models.ImageField(default='default_avatar.jpg', upload_to=user_avatar_directory_path, null=True, blank=True)
+    cover = models.ImageField(default='default_cover.jpg', upload_to=user_cover_directory_path, null=True, blank=True)
     job = models.ForeignKey(Job, on_delete=models.SET_NULL, null=True)
     privacy = models.ForeignKey(Privacy, on_delete=models.SET_NULL, null=True)
 
@@ -186,6 +199,6 @@ class IntroductionFromFriend(models.Model):
 
 class Image(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    work = models.ForeignKey(Work, on_delete = models.CASCADE, blank=True)
-    image = models.ImageField('upload/%Y-%m-%d/', null=True, blank=True)
+    work = models.ForeignKey(Work, on_delete = models.CASCADE)
+    image = models.ImageField(upload_to=user_portfolio_directory_path, null=True, blank=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)

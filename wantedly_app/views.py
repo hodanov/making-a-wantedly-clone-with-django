@@ -9,6 +9,7 @@ from .forms import *
 from .models import *
 from datetime import date
 import json
+from urllib.parse import urlparse
 
 def home(request):
     if request.user.is_authenticated:
@@ -73,6 +74,11 @@ def sign_up(request):
 
 def profile(request, id):
     u = get_object_or_404(User, pk=id)
+
+    cover = str(u.profile.cover)
+    avatar = str(u.profile.avatar)
+    cover = modify_image_path(cover)
+    avatar = modify_image_path(avatar)
 
     try:
         organizations = u.organization_set.all()
@@ -158,6 +164,8 @@ def profile(request, id):
         'works': works,
         'friends': friends,
         'introductions_from_frends': introductions_from_frends,
+        'cover': cover,
+        'avatar': avatar,
     }
     return render(request, 'wantedly_app/profile.html', context)
 
@@ -171,6 +179,13 @@ def profile_edit(request):
         ########################################
         form = {}
         form['profile'] = ProfileEditForm()
+        form['avatar'] = AvatarForm()
+        form['cover'] = CoverForm()
+
+        cover = str(user.profile.cover)
+        avatar = str(user.profile.avatar)
+        cover = modify_image_path(cover)
+        avatar = modify_image_path(avatar)
 
         try:
             organizations = user.organization_set.all()
@@ -209,10 +224,19 @@ def profile_edit(request):
 
         try:
             portfolio = user.profile.portfolio
-            try:
-                works = portfolio.work_set.all().order_by('-made_at')
-            except Work.DoesNotExist:
-                works = ""
+            works = portfolio.work_set.all().order_by('-made_at')
+            # images = {}
+            # key = 0
+            # for work in works:
+            #     images[key] = []
+            #     image_set = work.image_set.all().order_by('uploaded_at')
+            #     if image_set:
+            #         for image in image_set:
+            #             value = modify_image_path(str(image.image))
+            #             images[key].append(value)
+            #     else:
+            #         images[key].append("")
+            #     key += 1
         except Portfolio.DoesNotExist:
             portfolio = ""
             works = ""
@@ -246,12 +270,21 @@ def profile_edit(request):
         # Used to calculate the number of characters that can be entered.
         ########################################
         max_length = {}
+        remaining_length = {}
 
         introduction_max_length = Introduction._meta.get_field('introduction').max_length
         max_length['introduction'] = introduction_max_length
+        if introduction:
+            remaining_length['introduction'] = introduction_max_length - len(introduction.introduction)
+        else:
+            remaining_length['introduction'] = introduction_max_length
 
         statement_max_length = Statement._meta.get_field('statement').max_length
         max_length['statement'] = statement_max_length
+        if statement:
+            remaining_length['statement'] = statement_max_length - len(statement.statement)
+        else:
+            remaining_length['statement'] = statement_max_length
 
         experience_max_length = Experience._meta.get_field('experience').max_length
         max_length['experience'] = experience_max_length
@@ -263,6 +296,8 @@ def profile_edit(request):
         # Add profile and form as context.
         ########################################
         context = {
+            'cover': cover,
+            'avatar': avatar,
             'organizations': organizations,
             'privacy': privacy,
             'introduction': introduction,
@@ -276,19 +311,24 @@ def profile_edit(request):
             'portfolio': portfolio,
             'works': works,
             'max_length': max_length,
+            'remaining_length': remaining_length,
             'form': form,
         }
         return render(request, 'wantedly_app/profile_edit.html', context)
     else:
-        return render(request, 'regeistration/request_login.html')
+        return redirect('home')
 
 def profile_edit_post(request):
     if request.user.is_authenticated:
         user = request.user
         if request.method == 'POST':
-            changing_privacy_level = request.POST.get('changing-privacy-level', False)
+            change_privacy_level = request.POST.get('change-privacy-level', False)
             target_instance_name = request.POST.get('target-instance-name', False)
-            id = request.POST.get('uuid', False)
+            edit_target_instance_id = request.POST.get('uuid', False)
+            add_new_profile_data = request.POST.get('add-new-profile-data', False)
+            delete_img_flag = request.POST.get('delete-image', False)
+            delete_target_instance_id = request.POST.get('delete-target-instance-id', False)
+            portfolio_images = request.FILES.getlist('image', False)
             print(request.POST)
             print(request.FILES)
 
@@ -298,56 +338,150 @@ def profile_edit_post(request):
             if target_instance_name == 'profile':
                 instance = user.profile
                 form = ProfileEditForm(request.POST or None, instance=instance)
+            elif target_instance_name == 'cover':
+                instance = user.profile
+                if delete_img_flag:
+                    instance.cover = 'default_cover.jpg'
+                else:
+                    form = CoverForm(request.POST, request.FILES, instance=instance)
+            elif target_instance_name == 'avatar':
+                instance = user.profile
+                if delete_img_flag:
+                    instance.avatar = 'default_avatar.jpg'
+                else:
+                    form = AvatarForm(request.POST, request.FILES, instance=instance)
             elif target_instance_name == 'introduction':
+                try:
+                    user.profile.introduction
+                except ObjectDoesNotExist:
+                    tmp = Introduction(profile=user.profile)
+                    tmp.save()
                 instance = user.profile.introduction
                 form = IntroductionForm(request.POST or None, instance=instance)
             elif target_instance_name == 'statement':
+                try:
+                    user.profile.statement
+                except ObjectDoesNotExist:
+                    tmp = Statement(profile=user.profile)
+                    tmp.save()
                 instance = user.profile.statement
                 form = StatementForm(request.POST or None, instance=instance)
             elif target_instance_name == 'work-history':
-                if changing_privacy_level:
+                try:
+                    user.profile.workhistory
+                except ObjectDoesNotExist:
+                    tmp = WorkHistory(profile=user.profile)
+                    tmp.save()
+                if change_privacy_level:
                     instance = user.profile.workhistory
-                elif id:
-                    instance = get_object_or_404(Experience, pk=id)
+                elif edit_target_instance_id:
+                    instance = get_object_or_404(Experience, pk=edit_target_instance_id)
                     form = ExperienceForm(request.POST or None, instance=instance)
+                elif add_new_profile_data:
+                    form = ExperienceForm(request.POST)
+                    instance = form.save(commit=False)
+                    instance.work_history_id = user.profile.workhistory.id
+                elif delete_target_instance_id:
+                    instance = get_object_or_404(Experience, pk=delete_target_instance_id)
             elif target_instance_name == 'portfolio':
-                if changing_privacy_level:
+                try:
+                    user.profile.portfolio
+                except ObjectDoesNotExist:
+                    tmp = Portfolio(profile=user.profile)
+                    tmp.save()
+                if change_privacy_level:
                     instance = user.profile.portfolio
-                elif id:
-                    instance = get_object_or_404(Work, pk=id)
-                    # instance_child =
+                elif edit_target_instance_id:
+                    instance = get_object_or_404(Work, pk=edit_target_instance_id)
                     form = WorkForm(request.POST or None, instance=instance)
+                elif add_new_profile_data:
+                    form = WorkForm(request.POST)
+                    instance = form.save(commit=False)
+                    instance.portfolio_id = user.profile.portfolio.id
+                elif delete_target_instance_id:
+                    instance = get_object_or_404(Work, pk=delete_target_instance_id)
+                if portfolio_images:
+                    image_form = ImageForm(request.FILES)
+                else:
+                    instance_image = False
+            elif target_instance_name == 'portfolio-image':
+                if delete_target_instance_id:
+                    instance = get_object_or_404(Image, pk=delete_target_instance_id)
             elif target_instance_name == 'related-link':
-                if changing_privacy_level:
+                try:
+                    user.profile.relatedlink
+                except ObjectDoesNotExist:
+                    tmp = RelatedLink(profile=user.profile)
+                    tmp.save()
+                if change_privacy_level:
                     instance = user.profile.relatedlink
-                elif id:
-                    instance = get_object_or_404(Url, pk=id)
+                elif edit_target_instance_id:
+                    instance = get_object_or_404(Url, pk=edit_target_instance_id)
                     form = UrlForm(request.POST or None, instance=instance)
+                elif add_new_profile_data:
+                    form = UrlForm(request.POST)
+                    instance = form.save(commit=False)
+                    instance.related_link_id = user.profile.relatedlink.id
+                elif delete_target_instance_id:
+                    instance = get_object_or_404(Url, pk=delete_target_instance_id)
             elif target_instance_name == 'educational-bg':
-                if changing_privacy_level:
+                try:
+                    user.profile.educationalbackground
+                except ObjectDoesNotExist:
+                    tmp = EducationalBackground(profile=user.profile)
+                    tmp.save()
+                if change_privacy_level:
                     instance = user.profile.educationalbackground
-                elif id:
-                    instance = get_object_or_404(Education, pk=id)
+                elif edit_target_instance_id:
+                    instance = get_object_or_404(Education, pk=edit_target_instance_id)
                     form = EducationForm(request.POST or None, instance=instance)
+                elif add_new_profile_data:
+                    form = EducationForm(request.POST)
+                    instance = form.save(commit=False)
+                    instance.educational_background_id = user.profile.educationalbackground.id
+                elif delete_target_instance_id:
+                    instance = get_object_or_404(Education, pk=delete_target_instance_id)
 
             ########################################
             # Save the edited or added profile data.
             ########################################
-            if changing_privacy_level:
+            if change_privacy_level:
                 privacy_id = request.POST.get('privacy-id', False)
                 instance.privacy = Privacy(pk=privacy_id)
                 instance.save()
+            elif delete_img_flag:
+                instance.save()
+            elif delete_target_instance_id:
+                instance.delete()
             elif form.is_valid():
-                form.save()
+                if add_new_profile_data:
+                    instance.save()
+                    print("success adding new data.")
+                else:
+                    form.save()
+                    print("success editing data.")
+                if portfolio_images and image_form.is_valid():
+                    for idx, image in enumerate(portfolio_images):
+                        image_instance = Image(
+                            work_id=instance.id,
+                            image=image,
+                        )
+                        image_instance.save()
+                        if idx == 0:
+                            instance_image = image_instance.image
+                        print("success save images.")
 
             ########################################
             # Get the saved data.
             ########################################
             response_data = {}
             response_data['result'] = '設定が更新されました！'
+            response_data['uuid'] = str(instance.id)
             response_data['target_instance_name'] = target_instance_name
-            response_data['changing_privacy_level'] = changing_privacy_level
-            if changing_privacy_level:
+            response_data['change_privacy_level'] = change_privacy_level
+            response_data['add_new_profile_data'] = add_new_profile_data
+            response_data['delete_target_instance_id'] = delete_target_instance_id
+            if change_privacy_level:
                 p_instance = Privacy.objects.get(pk=instance.privacy.id)
                 response_data['privacy_level'] = p_instance.privacy_level
                 response_data['icon'] = p_instance.icon
@@ -356,9 +490,11 @@ def profile_edit_post(request):
                 # response_data['birth_date'] = str(instance.birth_date)
                 response_data['location'] = instance.location
                 response_data['favorite_words'] = instance.favorite_words
-                # response_data['avatar'] = instance.avatar
-                # response_data['cover'] = instance.cover
                 response_data['job'] = instance.job.job
+            elif target_instance_name == 'avatar':
+                response_data['avatar'] = str(instance.avatar)
+            elif target_instance_name == 'cover':
+                response_data['cover'] = str(instance.cover)
             elif target_instance_name == 'introduction':
                 response_data['introduction'] = instance.introduction
             elif target_instance_name == 'statement':
@@ -369,24 +505,23 @@ def profile_edit_post(request):
                 response_data['from_date'] = str(instance.from_date)
                 response_data['to_date'] = str(instance.to_date)
                 response_data['experience'] = instance.experience
-                response_data['uuid'] = str(instance.id)
+                response_data['work_history_id'] = str(instance.work_history.id)
             elif target_instance_name == 'portfolio':
                 response_data['title'] = instance.title
                 response_data['url'] = instance.url
                 response_data['made_at'] = str(instance.made_at)
                 response_data['detail'] = instance.detail
-                response_data['uuid'] = str(instance.id)
-                # response_data['image'] = instance.image
-                response_data['url'] = instance.url
+                response_data['image'] = str(instance_image)
+                response_data['portfolio_id'] = str(instance.portfolio.id)
             elif target_instance_name == 'related-link':
                 response_data['url'] = instance.url
-                response_data['uuid'] = str(instance.id)
+                response_data['related_link_id'] = str(instance.related_link.id)
             elif target_instance_name == 'educational-bg':
                 response_data['school'] = instance.school
                 response_data['major'] = instance.major
                 response_data['graduated_at'] = str(instance.graduated_at)
                 response_data['detail'] = instance.detail
-                response_data['uuid'] = str(instance.id)
+                response_data['educational_bg_id'] = str(instance.educational_background_id)
 
             return HttpResponse(
                 json.dumps(response_data),
@@ -397,3 +532,13 @@ def profile_edit_post(request):
                 json.dumps({"nothing to see": "this isn't happening"}),
                 content_type="application/json"
             )
+
+def modify_image_path(image_path):
+    parsed_uri = urlparse(image_path)
+    if parsed_uri.scheme == 'https' or parsed_uri.scheme == 'http':
+        pass
+    elif image_path == '':
+        image_path = False
+    else:
+        image_path = '/media/' + image_path
+    return image_path

@@ -66,7 +66,17 @@ class LoginForm(AuthenticationForm):
 class ProfileEditForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ('gender', 'birth_date', 'location', 'favorite_words', 'avatar', 'cover', 'job')
+        fields = ('gender', 'birth_date', 'location', 'favorite_words', 'job')
+
+class AvatarForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ('avatar', )
+
+class CoverForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ('cover', )
 
 class IntroductionForm(forms.ModelForm):
     introduction = forms.CharField(
@@ -87,14 +97,20 @@ class StatementForm(forms.ModelForm):
         fields = ('statement',)
 
 class ExperienceForm(forms.ModelForm):
+    work_history_id = forms.UUIDField(
+        required=False,
+    )
     class Meta:
         model = Experience
-        fields = ('organization', 'job', 'experience', 'from_date', 'to_date' )
+        fields = ('work_history_id', 'organization', 'job', 'experience', 'from_date', 'to_date' )
 
 class WorkForm(forms.ModelForm):
+    portfolio_id = forms.UUIDField(
+        required=False,
+    )
     class Meta:
         model = Work
-        fields = ('title', 'made_at', 'detail', 'url' )
+        fields = ('portfolio_id', 'title', 'made_at', 'detail', 'url' )
 
 class ImageForm(forms.ModelForm):
     class Meta:
@@ -102,11 +118,17 @@ class ImageForm(forms.ModelForm):
         fields = ('image',)
 
 class UrlForm(forms.ModelForm):
+    related_link_id = forms.UUIDField(
+        required=False,
+    )
     class Meta:
         model = Url
-        fields = ('url',)
+        fields = ('related_link_id', 'url',)
 
 class EducationForm(forms.ModelForm):
+    educational_bg_id = forms.UUIDField(
+        required=False,
+    )
     class Meta:
         model = Education
-        fields = ('school', 'major', 'graduated_at', 'detail' )
+        fields = ('educational_bg_id', 'school', 'major', 'graduated_at', 'detail' )

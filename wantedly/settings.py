@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'wantedly_app',
     'social_django',
     'widget_tweaks',
+    'django_cleanup',
 ]
 
 MIDDLEWARE = [
@@ -120,6 +121,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 # OAuth settings
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.open_id.OpenIdAuth',  # for Google
@@ -146,7 +150,7 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.associate_user',
     'social_core.pipeline.social_auth.load_extra_data',
     'social_core.pipeline.user.user_details',
-    'wantedly_app.users.pipeline.get_avatar', # This is a path of your pipeline.py and get_avatar is the function.
+    'wantedly_app.users.pipeline.get_avatar', # This is a path of pipeline.py and get_avatar is the function.
 )
 
 LOGIN_URL = 'home'

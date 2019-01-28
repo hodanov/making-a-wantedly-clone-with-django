@@ -752,6 +752,7 @@ footer h4, footer footer p {
   left: 1rem;
   color: #fff;
   text-shadow: 0 1px 2px #9DA0A4;
+  z-index: 10;
 }
 
 #profile-cover-offset {
@@ -768,7 +769,7 @@ footer h4, footer footer p {
   margin-top: -4.5rem;
   margin-bottom: 2rem;
 }
-#profile-heading #profile-img {
+#profile-heading #profile-avatar {
   border: 1px solid rgba(0, 0, 0, 0.1);
 }
 #profile-heading #profile-text {
@@ -865,6 +866,21 @@ footer h4, footer footer p {
 }
 #profile-body #main-contents .profile-portfolio .portfolio-image:before {
   padding-top: 61.8%;
+}
+#profile-body #main-contents .profile-portfolio .portfolio-image .responsive-img {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#profile-body #main-contents .profile-portfolio .portfolio-image .responsive-img:hover svg {
+  opacity: 1;
+}
+#profile-body #main-contents .profile-portfolio .portfolio-image svg {
+  height: 50%;
+  width: 50%;
+  color: #fff;
+  margin: 0;
+  opacity: 0;
 }
 #profile-body #main-contents .profile-portfolio .profile-portfolio-title {
   font-size: 1rem;
@@ -1013,6 +1029,30 @@ footer h4, footer footer p {
 /* ----- ----- ----- */
 /* ----- Profile Edit ----- */
 /* ----- ----- ----- */
+#profile-cover-edit,
+#profile-avatar-edit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  opacity: 0;
+  -webkit-transition: opacity 0.3s;
+  transition: opacity 0.3s;
+}
+#profile-cover-edit:hover,
+#profile-avatar-edit:hover {
+  opacity: 1;
+}
+
+#profile-avatar-edit {
+  position: absolute;
+  top: 0;
+  width: 120px;
+  height: 120px;
+}
+
 .profile-config {
   display: inline-block;
   margin: 0 0 0 0.5rem;
@@ -1027,6 +1067,24 @@ footer h4, footer footer p {
 
 #profile-body #main-contents section {
   position: relative;
+}
+#profile-body #main-contents section .no-image {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  background-color: #aaa;
+  color: #fff;
+}
+#profile-body #main-contents section .no-image p {
+  font-size: 1.5rem;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
 }
 #profile-body #main-contents section .profile-config {
   position: absolute;

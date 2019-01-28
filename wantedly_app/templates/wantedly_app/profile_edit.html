@@ -5,19 +5,22 @@
 {% block content %}
 
 <section id="profile-header">
-  {% if user.profile.cover %}
+  {% if cover %}
   <div class="responsive-img-wrapper" id="profile-cover-bg">
-    <div class="responsive-img" style="background-image: url('{{ user.profile.cover }}')">
+    <div class="responsive-img" style="background-image: url('{{ cover }}')">
     </div>
   </div>
   {% endif %}
   <div class="container">
     <div class="row">
       <div class="col-md" id="profile-editable-data">
-        {% if user.profile.cover %}
-        <div class="responsive-img-wrapper" id="profile-cover profile-cover-edit">
-          <div class="responsive-img" style="background-image: url('{{ user.profile.cover }}')">
+        {% if cover %}
+        <div class="responsive-img-wrapper" id="profile-cover">
+          <div class="responsive-img" style="background-image: url('{{ cover }}')">
             <a href="/users/{{ user.id }}" id="go-to-profile-edit-page">自分のプロフィールを確認する<i class="fas fa-arrow-circle-right"></i></a>
+          </div>
+          <div class="responsive-img" id="profile-cover-edit" data-toggle="modal" data-target="#edit-cover-modal">
+            <p><i class="fas fa-image"></i>カバー写真を変更</p>
           </div>
         </div>
         {% else %}
@@ -26,15 +29,14 @@
         </div>
         {% endif %}
         <div id="profile-heading" style="margin-bottom: 0;">
-          <div id="profile-img" class="bg-white">
-            {% if user.profile.avatar %}
-            <img src="{{ user.profile.avatar }}" alt="avatar" width="120" height="120" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            {% else %}
-            <img src="/static/wantedly_app/img/anonymous-avatar.jpg" alt="avatar" width="120" height="120" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            {% endif %}
+          <div id="profile-avatar" class="bg-white">
+            <img src="{{ avatar }}" alt="avatar" width="120" height="120" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <div id="profile-avatar-edit" data-toggle="modal" data-target="#edit-avatar-modal">
+              <p><i class="fas fa-camera-retro"></i>写真を変更</p>
+            </div>
           </div>
           <div id="profile-text">
-            {% if user.profile.cover %}
+            {% if cover %}
             <h1>{{ user.username }}</h1>
             <p id="favorite-words">
               {% if user.profile.favorite_words %}
@@ -83,57 +85,6 @@
               <button type="button" class="btn btn-outline-info" data-toggle="modal" data-target="#profile-edit-modal">
                 <i class="fas fa-pen"></i>編集する
               </button>
-              <div class="modal fade" id="profile-edit-modal" tabindex="-1" role="dialog" aria-labelledby="profile-edit-modal-label" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title" id="profile-edit-modal-label">プロフィール編集</h5>
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Cancel">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                    </div>
-                    <div class="modal-body">
-                      <form class="post-form-to-edit-profile" method="post">
-                        {% csrf_token %}
-                        <input type="hidden" name="target-instance-name" value="profile">
-                        <div class="form-group">
-                          <div class="form-row">
-                            <div class="form-group col-md">
-                              <label for="location">現在地</label>
-                              {% render_field form.profile.location class="form-control" value=user.profile.location %}
-                              {% for error in form.profile.location.errors %}
-                              <span class="text-warning">{{ error }}</span>
-                              {% endfor %}
-                            </div>
-                          </div>
-                          <div class="form-row">
-                            <div class="form-group col-md">
-                              <label for="favorite-words">好きな言葉、キャッチコピー</label>
-                              {% render_field form.profile.favorite_words class="form-control" value=user.profile.favorite_words %}
-                              {% for error in form.profile.favorite_words.errors %}
-                              <span class="text-warning">{{ error }}</span>
-                              {% endfor %}
-                            </div>
-                          </div>
-                          <div class="form-row">
-                            <div class="form-group col-md">
-                              <label for="job">職業</label>
-                              {% render_field form.profile.job class="form-control" value=user.profile.job.job %}
-                              {% for error in form.profile.job.errors %}
-                              <span class="text-warning">{{ error }}</span>
-                              {% endfor %}
-                            </div>
-                          </div>
-                        </div>
-                        <div class="form-btn">
-                          <button type="button" class="btn btn-outline-info" data-dismiss="modal">キャンセル</button>
-                          <button type="submit" class="btn btn-info">更新</button>
-                        </div>
-                      </form>
-                    </div>
-                  </div>
-                </div>
-              </div>
               <div class="btn-group">
                 <button type="button" class="btn btn-outline-info dropdown-toggle" id="profile-privacy-level" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   {% if user.profile.privacy %}
@@ -145,7 +96,7 @@
                 <form class="post-form-to-edit-privacy-level" method="post">
                   {% csrf_token %}
                   <input type="hidden" name="target-instance-name" value="profile">
-                  <input type="hidden" name="changing-privacy-level" value="true">
+                  <input type="hidden" name="change-privacy-level" value="true">
                   <div class="dropdown-menu dropdown-menu-right">
                     {% for p in privacy %}
                     <button class="dropdown-item post-button-to-edit-privacy-level" type="button" name="privacy-id" value="{{ p.id }}">{{ p.icon|safe }}{{ p.privacy_level }}</button>
@@ -181,7 +132,7 @@
             <form class="post-form-to-edit-privacy-level" method="post">
               {% csrf_token %}
               <input type="hidden" name="target-instance-name" value="introduction">
-              <input type="hidden" name="changing-privacy-level" value="true">
+              <input type="hidden" name="change-privacy-level" value="true">
               <div class="dropdown-menu dropdown-menu-right">
                 {% for p in privacy %}
                 <button class="dropdown-item post-button-to-edit-privacy-level" type="button" name="privacy-id" value="{{ p.id }}">{{ p.icon|safe }}{{ p.privacy_level }}</button>
@@ -190,13 +141,11 @@
             </form>
           </div>
         </div>
-        {% if introduction.introduction %}
-        <div class="editable-data" id="introduction-editable-data">
+        <div class="editable-data" id="{{ introduction.id }}">
+          {% if introduction.introduction %}
           {{ introduction.introduction|linebreaks }}
+          {% endif %}
         </div>
-        {% else %}
-        <p class="editable-data">There is no introduction...</p>
-        {% endif %}
         <div class="form-for-editing" style="display: none">
           <form class="post-form-to-edit-profile" method="post">
             {% csrf_token %}
@@ -206,8 +155,8 @@
               {% for error in form.introduction.introduction.errors %}
               <span class="text-warning">{{ error }}</span>
               {% endfor %}
-              <div class="char-counter">
-                残り<span>{{ max_length.introduction }}</span>文字
+              <div class="char-counter" data-max-length="{{ max_length.introduction }}">
+                残り<span>{{ remaining_length.introduction }}</span>文字
               </div>
             </div>
             <div class="form-btn">
@@ -218,7 +167,6 @@
         </div>
       </section>
 
-      {% if statement.statement %}
       <section>
         <h2>この先やってみたいこと</h2>
         <div class="profile-config">
@@ -236,7 +184,7 @@
             <form>
               {% csrf_token %}
               <input type="hidden" name="target-instance-name" value="statement">
-              <input type="hidden" name="changing-privacy-level" value="true">
+              <input type="hidden" name="change-privacy-level" value="true">
               <div class="dropdown-menu dropdown-menu-right">
                 {% for p in privacy %}
                 <button class="dropdown-item post-button-to-edit-privacy-level" type="button" name="privacy-id" value="{{ p.id }}">{{ p.icon|safe }}{{ p.privacy_level }}</button>
@@ -245,8 +193,10 @@
             </form>
           </div>
         </div>
-        <div class="editable-data" id="statement-editable-data">
+        <div class="editable-data" id="{{ statement.id }}">
+          {% if statement.statement %}
           {{ statement.statement|linebreaks }}
+          {% endif %}
         </div>
         <div class="form-for-editing" style="display: none">
           <form class="post-form-to-edit-profile" method="post">
@@ -257,8 +207,8 @@
               {% for error in form.statement.statement.errors %}
               <span class="text-warning">{{ error }}</span>
               {% endfor %}
-              <div class="char-counter">
-                残り<span>{{ max_length.introduction }}</span>文字
+              <div class="char-counter" data-max-length="{{ max_length.statement }}">
+                残り<span>{{ remaining_length.statement }}</span>文字
               </div>
             </div>
             <div class="form-btn">
@@ -268,11 +218,7 @@
           </form>
         </div>
       </section>
-      {% else %}
-      <p>There is no statement...</p>
-      {% endif %}
 
-      {% if work_history %}
       <section>
         <h2>職歴</h2>
         <div class="profile-config">
@@ -290,7 +236,7 @@
             <form>
               {% csrf_token %}
               <input type="hidden" name="target-instance-name" value="work-history">
-              <input type="hidden" name="changing-privacy-level" value="true">
+              <input type="hidden" name="change-privacy-level" value="true">
               <div class="dropdown-menu dropdown-menu-right">
                 {% for p in privacy %}
                 <button class="dropdown-item post-button-to-edit-privacy-level" type="button" name="privacy-id" value="{{ p.id }}">{{ p.icon|safe }}{{ p.privacy_level }}</button>
@@ -299,51 +245,73 @@
             </form>
           </div>
         </div>
-        <ul class="profile-entries">
+        <ul class="profile-entries" id="{{ work_history.id }}">
           <li>
             <div class="form-for-adding" style="display: none">
-              <form>
+              <form class="post-form-to-add-profile" method="post">
                 {% csrf_token %}
+                <input type="hidden" name="target-instance-name" value="work-history">
+                <input type="hidden" name="add-new-profile-data" value="add-new-profile-data">
+                {% render_field form.experience.work_history_id type="hidden" value=work_history.id %}
                 <div class="form-group">
                   <div class="form-row">
                     <div class="form-group col-md-6">
                       <label for="organization">組織名</label>
-                      <input type="text" class="form-control" id="organization" placeholder="組織名">
+                      {% render_field form.experience.organization class="form-control" placeholder="組織名" %}
+                      {% for error in form.experience.organization.errors %}
+                      <span class="text-warning">{{ error }}</span>
+                      {% endfor %}
                     </div>
                     <div class="form-group col-md-6">
                       <label for="job">役職</label>
-                      <input type="text" class="form-control" id="job" placeholder="役職">
+                      {% render_field form.experience.job class="form-control" placeholder="役職" %}
+                      {% for error in form.experience.job.errors %}
+                      <span class="text-warning">{{ error }}</span>
+                      {% endfor %}
                     </div>
                   </div>
                   <div class="form-row">
                     <label for="enrollment-period" class="col-sm-12">在籍期間</label>
                     <div class="form-group col-sm">
-                      <input type="date" name="experience-from-date" max="2099-12-31" min="1950-01-01" class="form-control">
+                      {% render_field form.experience.from_date class="form-control" type="date" max="2099-12-31" min="1950-01-01" %}
+                      {% for error in form.experience.from_date.errors %}
+                      <span class="text-warning">{{ error }}</span>
+                      {% endfor %}
                     </div>
                     <div class="form-group col-sm-1 text-center">
                       -
                     </div>
                     <div class="form-group col-sm">
-                      <input type="date" name="experience-to-date" max="2099-12-31" min="1950-01-01" class="form-control">
+                      {% render_field form.experience.to_date class="form-control" type="date" max="2099-12-31" min="1950-01-01" %}
+                      {% for error in form.experience.to_date.errors %}
+                      <span class="text-warning">{{ error }}</span>
+                      {% endfor %}
                     </div>
                   </div>
                   <div class="form-row">
                     <div class="form-group col-md-12">
                       <label for="experience">事業内容など</label>
-                      <textarea class="form-control" id="experience" rows="5"></textarea>
+                      {% render_field form.experience.experience class="form-control" rows="5" %}
+                      {% for error in form.experience.experience.errors %}
+                      <span class="text-warning">{{ error }}</span>
+                      {% endfor %}
+                      <div class="char-counter" data-max-length="{{ max_length.experience }}">
+                        残り<span>{{ max_length.experience }}</span>文字
+                      </div>
                     </div>
                   </div>
                 </div>
                 <div class="form-btn">
                   <button type="button" class="btn btn-outline-info btn-to-cancel-adding">キャンセル</button>
-                  <button type="submit" class="post-button-for-profile-edit btn btn-info">更新</button>
+                  <button type="submit" class="post-button-for-profile-add btn btn-info">追加</button>
                 </div>
               </form>
             </div>
           </li>
+          {% if experiences %}
           {% for experience in experiences %}
-          <li>
-            <div class="editable-data" id="{{ experience.id }}">
+          <li id="{{ experience.id }}">
+            <div class="editable-data">
               <h3 class="profile-entry-title experience-organization">
                 <span>
                   {{ experience.organization }}
@@ -359,6 +327,7 @@
                 {% csrf_token %}
                 <input type="hidden" name="target-instance-name" value="work-history">
                 <input type="hidden" name="uuid" value="{{ experience.id }}">
+                {% render_field form.experience.work_history_id type="hidden" value=work_history.id %}
                 <div class="form-group">
                   <div class="form-row">
                     <div class="form-group col-md-6">
@@ -401,13 +370,14 @@
                       {% for error in form.experience.experience.errors %}
                       <span class="text-warning">{{ error }}</span>
                       {% endfor %}
-                      <div class="char-counter">
+                      <div class="char-counter" data-max-length="{{ max_length.experience }}">
                         残り<span>{{ max_length.experience }}</span>文字
                       </div>
                     </div>
                   </div>
                 </div>
                 <div class="form-btn">
+                  <button type="button" class="btn btn-link text-info delete-btn" data-toggle="modal" data-target="#delete-profile-modal" data-instance-type="work-history" data-instance-id="{{ experience.id }}">この項目を削除</button>
                   <button type="button" class="btn btn-outline-info btn-to-cancel-editing">キャンセル</button>
                   <button type="submit" class="post-button-for-profile-edit btn btn-info">更新</button>
                 </div>
@@ -415,13 +385,10 @@
             </div>
           </li>
           {% endfor %}
+          {% endif %}
         </ul>
       </section>
-      {% else %}
-      <p>There is no experience...</p>
-      {% endif %}
 
-      {% if portfolio %}
       <section>
         <h2>ポートフォリオ・作品</h2>
         <div class="profile-config">
@@ -439,7 +406,7 @@
             <form>
               {% csrf_token %}
               <input type="hidden" name="target-instance-name" value="portfolio">
-              <input type="hidden" name="changing-privacy-level" value="true">
+              <input type="hidden" name="change-privacy-level" value="true">
               <div class="dropdown-menu dropdown-menu-right">
                 {% for p in privacy %}
                 <button class="dropdown-item post-button-to-edit-privacy-level" type="button" name="privacy-id" value="{{ p.id }}">{{ p.icon|safe }}{{ p.privacy_level }}</button>
@@ -448,64 +415,90 @@
             </form>
           </div>
         </div>
-        <ul>
+        <ul id="{{ portfolio.id }}">
           <li class="profile-portfolio">
             <div class="form-for-adding" style="display: none">
-              <form>
+              <form class="post-form-to-add-portfolio"  method="post" enctype="multipart/form-data">
                 {% csrf_token %}
+                <input type="hidden" name="target-instance-name" value="portfolio">
+                <input type="hidden" name="add-new-profile-data" value="add-new-profile-data">
+                {% render_field form.work.portfolio_id type="hidden" %}
                 <div class="form-group">
                   <div class="form-row">
                     <div class="form-group col-md-12">
-                      <div class="upload-media-field">
-                        クリックまたはドラッグ&ドロップで画像をアップロード<br>
+                      <div class="upload-portfolio-image-btn">
+                        クリックで画像をアップロード<br>
                         JPEG / PNG / GIF形式に対応しています
                       </div>
+                      {% render_field form.image.image class="custom-file-input upload-portfolio-image" multiple="" %}
+                      {% for error in form.image.image.errors %}
+                      <span class="text-warning">{{ error }}</span>
+                      {% endfor %}
                     </div>
                   </div>
                   <hr>
-                  <div class="form-row">
-                    <div class="form-group col-md-3">
-                      <!-- ここに画像的なやつ -->
-                    </div>
+                  <div class="form-row portfolio-image-group">
                   </div>
                   <div class="form-row">
                     <div class="form-group col-md-6">
                       <label for="work-title">作品名</label>
-                      <input type="text" class="form-control" id="work-title" placeholder="作品名">
+                      {% render_field form.work.title class="form-control" %}
+                      {% for error in form.work.title.errors %}
+                      <span class="text-warning">{{ error }}</span>
+                      {% endfor %}
                     </div>
                     <div class="form-group col-md-6">
                       <label for="work-related-url">関連URL</label>
-                      <input type="text" class="form-control" id="work-related-url" placeholder="関連URL">
+                      {% render_field form.work.url class="form-control" %}
+                      {% for error in form.work.url.errors %}
+                      <span class="text-warning">{{ error }}</span>
+                      {% endfor %}
                     </div>
                   </div>
                   <div class="form-row">
                     <div class="form-group col-md-12">
                       <label for="work-detail">詳細</label>
-                      <textarea class="form-control" id="work-detail" rows="5"></textarea>
+                      {% render_field form.work.detail class="form-control" rows="5" %}
+                      {% for error in form.work.detail.errors %}
+                      <span class="text-warning">{{ error }}</span>
+                      {% endfor %}
+                      <div class="char-counter" data-max-length="{{ max_length.work_detail }}">
+                        残り<span>{{ max_length.work_detail }}</span>文字
+                      </div>
                     </div>
                   </div>
                   <div class="form-row">
                     <label for="work-made-at" class="col-sm-12">作成日</label>
                     <div class="form-group col-sm-6">
-                      <input type="date" name="work-made-at" max="2099-12-31" min="1950-01-01" class="form-control" id="work-made-at">
+                      {% render_field form.work.made_at type="date" max="2099-12-31" min="1950-01-01" class="form-control" %}
+                      {% for error in form.work.made_at.errors %}
+                      <span class="text-warning">{{ error }}</span>
+                      {% endfor %}
                     </div>
                   </div>
                 </div>
                 <div class="form-btn">
                   <button type="button" class="btn btn-outline-info btn-to-cancel-adding">キャンセル</button>
-                  <button type="submit" class="post-button-for-profile-edit btn btn-info">更新</button>
+                  <button type="submit" class="post-button-for-profile-add btn btn-info">追加</button>
                 </div>
               </form>
             </div>
           </li>
+          {% if works %}
           {% for work in works %}
-          <li class="profile-portfolio">
-            <div class="row editable-data" id="{{ work.id }}">
+          <li class="profile-portfolio" id="{{ work.id }}">
+            <div class="row editable-data">
               <div class="col-md-6">
                 <div class="responsive-img-wrapper portfolio-image">
                   {% with images=work.image_set.all|dictsort:"uploaded_at" %}
-                  <div class="responsive-img" style="background-image: url('{{ images.0.image }}')">
+                  {% if images %}
+                  <div class="responsive-img" style="background-image: url('/media/{{ images.0.image }}')">
                   </div>
+                  {% else %}
+                  <div class="no-image">
+                    <p>NO IMAGE</p>
+                  </div>
+                  {% endif %}
                   {% endwith %}
                 </div>
               </div>
@@ -522,7 +515,7 @@
               </div>
             </div>
             <div class="form-for-editing" style="display: none">
-              <form class="post-form-to-edit-profile" id="hogehoge" method="post" enctype="multipart/form-data">
+              <form class="post-form-to-edit-portfolio" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <input type="hidden" name="target-instance-name" value="portfolio">
                 <input type="hidden" name="uuid" value="{{ work.id }}">
@@ -530,10 +523,10 @@
                   <div class="form-row">
                     <div class="col-md-12">
                       <div class="upload-portfolio-image-btn">
-                        クリックまたはドラッグ&ドロップで画像をアップロード<br>
+                        クリックで画像をアップロード<br>
                         JPEG / PNG / GIF形式に対応しています
                       </div>
-                      {% render_field form.image.image class="custom-file-input upload-portfolio-image" %}
+                      {% render_field form.image.image class="custom-file-input upload-portfolio-image" multiple="" %}
                       {% for error in form.image.image.errors %}
                       <span class="text-warning">{{ error }}</span>
                       {% endfor %}
@@ -542,9 +535,10 @@
                   <hr>
                   <div class="form-row portfolio-image-group">
                     {% for work_image in work.image_set.all|dictsort:"uploaded_at" %}
-                    <div class="form-group col-md-3">
+                    <div class="form-group col-md-3" id="{{ work_image.id }}">
                       <div class="responsive-img-wrapper portfolio-image">
-                        <div class="responsive-img" style="background-image: url('{{ work_image.image }}')">
+                        <div class="responsive-img delete-btn" style="background-image: url('/media/{{ work_image.image }}')" data-toggle="modal" data-target="#delete-profile-modal" data-instance-type="portfolio-image" data-instance-id="{{ work_image.id }}">
+                          <i class="fas fa-times-circle"></i>
                         </div>
                       </div>
                     </div>
@@ -553,7 +547,6 @@
                   <div class="form-row">
                     <div class="form-group col-md-6">
                       <label for="{{ work.title }}">作品名</label>
-                      <!-- <input type="text" class="form-control" id="{{ work.title }}" placeholder="作品名" value="{{ work.title }}"> -->
                       {% render_field form.work.title class="form-control" value=work.title %}
                       {% for error in form.work.title.errors %}
                       <span class="text-warning">{{ error }}</span>
@@ -561,7 +554,6 @@
                     </div>
                     <div class="form-group col-md-6">
                       <label for="{{ work.url }}">関連URL</label>
-                      <!-- <input type="text" class="form-control" id="{{ work.url }}" placeholder="関連URL" value="{{ work.url }}"> -->
                       {% render_field form.work.url class="form-control" value=work.url %}
                       {% for error in form.work.url.errors %}
                       <span class="text-warning">{{ error }}</span>
@@ -571,12 +563,11 @@
                   <div class="form-row">
                     <div class="form-group col-md-12">
                       <label for="{{ work.detail }}">詳細</label>
-                      <!-- <textarea class="form-control" id="{{ work.detail }}" rows="5">{{ work.detail }}</textarea> -->
                       {% render_field form.work.detail class="form-control" value=work.detail rows="5" %}
                       {% for error in form.work.detail.errors %}
                       <span class="text-warning">{{ error }}</span>
                       {% endfor %}
-                      <div class="char-counter">
+                      <div class="char-counter" data-max-length="{{ max_length.work_detail }}">
                         残り<span>{{ max_length.work_detail }}</span>文字
                       </div>
                     </div>
@@ -584,7 +575,6 @@
                   <div class="form-row">
                     <label for="{{ work.made_at }}" class="col-sm-12">作成日</label>
                     <div class="form-group col-sm-6">
-                      <!-- <input type="date" name="work-made-at" max="2099-12-31" min="1950-01-01" class="form-control" value="{% if work.made_at %}{{ work.made_at }}{% endif %}"> -->
                       {% render_field form.work.made_at type="date" max="2099-12-31" min="1950-01-01" class="form-control" value=work.made_at %}
                       {% for error in form.work.made_at.errors %}
                       <span class="text-warning">{{ error }}</span>
@@ -593,6 +583,7 @@
                   </div>
                 </div>
                 <div class="form-btn">
+                  <button type="button" class="btn btn-link text-info delete-btn" data-toggle="modal" data-target="#delete-profile-modal" data-instance-type="portfolio" data-instance-id="{{ work.id }}">この項目を削除</button>
                   <button type="button" class="btn btn-outline-info btn-to-cancel-editing">キャンセル</button>
                   <button type="submit" class="post-button-for-profile-edit btn btn-info">更新</button>
                 </div>
@@ -600,13 +591,10 @@
             </div>
           </li>
           {% endfor %}
+          {% endif %}
         </ul>
       </section>
-      {% else %}
-      <p>There is no portfolio...</p>
-      {% endif %}
 
-      {% if related_link %}
       <section>
         <h2>関連リンク</h2>
         <div class="profile-config">
@@ -624,7 +612,7 @@
             <form>
               {% csrf_token %}
               <input type="hidden" name="target-instance-name" value="related-link">
-              <input type="hidden" name="changing-privacy-level" value="true">
+              <input type="hidden" name="change-privacy-level" value="true">
               <div class="dropdown-menu dropdown-menu-right">
                 {% for p in privacy %}
                 <button class="dropdown-item post-button-to-edit-privacy-level" type="button" name="privacy-id" value="{{ p.id }}">{{ p.icon|safe }}{{ p.privacy_level }}</button>
@@ -633,25 +621,29 @@
             </form>
           </div>
         </div>
-        <ul>
+        <ul id="{{ related_link.id }}">
           <li>
             <div class="form-for-adding" style="display: none">
-              <form>
+              <form class="post-form-to-add-profile" method="post">
                 {% csrf_token %}
+                <input type="hidden" name="target-instance-name" value="related-link">
+                <input type="hidden" name="add-new-profile-data" value="add-new-profile-data">
+                {% render_field form.url.related_link_id type="hidden" value=related_link.id %}
                 <div class="form-group">
                   <label for="url">URL</label>
                   <input type="text" class="form-control" name="url">
                 </div>
                 <div class="form-btn">
                   <button type="button" class="btn btn-outline-info btn-to-cancel-adding">キャンセル</button>
-                  <button type="submit" class="post-button-for-profile-edit btn btn-info">更新</button>
+                  <button type="submit" class="post-button-for-profile-add btn btn-info">追加</button>
                 </div>
               </form>
             </div>
           </li>
+          {% if urls %}
           {% for url in urls %}
-          <li class="profile-related-link">
-            <div class="editable-data" id="{{ url.id }}">
+          <li class="profile-related-link" id="{{ url.id }}">
+            <div class="editable-data">
               <h3 class="profile-related-link-title">
                 <span>
                 {{ url.url }}
@@ -672,6 +664,7 @@
                   {% endfor %}
                 </div>
                 <div class="form-btn">
+                  <button type="button" class="btn btn-link text-info delete-btn" data-toggle="modal" data-target="#delete-profile-modal" data-instance-type="related-link" data-instance-id="{{ url.id }}">この項目を削除</button>
                   <button type="button" class="btn btn-outline-info btn-to-cancel-editing">キャンセル</button>
                   <button type="submit" class="post-button-for-profile-edit btn btn-info">更新</button>
                 </div>
@@ -679,13 +672,10 @@
             </div>
           </li>
           {% endfor %}
+          {% endif %}
         </ul>
       </section>
-      {% else %}
-      <p>There is no related_link...</p>
-      {% endif %}
 
-      {% if educational_bg %}
       <section>
         <h2>学歴</h2>
         <div class="profile-config">
@@ -703,7 +693,7 @@
             <form>
               {% csrf_token %}
               <input type="hidden" name="target-instance-name" value="educational-bg">
-              <input type="hidden" name="changing-privacy-level" value="true">
+              <input type="hidden" name="change-privacy-level" value="true">
               <div class="dropdown-menu dropdown-menu-right">
                 {% for p in privacy %}
                 <button class="dropdown-item post-button-to-edit-privacy-level" type="button" name="privacy-id" value="{{ p.id }}">{{ p.icon|safe }}{{ p.privacy_level }}</button>
@@ -712,45 +702,64 @@
             </form>
           </div>
         </div>
-        <ul class="profile-entries">
+        <ul class="profile-entries" id="{{ educational_bg.id }}">
           <li>
             <div class="form-for-adding" style="display: none">
-              <form>
+              <form class="post-form-to-add-profile" method="post">
                 {% csrf_token %}
+                <input type="hidden" name="target-instance-name" value="educational-bg">
+                <input type="hidden" name="add-new-profile-data" value="add-new-profile-data">
+                {% render_field form.education.educational_bg_id type="hidden" value=educational_bg.id %}
                 <div class="form-group">
                   <div class="form-row">
                     <div class="form-group col-sm-6">
                       <label for="school">学校名</label>
-                      <input type="text" class="form-control" name="school">
+                      {% render_field form.education.school class="form-control" %}
+                      {% for error in form.education.school.errors %}
+                      <span class="text-warning">{{ error }}</span>
+                      {% endfor %}
                     </div>
                     <div class="form-group col-sm-6">
                       <label for="major">学部・学科・専攻</label>
-                      <input type="text" class="form-control" name="major">
+                      {% render_field form.education.major class="form-control" %}
+                      {% for error in form.education.major.errors %}
+                      <span class="text-warning">{{ error }}</span>
+                      {% endfor %}
                     </div>
                   </div>
                   <div class="form-row">
                     <label for="graduated-at" class="col-sm-12">卒業（予定）</label>
                     <div class="form-group col-sm-6">
-                      <input type="date" name="education-graduated-at" max="2099-12-31" min="1950-01-01" class="form-control">
+                      {% render_field form.education.graduated_at type="date" class="form-control" %}
+                      {% for error in form.education.graduated_at.errors %}
+                      <span class="text-warning">{{ error }}</span>
+                      {% endfor %}
                     </div>
                   </div>
                   <div class="form-row">
                     <div class="form-group col-md-12">
                       <label for="what-you-done">研究内容・学んだこと・課外活動・サークル</label>
-                      <textarea class="form-control" id="what-you-done" rows="5"></textarea>
+                      {% render_field form.education.detail class="form-control" rows="5" %}
+                      {% for error in form.education.detail.errors %}
+                      <span class="text-warning">{{ error }}</span>
+                      {% endfor %}
+                      <div class="char-counter" data-max-length="{{ max_length.work_detail }}">
+                        残り<span>{{ max_length.work_detail }}</span>文字
+                      </div>
                     </div>
                   </div>
                 </div>
                 <div class="form-btn">
                   <button type="button" class="btn btn-outline-info btn-to-cancel-adding">キャンセル</button>
-                  <button type="submit" class="post-button-for-profile-edit btn btn-info">更新</button>
+                  <button type="submit" class="post-button-for-profile-add btn btn-info">更新</button>
                 </div>
               </form>
             </div>
           </li>
+          {% if educations %}
           {% for education in educations %}
-          <li>
-            <div class="editable-data" id="{{ education.id }}">
+          <li id="{{ education.id }}">
+            <div class="editable-data">
               <h3 class="profile-entry-title education-school">
                 <span>
                   {{ education.school }}
@@ -799,13 +808,14 @@
                       {% for error in form.education.detail.errors %}
                       <span class="text-warning">{{ error }}</span>
                       {% endfor %}
-                      <div class="char-counter">
+                      <div class="char-counter" data-max-length="{{ max_length.work_detail }}">
                         残り<span>{{ max_length.work_detail }}</span>文字
                       </div>
                     </div>
                   </div>
                 </div>
                 <div class="form-btn">
+                  <button type="button" class="btn btn-link text-info delete-btn" data-toggle="modal" data-target="#delete-profile-modal" data-instance-type="educational-bg" data-instance-id="{{ education.id }}">この項目を削除</button>
                   <button type="button" class="btn btn-outline-info btn-to-cancel-editing">キャンセル</button>
                   <button type="submit" class="post-button-for-profile-edit btn btn-info">更新</button>
                 </div>
@@ -813,11 +823,9 @@
             </div>
           </li>
           {% endfor %}
+          {% endif %}
         </ul>
       </section>
-      {% else %}
-      <p>There is no educational_background...</p>
-      {% endif %}
     </div>
 
     <div class="col-md-4" id="sidebar">
@@ -838,10 +846,10 @@
         <ul>
           <li>
             <a href="#" class="related-profile-list">
-              {% if user.profile.avatar %}
-              <img src="{{ user.profile.avatar }}" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {% if avatar %}
+              <img src="{{ avatar }}" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               {% else %}
-              <img src="/static/wantedly_app/img/anonymous-avatar.jpg" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <img src="/media/default_avatar.jpg" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               {% endif %}
               <div class="related-profile-list-info">
                 <h5>{{ user.username }}</h5>
@@ -851,10 +859,10 @@
           </li>
           <li>
             <a href="#" class="related-profile-list">
-              {% if user.profile.avatar %}
-              <img src="{{ user.profile.avatar }}" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {% if avatar %}
+              <img src="{{ avatar }}" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               {% else %}
-              <img src="/static/wantedly_app/img/anonymous-avatar.jpg" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <img src="/media/default_avatar.jpg" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               {% endif %}
               <div class="related-profile-list-info">
                 <h5>{{ user.username }}</h5>
@@ -867,5 +875,150 @@
     </div>
   </div>
 </section>
+
+<!-- Modal -->
+<div class="modal fade" id="edit-cover-modal" tabindex="-1" role="dialog" aria-labelledby="edit-cover-modal-label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="edit-cover-modal-label">カバー画像</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form class="post-form-to-edit-image" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <input type="hidden" name="target-instance-name" value="cover">
+          <div class="form-group">
+            {% render_field form.cover.cover class="form-control-file" id="form-to-edit-cover" %}
+          </div>
+          <div class="form-group">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="delete-image" value="True" id="delete-cover">
+              <label class="form-check-label" for="delete-cover">
+                 画像を削除します
+              </label>
+            </div>
+          </div>
+          <div class="form-btn">
+            <button type="button" class="btn btn-outline-info" data-dismiss="modal">キャンセル</button>
+            <button type="submit" class="btn btn-info">更新</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="edit-avatar-modal" tabindex="-1" role="dialog" aria-labelledby="edit-avatar-modal-label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="edit-avatar-modal-label">アバター画像</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form class="post-form-to-edit-image" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <input type="hidden" name="target-instance-name" value="avatar">
+          <div class="form-group">
+            {% render_field form.avatar.avatar class="form-control-file" id="form-to-edit-avatar" %}
+          </div>
+          <div class="form-group">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="delete-image" value="True" id="delete-avatar">
+              <label class="form-check-label" for="delete-avatar">
+                 画像を削除します
+              </label>
+            </div>
+          </div>
+          <div class="form-btn">
+            <button type="button" class="btn btn-outline-info" data-dismiss="modal">キャンセル</button>
+            <button type="submit" class="btn btn-info">更新</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="profile-edit-modal" tabindex="-1" role="dialog" aria-labelledby="profile-edit-modal-label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="profile-edit-modal-label">プロフィール編集</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Cancel">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form class="post-form-to-edit-profile" method="post">
+          {% csrf_token %}
+          <input type="hidden" name="target-instance-name" value="profile">
+          <div class="form-group">
+            <div class="form-row">
+              <div class="form-group col-md">
+                <label for="location">現在地</label>
+                {% render_field form.profile.location class="form-control" value=user.profile.location %}
+                {% for error in form.profile.location.errors %}
+                <span class="text-warning">{{ error }}</span>
+                {% endfor %}
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md">
+                <label for="favorite-words">好きな言葉、キャッチコピー</label>
+                {% render_field form.profile.favorite_words class="form-control" value=user.profile.favorite_words %}
+                {% for error in form.profile.favorite_words.errors %}
+                <span class="text-warning">{{ error }}</span>
+                {% endfor %}
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md">
+                <label for="job">職業</label>
+                {% render_field form.profile.job class="form-control" value=user.profile.job.job %}
+                {% for error in form.profile.job.errors %}
+                <span class="text-warning">{{ error }}</span>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+          <div class="form-btn">
+            <button type="button" class="btn btn-outline-info" data-dismiss="modal">キャンセル</button>
+            <button type="submit" class="btn btn-info">更新</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="delete-profile-modal" tabindex="-1" role="dialog" aria-labelledby="delete-profile-modal-label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="delete-profile-modal-label">この項目を削除しますか？</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Cancel">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form class="post-form-to-delete-profile" method="post">
+          {% csrf_token %}
+          <input type="hidden" name="target-instance-name" value="">
+          <input type="hidden" name="delete-target-instance-id" value="">
+          <div class="form-btn">
+            <button type="button" class="btn btn-outline-info" data-dismiss="modal">いいえ</button>
+            <button type="submit" class="btn btn-info">はい</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 
 {% endblock %}

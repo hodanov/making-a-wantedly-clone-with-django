@@ -12,15 +12,16 @@ tests/coverage_html/
 tests/.coverage
 build/
 tests/report/
+migrations/
 
 wantedly/settings_secret.py
 wantedly_app/static/wantedly_app/img/7ca686fd-f2b7-4ea7-90ce-f0793f3b6d75.png
 wantedly_app/static/wantedly_app/img/3fa70b51-efca-40fb-a392-8cdb6ce8d245.jpeg
 wantedly_app/static/wantedly_app/img/0ac4ef46-e638-4af4-b544-fbd1d0bc51ea.png
-wantedly_app/migrations/*
-media/
-!media/default_cover.jpg
-!media/default_avatar.jpg
+
+media/*
+!default_cover.jpg
+!default_avatar.jpg
 
 insert_records.py
 

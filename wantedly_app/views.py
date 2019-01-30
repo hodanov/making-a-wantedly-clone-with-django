@@ -329,13 +329,13 @@ def profile_edit_post(request):
             elif target_instance_name == 'cover':
                 instance = user.profile
                 if delete_img_flag:
-                    instance.cover = 'default_cover.jpg'
+                    instance.cover = ''
                 else:
                     form = CoverForm(request.POST, request.FILES, instance=instance)
             elif target_instance_name == 'avatar':
                 instance = user.profile
                 if delete_img_flag:
-                    instance.avatar = 'default_avatar.jpg'
+                    instance.avatar = ''
                 else:
                     form = AvatarForm(request.POST, request.FILES, instance=instance)
             elif target_instance_name == 'introduction':
@@ -480,9 +480,13 @@ def profile_edit_post(request):
                 response_data['favorite_words'] = instance.favorite_words
                 response_data['job'] = instance.job.job
             elif target_instance_name == 'avatar':
-                response_data['avatar'] = str(instance.avatar)
+                avatar = str(instance.avatar)
+                avatar = modify_image_path(avatar, 'avatar')
+                response_data['avatar'] = avatar
             elif target_instance_name == 'cover':
-                response_data['cover'] = str(instance.cover)
+                cover = str(instance.cover)
+                cover = modify_image_path(cover, 'cover')
+                response_data['cover'] = cover
             elif target_instance_name == 'introduction':
                 response_data['introduction'] = instance.introduction
             elif target_instance_name == 'statement':
@@ -520,6 +524,25 @@ def profile_edit_post(request):
                 json.dumps({"nothing to see": "this isn't happening"}),
                 content_type="application/json"
             )
+# 
+# def organization(request, id):
+#     org = get_object_or_404(Organization, pk=id)
+#
+#     cover = str(org.cover)
+#     avatar = str(org.avatar)
+#     cover = modify_image_path(cover, 'cover')
+#     avatar = modify_image_path(logo, 'logo')
+#
+#     try:
+#         organizations = u.organization_set.all()
+#     except Organization.DoesNotExist:
+#         organizations = False
+#     context = {
+#         'org': org,
+#         'cover': cover,
+#         'avatar': avatar,
+#     }
+#     return render(request, 'wantedly_app/org.html', context)
 
 def modify_image_path(image_path, type=''):
     parsed_uri = urlparse(image_path)

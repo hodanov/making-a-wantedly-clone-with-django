@@ -395,12 +395,12 @@ function ajaxPostProfileEditData() {
         else {
           switch (replaceTarget) {
             case "cover":
-              $('#profile-cover .responsive-img:first-child').css({'background-image': 'url("/media/' + json.cover + '")'})
-              $('#profile-cover-bg .responsive-img').css({'background-image': 'url("/media/' + json.cover + '")'})
+              $('#profile-cover .responsive-img:first-child').css({'background-image': 'url("' + json.cover + '")'})
+              $('#profile-cover-bg .responsive-img').css({'background-image': 'url("' + json.cover + '")'})
               break
             case "avatar":
-              $('#profile-avatar img').attr('src', '/media/' + json.avatar)
-              $('#menubar-avatar img').attr('src', '/media/' + json.avatar)
+              $('#profile-avatar img').attr('src', json.avatar)
+              $('#menubar-avatar img').attr('src', json.avatar)
               break
             case "portfolio":
               $(`#${json.uuid} .profile-portfolio-title`).html(`<span>${json.title}<span class="editable-mark"><i class="fas fa-pen"></i>編集する</span></span>`)

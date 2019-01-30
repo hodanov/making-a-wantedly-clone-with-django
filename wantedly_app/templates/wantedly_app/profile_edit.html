@@ -5,16 +5,13 @@
 {% block content %}
 
 <section id="profile-header">
-  {% if cover %}
   <div class="responsive-img-wrapper" id="profile-cover-bg">
     <div class="responsive-img" style="background-image: url('{{ cover }}')">
     </div>
   </div>
-  {% endif %}
   <div class="container">
     <div class="row">
       <div class="col-md" id="profile-editable-data">
-        {% if cover %}
         <div class="responsive-img-wrapper" id="profile-cover">
           <div class="responsive-img" style="background-image: url('{{ cover }}')">
             <a href="/users/{{ user.id }}" id="go-to-profile-edit-page">自分のプロフィールを確認する<i class="fas fa-arrow-circle-right"></i></a>
@@ -23,11 +20,6 @@
             <p><i class="fas fa-image"></i>カバー写真を変更</p>
           </div>
         </div>
-        {% else %}
-        <div id="profile-cover-offset">
-          <a href="/users/{{ user.id }}" id="go-to-profile-edit-page">自分のプロフィールを確認する<i class="fas fa-arrow-circle-right"></i></a>
-        </div>
-        {% endif %}
         <div id="profile-heading" style="margin-bottom: 0;">
           <div id="profile-avatar" class="bg-white">
             <img src="{{ avatar }}" alt="avatar" width="120" height="120" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -36,7 +28,6 @@
             </div>
           </div>
           <div id="profile-text">
-            {% if cover %}
             <h1>{{ user.username }}</h1>
             <p id="favorite-words">
               {% if user.profile.favorite_words %}
@@ -47,18 +38,6 @@
               &nbsp;
               {% endif %}
             </p>
-            {% else %}
-            <h1 style="color: #333;">{{ user.username }}</h1>
-            <p style="color: #333;" id="favorite-words">
-              {% if user.profile.favorite_words %}
-              <i class="fas fa-quote-left"></i>
-              {{ user.profile.favorite_words }}
-              <i class="fas fa-quote-right"></i>
-              {% else %}
-              &nbsp;
-              {% endif %}
-            </p>
-            {% endif %}
             <ul>
               <li id="job">
                 {% if user.profile.job.job %}
@@ -846,11 +825,7 @@
         <ul>
           <li>
             <a href="#" class="related-profile-list">
-              {% if avatar %}
               <img src="{{ avatar }}" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              {% else %}
-              <img src="/media/default_avatar.jpg" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              {% endif %}
               <div class="related-profile-list-info">
                 <h5>{{ user.username }}</h5>
                 <p>Webエンジニア, Avintonジャパン株式会社</p>
@@ -859,11 +834,7 @@
           </li>
           <li>
             <a href="#" class="related-profile-list">
-              {% if avatar %}
               <img src="{{ avatar }}" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              {% else %}
-              <img src="/media/default_avatar.jpg" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              {% endif %}
               <div class="related-profile-list-info">
                 <h5>{{ user.username }}</h5>
                 <p>Webエンジニア, Avintonジャパン株式会社</p>

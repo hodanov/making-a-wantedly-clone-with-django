@@ -76,7 +76,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 ########################################
-# Save location. Set validation.
+# Save location.
 ########################################
 def user_avatar_directory_path(instance, filename):
     return 'user-{0}/avatar/{1}'.format(instance.user.id, filename)
@@ -87,6 +87,15 @@ def user_cover_directory_path(instance, filename):
 def user_portfolio_directory_path(instance, filename):
     return 'user-{0}/portfolio/{1}'.format(instance.work.portfolio.profile.user.id, filename)
 
+def organization_logo_directory_path(instance, filename):
+    return 'org-{0}/logo/{1}'.format(instance.id, filename)
+
+def organization_cover_directory_path(instance, filename):
+    return 'org-{0}/cover/{1}'.format(instance.id, filename)
+
+def recruitment_eyecatch_directory_path(instance, filename):
+    return 'org-{0}/recruitment/eyecatch/{1}'.format(instance.organization.id, filename)
+
 class Profile(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -94,8 +103,8 @@ class Profile(models.Model):
     birth_date = models.DateField(null=True, blank=True)
     location = models.CharField(max_length=64, blank=True)
     favorite_words = models.CharField(max_length=64, blank=True)
-    avatar = models.ImageField(default='default_avatar.jpg', upload_to=user_avatar_directory_path, null=True, blank=True)
-    cover = models.ImageField(default='default_cover.jpg', upload_to=user_cover_directory_path, null=True, blank=True)
+    avatar = models.ImageField(upload_to=user_avatar_directory_path, null=True, blank=True)
+    cover = models.ImageField(upload_to=user_cover_directory_path, null=True, blank=True)
     job = models.ForeignKey(Job, on_delete=models.SET_NULL, null=True)
     privacy = models.ForeignKey(Privacy, on_delete=models.SET_NULL, null=True)
 
@@ -166,7 +175,7 @@ class EducationalBackground(models.Model):
 
 class Education(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    educational_background = models.ForeignKey(EducationalBackground, on_delete = models.CASCADE)
+    educational_background = models.ForeignKey(EducationalBackground, on_delete=models.CASCADE)
     school = models.CharField(max_length=64, blank=False)
     major = models.CharField(max_length=64, blank=True)
     graduated_at = models.DateField(null=True, blank=True)
@@ -175,11 +184,19 @@ class Education(models.Model):
 class Organization(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     organization = models.CharField(max_length=64, blank=True)
+    logo = models.ImageField(upload_to=organization_logo_directory_path, null=True, blank=True)
+    cover = models.ImageField(upload_to=organization_cover_directory_path, null=True, blank=True)
+    established_at = models.DateField(null=True, blank=True)
+    ceo = models.CharField(max_length=64, blank=True)
     members = models.ManyToManyField(
         User,
         through='Membership',
         through_fields=('organization', 'user'),
     )
+    location = models.CharField(max_length=128, blank=True)
+    mission = models.CharField(max_length=64, blank=True)
+    mission_detail = models.TextField(max_length=256, blank=True)
+    url = models.URLField(max_length=256, blank=True)
 
 class Membership(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -202,3 +219,17 @@ class Image(models.Model):
     work = models.ForeignKey(Work, on_delete = models.CASCADE)
     image = models.ImageField(upload_to=user_portfolio_directory_path, null=True, blank=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
+
+class Recruitment(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+    title = models.CharField(max_length=64, blank=False)
+    looking_for = models.CharField(max_length=64, blank=False)
+    article = models.TextField(max_length=2048, blank=False)
+    eyecatch = models.ImageField(upload_to=recruitment_eyecatch_directory_path, null=True, blank=True)
+
+class Value(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+    name = models.CharField(max_length=64, blank=False)
+    detail = models.TextField(max_length=256, blank=True)

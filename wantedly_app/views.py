@@ -77,8 +77,8 @@ def profile(request, id):
 
     cover = str(u.profile.cover)
     avatar = str(u.profile.avatar)
-    cover = modify_image_path(cover)
-    avatar = modify_image_path(avatar)
+    cover = modify_image_path(cover, 'cover')
+    avatar = modify_image_path(avatar, 'avatar')
 
     try:
         organizations = u.organization_set.all()
@@ -184,8 +184,8 @@ def profile_edit(request):
 
         cover = str(user.profile.cover)
         avatar = str(user.profile.avatar)
-        cover = modify_image_path(cover)
-        avatar = modify_image_path(avatar)
+        cover = modify_image_path(cover, 'cover')
+        avatar = modify_image_path(avatar, 'avatar')
 
         try:
             organizations = user.organization_set.all()
@@ -225,18 +225,6 @@ def profile_edit(request):
         try:
             portfolio = user.profile.portfolio
             works = portfolio.work_set.all().order_by('-made_at')
-            # images = {}
-            # key = 0
-            # for work in works:
-            #     images[key] = []
-            #     image_set = work.image_set.all().order_by('uploaded_at')
-            #     if image_set:
-            #         for image in image_set:
-            #             value = modify_image_path(str(image.image))
-            #             images[key].append(value)
-            #     else:
-            #         images[key].append("")
-            #     key += 1
         except Portfolio.DoesNotExist:
             portfolio = ""
             works = ""
@@ -533,12 +521,12 @@ def profile_edit_post(request):
                 content_type="application/json"
             )
 
-def modify_image_path(image_path):
+def modify_image_path(image_path, type=''):
     parsed_uri = urlparse(image_path)
     if parsed_uri.scheme == 'https' or parsed_uri.scheme == 'http':
         pass
     elif image_path == '':
-        image_path = False
+        image_path = '/media/default_' + type + '.jpg'
     else:
         image_path = '/media/' + image_path
     return image_path

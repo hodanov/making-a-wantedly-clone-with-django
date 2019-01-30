@@ -3,16 +3,13 @@
 {% block content %}
 
 <section id="profile-header">
-  {% if cover %}
   <div class="responsive-img-wrapper" id="profile-cover-bg">
     <div class="responsive-img" style="background-image: url('{{ cover }}')">
     </div>
   </div>
-  {% endif %}
   <div class="container">
     <div class="row">
       <div class="col-md">
-        {% if cover %}
         <div class="responsive-img-wrapper" id="profile-cover">
           <div class="responsive-img" style="background-image: url('{{ cover }}')">
             {% if u.id == user.id %}
@@ -20,12 +17,9 @@
             {% endif %}
           </div>
         </div>
-        {% endif %}
         <div id="profile-heading">
-          <div id="profile-img" class="bg-white">
-            {% if avatar %}
+          <div id="profile-avatar" class="bg-white">
             <img src="{{ avatar }}" alt="avatar" width="120" height="120" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            {% endif %}
           </div>
           <div id="profile-text">
             <h1>{{ u.username }}</h1>
@@ -219,6 +213,8 @@
                 <a href="/users/{{ f.id }}">
                   {% if f.profile.avatar %}
                   <img src="/media/{{ f.profile.avatar }}" alt="{{ f.username }}のアバター画像" width="60" height="60" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  {% else %}
+                  <img src="/media/default_avatar.jpg" alt="{{ f.username }}のアバター画像" width="60" height="60" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   {% endif %}
                   <div class="user-profile-friends-info">
                     <h5>{{ f.username }}</h5>
@@ -244,7 +240,11 @@
             <div class="col-md-6">
               <a href="/users/{{ f.id }}" style="display: inherit;">
                 <div class="card">
+                  {% if f.profile.avatar %}
                   <img src="/media/{{ f.profile.avatar }}" alt="{{ f.username }}のアバター画像" width="100" height="100">
+                  {% else %}
+                  <img src="/media/default_avatar.jpg" alt="{{ f.username }}のアバター画像" width="100" height="100">
+                  {% endif %}
                   <div class="card-body user-profile-friends-info">
                     <h5>{{ f.username }}</h5>
                     {% if f.profile.job %}
@@ -270,7 +270,11 @@
             <li>
               <p class="message">{{ iff.introduction }}</p>
               <div class="related-profile-list">
+                {% if iff.friend_user.profile.avatar %}
                 <img src="/media/{{ iff.friend_user.profile.avatar }}" alt="avatar" width="40" height="40" class="avatar">
+                {% else %}
+                <img src="/media/default_avatar.jpg" alt="avatar" width="40" height="40" class="avatar">
+                {% endif %}
                 <div class="related-profile-list-info">
                   <h5>{{ iff.friend_user.username }}</h5>
                   <p>
@@ -309,7 +313,11 @@
         <ul>
           <li>
             <a href="#" class="related-profile-list">
+              {% if u.profile.avatar %}
               <img src="/media/{{ u.profile.avatar }}" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {% else %}
+              <img src="/media/default_avatar.jpg" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {% endif %}
               <div class="related-profile-list-info">
                 <h5>{{ u.username }}</h5>
                 <p>Webエンジニア, Avintonジャパン株式会社</p>
@@ -318,7 +326,11 @@
           </li>
           <li>
             <a href="#" class="related-profile-list">
+              {% if u.profile.avatar %}
               <img src="/media/{{ u.profile.avatar }}" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {% else %}
+              <img src="/media/default_avatar.jpg" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {% endif %}
               <div class="related-profile-list-info">
                 <h5>{{ u.username }}</h5>
                 <p>Webエンジニア, Avintonジャパン株式会社</p>

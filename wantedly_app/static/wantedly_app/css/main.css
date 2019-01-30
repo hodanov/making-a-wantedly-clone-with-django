@@ -1048,7 +1048,7 @@ footer h4, footer footer p {
 
 #profile-avatar-edit {
   position: absolute;
-  top: 0;
+  top: 1px;
   width: 120px;
   height: 120px;
 }

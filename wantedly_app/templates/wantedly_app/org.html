@@ -1,0 +1,198 @@
+{% extends 'base_home.html' %}
+
+{% block content %}
+
+<div id="org-header-bar">
+  <div class="container">
+    <div class="org-header-logo">
+      <img src="{{ logo }}" alt="{{ org.organization }} | ロゴ画像" width="64" height="64">
+      <div class="org-header-info">
+        <h1>{{ org.organization }}</h1>
+        <ul>
+          <li><button type="button" class="btn btn-outline-info btn-sm">フォロー</button></li>
+          <li>
+            <i class="fas fa-link"></i>
+            <a href="{{ org.url }}">{{ org.url }}</a>
+          </li>
+          <li>
+            <i class="fas fa-map-marker-alt"></i>
+            {{ org.location }}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="responsive-img-wrapper" id="org-hero">
+  <div class="responsive-img" style="background-image: url('{{ cover }}')">
+  </div>
+</div>
+
+<div id="org-main-contents">
+
+  <nav id="index-scrollspy" class="navbar">
+    <ul class="nav flex-column">
+      {% if mission %}
+      <li class="nav-item">
+        <a class="nav-link active" href="#mission">mission</a>
+      </li>
+      {% endif %}
+      {% if values %}
+      <li class="nav-item">
+        <a class="nav-link" href="#values">values</a>
+      </li>
+      {% endif %}
+      {% if members %}
+      <li class="nav-item">
+        <a class="nav-link" href="#members">members</a>
+      </li>
+      {% endif %}
+      {% if recruitments %}
+      <li class="nav-item">
+        <a class="nav-link" href="#recruitments">information</a>
+      </li>
+      {% endif %}
+      <li class="nav-item">
+        <a class="nav-link" href="#information">information</a>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md">
+        {% if mission %}
+        <section id="mission">
+          <div class="row justify-content-md-center">
+            <div class="col-md-8">
+              <h2>{{ org.mission }}</h2>
+              <div class="">
+                {{ org.mission_detail|linebreaks }}
+              </div>
+            </div>
+          </div>
+        </section>
+        {% endif %}
+
+        {% if values %}
+        <section id="values">
+          <div class="row justify-content-md-center">
+            <div class="col-md-10">
+              <h2>価値観</h2>
+              <div class="row">
+                {% for value in values %}
+                {% if forloop.counter < 4 %}
+                <div class="col-md-12">
+                  <div class="row value-first">
+                    <div class="col-md-4 value-name">
+                      <h3>{{ value.name }}</h3>
+                    </div>
+                    <div class="col-md-8 value-detail">
+                      <p>{{ value.detail }}</p>
+                    </div>
+                  </div>
+                </div>
+                {% else %}
+                <div class="col-md-4 value-latter">
+                  <h3>{{ value.name }}</h3>
+                  <p>{{ value.detail }}</p>
+                </div>
+                {% endif %}
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </section>
+        {% endif %}
+
+        {% if members %}
+        <section id="members">
+          <div class="row justify-content-md-center">
+            <div class="col-md-10">
+              <h2>メンバー</h2>
+              <div class="row">
+                {% for member in members %}
+                <div class="col-md-3 member-avatar-wrapper">
+                  <a href="/users/{{ member.id }}">
+                    {% if member.profile.avatar %}
+                    <img src="/media/{{ member.profile.avatar }}" alt="{{ member.username }}のアバター画像" width="100" height="100">
+                    {% else %}
+                    <img src="/media/default_avatar.jpg" alt="{{ member.username }}のアバター画像" width="100" height="100">
+                    {% endif %}
+                  </a>
+                  <p>{{ member.username }}</p>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </section>
+        {% endif %}
+
+        {% if recruitments %}
+        <section id="recruitments">
+          <div class="row justify-content-md-center">
+            <div class="col-md-10">
+              <h2>シゴト</h2>
+              <div class="row">
+                {% for recruitment in recruitments %}
+                <div class="col-md-4">
+
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </section>
+        {% endif %}
+
+        <section id="information">
+          <div class="row justify-content-md-center">
+            <div class="col-md-10">
+              <h2>会社情報</h2>
+              <div class="row">
+                <div class="col-md-6">
+                  <h3>
+                    <img src="{{ logo }}" alt="{{ org.organization }} | ロゴ画像" width="64" height="64">
+                    {{ org.organization }}
+                  </h3>
+                  <ul>
+                    <li>
+                      <i class="fas fa-map-marker-alt"></i>
+                      {{ org.location }}
+                    </li>
+                    <li>
+                      <i class="fas fa-link"></i>
+                      <a href="{{ org.url }}">{{ org.url }}</a>
+                    </li>
+                    <li>
+                      <i class="fas fa-flag"></i>
+                      {{ org.established_at }}
+                    </li>
+                    <li>
+                      <i class="fas fa-user"></i>
+                      {{ org.ceo }}が創業
+                    </li>
+                    <li>
+                      <i class="fas fa-users"></i>
+                      {{ members|length }}人のメンバー
+                    </li>
+                  </ul>
+                </div>
+                <div class="col-md-6">
+                  <iframe width="100%" height="100%" frameborder="0" style="border:0"
+                  src="https://www.google.com/maps/embed/v1/place?key=AIzaSyDR_I-MATyLzLQmrLccLJhQGPEM5q4IBWw&q=Japan" allowfullscreen></iframe>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}

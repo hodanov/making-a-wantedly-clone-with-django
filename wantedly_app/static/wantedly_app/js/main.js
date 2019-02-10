@@ -10,6 +10,7 @@ $(document).ready(function() {
   .then(DomOperationInProfileEditPage)
   // .then(ajaxForPosting)
   .then(ajaxPostProfileEditData)
+  .then(offsetOrgMainContents)
 })
 
 // ------------------------
@@ -660,4 +661,13 @@ function ajaxPostProfileEditData() {
     `
     return dom
   }
+}
+
+// ------------------------
+// --- offsetOrgMainContents ---
+// ------------------------
+function offsetOrgMainContents() {
+  var indexScrollspyHeight = $('#index-scrollspy').outerHeight()
+  console.log(indexScrollspyHeight);
+  $('#org-main-contents .container').css('margin-top', 'calc(3rem - ' + indexScrollspyHeight + 'px)')
 }

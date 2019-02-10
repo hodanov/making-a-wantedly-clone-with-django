@@ -524,27 +524,48 @@ def profile_edit_post(request):
                 json.dumps({"nothing to see": "this isn't happening"}),
                 content_type="application/json"
             )
-# 
-# def organization(request, id):
-#     org = get_object_or_404(Organization, pk=id)
-#
-#     cover = str(org.cover)
-#     avatar = str(org.avatar)
-#     cover = modify_image_path(cover, 'cover')
-#     avatar = modify_image_path(logo, 'logo')
-#
-#     try:
-#         organizations = u.organization_set.all()
-#     except Organization.DoesNotExist:
-#         organizations = False
-#     context = {
-#         'org': org,
-#         'cover': cover,
-#         'avatar': avatar,
-#     }
-#     return render(request, 'wantedly_app/org.html', context)
+
+def organization(request, id):
+    ########################################
+    # Function for organization view.
+    # Get organization, values and so on.
+    # Return wantedly_app/org.html page.
+    ########################################
+    org = get_object_or_404(Organization, pk=id)
+
+    cover = str(org.cover)
+    logo = str(org.logo)
+    cover = modify_image_path(cover, 'org_cover')
+    logo = modify_image_path(logo, 'logo')
+
+    mission = org.mission
+    try:
+        values = org.value_set.all()
+    except Organization.DoesNotExist:
+        values = False
+    try:
+        membership = org.membership_set.all()
+        members = []
+        for member in membership:
+            m = User.objects.get(pk=member.user_id)
+            members.append(m)
+    except Membership.DoesNotExist:
+        members = False
+
+    context = {
+        'org': org,
+        'cover': cover,
+        'logo': logo,
+        'mission': mission,
+        'values': values,
+        'members': members,
+    }
+    return render(request, 'wantedly_app/org.html', context)
 
 def modify_image_path(image_path, type=''):
+    ########################################
+    # Modify images path each type and return it.
+    ########################################
     parsed_uri = urlparse(image_path)
     if parsed_uri.scheme == 'https' or parsed_uri.scheme == 'http':
         pass

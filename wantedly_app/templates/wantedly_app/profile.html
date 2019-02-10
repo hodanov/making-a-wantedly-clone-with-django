@@ -43,7 +43,7 @@
               <li>
                 <i class="fas fa-building"></i>
                 {% for o in organizations %}
-                {{ o.organization }}
+                <a href="/orgs/{{ o.id }}">{{ o.organization }}</a>
                 {% endfor %}
               </li>
               {% endif %}

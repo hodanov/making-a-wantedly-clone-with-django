@@ -14,7 +14,7 @@
       <div class="col-md" id="profile-editable-data">
         <div class="responsive-img-wrapper" id="profile-cover">
           <div class="responsive-img" style="background-image: url('{{ cover }}')">
-            <a href="/users/{{ user.id }}" id="go-to-profile-edit-page">自分のプロフィールを確認する<i class="fas fa-arrow-circle-right"></i></a>
+            <a href="/users/{{ u.id }}" id="go-to-profile-edit-page">自分のプロフィールを確認する<i class="fas fa-arrow-circle-right"></i></a>
           </div>
           <div class="responsive-img" id="profile-cover-edit" data-toggle="modal" data-target="#edit-cover-modal">
             <p><i class="fas fa-image"></i>カバー写真を変更</p>
@@ -28,11 +28,11 @@
             </div>
           </div>
           <div id="profile-text">
-            <h1>{{ user.username }}</h1>
+            <h1>{{ u.username }}</h1>
             <p id="favorite-words">
-              {% if user.profile.favorite_words %}
+              {% if u.profile.favorite_words %}
               <i class="fas fa-quote-left"></i>
-              {{ user.profile.favorite_words }}
+              {{ u.profile.favorite_words }}
               <i class="fas fa-quote-right"></i>
               {% else %}
               &nbsp;
@@ -40,9 +40,9 @@
             </p>
             <ul>
               <li id="job">
-                {% if user.profile.job.job %}
+                {% if u.profile.job.job %}
                 <i class="fas fa-briefcase"></i>
-                {{ user.profile.job.job }}
+                {{ u.profile.job.job }}
                 {% endif %}
               </li>
               <li id="organization">
@@ -54,9 +54,9 @@
                 {% endif %}
               </li>
               <li id="location">
-                {% if user.profile.location %}
+                {% if u.profile.location %}
                 <i class="fas fa-map-marker-alt"></i>
-                {{ user.profile.location }}
+                {{ u.profile.location }}
                 {% endif %}
               </li>
             </ul>
@@ -66,8 +66,8 @@
               </button>
               <div class="btn-group">
                 <button type="button" class="btn btn-outline-info dropdown-toggle" id="profile-privacy-level" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  {% if user.profile.privacy %}
-                  {{ user.profile.privacy.icon|safe }}
+                  {% if u.profile.privacy %}
+                  {{ u.profile.privacy.icon|safe }}
                   {% else %}
                   <i class="fas fa-users"></i>
                   {% endif %}
@@ -827,7 +827,7 @@
             <a href="#" class="related-profile-list">
               <img src="{{ avatar }}" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <div class="related-profile-list-info">
-                <h5>{{ user.username }}</h5>
+                <h5>{{ u.username }}</h5>
                 <p>Webエンジニア, Avintonジャパン株式会社</p>
               </div>
             </a>
@@ -836,7 +836,7 @@
             <a href="#" class="related-profile-list">
               <img src="{{ avatar }}" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <div class="related-profile-list-info">
-                <h5>{{ user.username }}</h5>
+                <h5>{{ u.username }}</h5>
                 <p>Webエンジニア, Avintonジャパン株式会社</p>
               </div>
             </a>
@@ -933,7 +933,7 @@
             <div class="form-row">
               <div class="form-group col-md">
                 <label for="location">現在地</label>
-                {% render_field form.profile.location class="form-control" value=user.profile.location %}
+                {% render_field form.profile.location class="form-control" value=u.profile.location %}
                 {% for error in form.profile.location.errors %}
                 <span class="text-warning">{{ error }}</span>
                 {% endfor %}
@@ -942,7 +942,7 @@
             <div class="form-row">
               <div class="form-group col-md">
                 <label for="favorite-words">好きな言葉、キャッチコピー</label>
-                {% render_field form.profile.favorite_words class="form-control" value=user.profile.favorite_words %}
+                {% render_field form.profile.favorite_words class="form-control" value=u.profile.favorite_words %}
                 {% for error in form.profile.favorite_words.errors %}
                 <span class="text-warning">{{ error }}</span>
                 {% endfor %}
@@ -951,7 +951,7 @@
             <div class="form-row">
               <div class="form-group col-md">
                 <label for="job">職業</label>
-                {% render_field form.profile.job class="form-control" value=user.profile.job.job %}
+                {% render_field form.profile.job class="form-control" value=u.profile.job.job %}
                 {% for error in form.profile.job.errors %}
                 <span class="text-warning">{{ error }}</span>
                 {% endfor %}

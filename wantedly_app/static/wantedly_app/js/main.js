@@ -668,6 +668,5 @@ function ajaxPostProfileEditData() {
 // ------------------------
 function offsetOrgMainContents() {
   var indexScrollspyHeight = $('#index-scrollspy').outerHeight()
-  console.log(indexScrollspyHeight);
   $('#org-main-contents .container').css('margin-top', 'calc(3rem - ' + indexScrollspyHeight + 'px)')
 }

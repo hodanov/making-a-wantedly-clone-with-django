@@ -50,8 +50,8 @@
             </li>
             <li class="nav-item">
               <div class="btn-group" id="menubar-avatar">
-                {% if avatar %}
-                <img src="{{ avatar }}" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {% if user.profile.avatar %}
+                <img src="/media/{{ user.profile.avatar }}" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 {% else %}
                 <img src="/media/default_avatar.jpg" alt="avatar" width="40" height="40" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 {% endif %}
@@ -62,8 +62,8 @@
                       <span class="dropdown-menu-avatar-text-edit">プロフィールを編集</span>
                     </div>
                     <div class="dropdown-menu-avatar-img">
-                      {% if avatar %}
-                      <img src="{{ avatar }}" alt="avatar" width="50" height="50" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      {% if user.profile.avatar %}
+                      <img src="/media/{{ user.profile.avatar }}" alt="avatar" width="50" height="50" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       {% else %}
                       <img src="/media/default_avatar.jpg" alt="avatar" width="50" height="50" class="avatar dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       {% endif %}

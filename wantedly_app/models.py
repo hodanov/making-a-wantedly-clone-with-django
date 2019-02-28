@@ -16,6 +16,13 @@ class Privacy(models.Model):
     privacy_level = models.CharField(max_length=32, blank=False)
     icon = models.CharField(max_length=128, blank=False, default='<i class="fas fa-users"></i>')
 
+class EmploymentPattern(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=64, blank=True)
+    def __str__(self):
+        return self.name
+
+
 class UserManager(BaseUserManager):
     def create_user(self, username, email, password=None):
         """
@@ -148,8 +155,6 @@ class Portfolio(models.Model):
     profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
     privacy = models.ForeignKey(Privacy, on_delete=models.SET_NULL, null=True)
 
-# def user_directory_path(instance, ):
-#     pass
 class Work(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     portfolio = models.ForeignKey(Portfolio, on_delete = models.CASCADE)
@@ -227,9 +232,68 @@ class Recruitment(models.Model):
     looking_for = models.CharField(max_length=64, blank=False)
     article = models.TextField(max_length=2048, blank=False)
     eyecatch = models.ImageField(upload_to=recruitment_eyecatch_directory_path, null=True, blank=True)
+    employment_pattern = models.ForeignKey(EmploymentPattern, on_delete=models.SET_NULL, null=True)
+    # published_at = models.DateField(auto_now_add=True)
 
 class Value(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
     name = models.CharField(max_length=64, blank=False)
     detail = models.TextField(max_length=256, blank=True)
+
+"""
+Create some objects when creating Profile objects.
+"""
+@receiver(post_save, sender=Profile)
+def create_user_introduction(sender, instance, created, **kwargs):
+    if created:
+        Introduction.objects.create(profile=instance)
+
+@receiver(post_save, sender=Profile)
+def create_user_statement(sender, instance, created, **kwargs):
+    if created:
+        Statement.objects.create(profile=instance)
+
+@receiver(post_save, sender=Profile)
+def create_user_workhistory(sender, instance, created, **kwargs):
+    if created:
+        WorkHistory.objects.create(profile=instance)
+
+@receiver(post_save, sender=Profile)
+def create_user_portfolio(sender, instance, created, **kwargs):
+    if created:
+        Portfolio.objects.create(profile=instance)
+
+@receiver(post_save, sender=Profile)
+def create_user_relatedlink(sender, instance, created, **kwargs):
+    if created:
+        RelatedLink.objects.create(profile=instance)
+
+@receiver(post_save, sender=Profile)
+def create_user_educationalbackground(sender, instance, created, **kwargs):
+    if created:
+        EducationalBackground.objects.create(profile=instance)
+
+@receiver(post_save, sender=Profile)
+def save_user_introduction(sender, instance, **kwargs):
+    instance.introduction.save()
+
+@receiver(post_save, sender=Profile)
+def save_user_statement(sender, instance, **kwargs):
+    instance.statement.save()
+
+@receiver(post_save, sender=Profile)
+def save_user_workhistory(sender, instance, **kwargs):
+    instance.workhistory.save()
+
+@receiver(post_save, sender=Profile)
+def save_user_portfolio(sender, instance, **kwargs):
+    instance.portfolio.save()
+
+@receiver(post_save, sender=Profile)
+def save_user_relatedlink(sender, instance, **kwargs):
+    instance.relatedlink.save()
+
+@receiver(post_save, sender=Profile)
+def save_user_educationalbackground(sender, instance, **kwargs):
+    instance.educationalbackground.save()

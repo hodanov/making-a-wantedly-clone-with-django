@@ -93,7 +93,7 @@
           {% if introduction %}
           <section>
             <h2>紹介文</h2>
-            {{ introduction|linebreaks }}
+            {{ introduction.introduction|linebreaks }}
           </section>
           {% else %}
           <p>There is no introduction...</p>
@@ -102,7 +102,7 @@
           {% if statement %}
           <section>
             <h2>この先やってみたいこと</h2>
-            <p>{{ statement|safe }}</p>
+            <p>{{ statement.statement|safe }}</p>
           </section>
           {% else %}
           <p>There is no statement...</p>

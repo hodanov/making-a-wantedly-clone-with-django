@@ -247,23 +247,39 @@ class ProfileContext:
             'introductions_from_frends': "",
         }
         if u.organization_set.exists():
-          self.context['organizations'] = u.organization_set.all()
+            self.context['organizations'] = u.organization_set.all()
+
         if Privacy.objects.exists():
-          self.context['privacy'] = Privacy.objects.all()
+            self.context['privacy'] = Privacy.objects.all()
+
         self.context['introduction'] = u.profile.introduction
+
         self.context['statement'] = u.profile.statement
+
         self.context['work_history'] = u.profile.workhistory
         if self.context['work_history'].experience_set.exists():
-          self.context['experiences'] = self.context['work_history'].experience_set.all().order_by('-from_date')
+            self.context['experiences'] = self.context['work_history'].experience_set.all().order_by('-from_date')
+
         self.context['portfolio'] = u.profile.portfolio
         if self.context['portfolio'].work_set.exists():
-          self.context['works'] = self.context['portfolio'].work_set.all().order_by('-made_at')
+            self.context['works'] = self.context['portfolio'].work_set.all().order_by('-made_at')
+
         self.context['related_link'] = u.profile.relatedlink
         if self.context['related_link'].url_set.exists():
-          self.context['urls'] = self.context['related_link'].url_set.all()
+            self.context['urls'] = self.context['related_link'].url_set.all()
+
         self.context['educational_bg'] = u.profile.educationalbackground
         if self.context['educational_bg'].education_set.exists():
-          self.context['educations'] = self.context['educational_bg'].education_set.all().order_by('-graduated_at')
+            self.context['educations'] = self.context['educational_bg'].education_set.all().order_by('-graduated_at')
+
+        if u.friendrelationship_follower.exists():
+            friend_relationships = u.friendrelationship_follower.all()
+            for fr in friend_relationships:
+                f = User.objects.get(pk=fr.followed_user_id)
+                self.context['friends'].append(f)
+
+        if u.introductionfromfriend_introduced_user.exists():
+            self.context['introductions_from_frends'] = u.introductionfromfriend_introduced_user.all()
 
     def get_context(self):
         return self.context
@@ -489,6 +505,7 @@ def save_data_to_db(rq, ji, request):
     Args:
         rq:
         ji:
+        request:
     """
     if rq['change_privacy_level']:
         privacy_id = request.POST.get('privacy-id', False)
